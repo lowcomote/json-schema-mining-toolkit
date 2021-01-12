@@ -9,6 +9,9 @@
 	</Appenders>
 	<Loggers>
 		<Logger name="jku.bise.jsonschemavalidator" level="DEBUG"/>
+		<Root   level="ERROR">
+    		<AppenderRef ref="stdout"/>
+		</Root  >
 	</Loggers>
 	
 </Configuration>

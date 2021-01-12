@@ -1,14 +1,19 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftvalidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class DraftSchemaValidator {
 
-	
+	private static Logger logger = LoggerFactory.getLogger(DraftSchemaValidator.class);
 	protected Schema schema;
 	
 	
@@ -36,19 +41,27 @@ public abstract class DraftSchemaValidator {
 //		}
 //	}
 	
-	public boolean validate (JSONObject jsonObject)  {
-		boolean validate;
+	public List<String> validate (JSONObject jsonObject)  {
+		List<String> messages = new ArrayList<String>();
 		try{
 			schema.validate(jsonObject);
-			validate=true;
-		}catch (ValidationException e) {
-			  System.out.println(e.getMessage());
-			  e.getCausingExceptions().stream()
-			      .map(ValidationException::getMessage)
-			      .forEach(System.out::println);
-			  validate=false;
+		}catch (ValidationException validationException) {
+			if(logger.isDebugEnabled()) {
+				logger.debug(validationException.getMessage());
+			}
+			validationException.getCausingExceptions().stream()
+				.map(ValidationException::getMessage).forEach(message->{
+					messages.add(message);
+					if(logger.isDebugEnabled()) {
+						logger.debug(message);
+					}
+				});
+//			System.out.println(validationException.getMessage());
+//			validationException.getCausingExceptions().stream()
+//				.map(ValidationException::getMessage)
+//				.forEach(System.out::println);
 		}
-		return validate;
+		return messages;
 	}
 	
 }
