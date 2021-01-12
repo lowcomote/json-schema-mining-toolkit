@@ -1,0 +1,20 @@
+{
+        "$schema": "https://json-schema.org/draft/2019-09/schema",
+        "description": "additionalItems as schema",
+        "schema": {
+            "items": [{}],
+            "additionalItems": {"type": "integer"}
+        },
+        "tests": [
+            {
+                "description": "additional items match schema",
+                "data": [ null, 2, 3, 4 ],
+                "valid": true
+            },
+            {
+                "description": "additional items do not match schema",
+                "data": [ null, 2, 3, "foo" ],
+                "valid": false
+            }
+        ]
+    }

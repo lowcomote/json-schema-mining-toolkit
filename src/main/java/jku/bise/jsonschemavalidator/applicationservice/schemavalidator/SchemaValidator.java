@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.net.URISyntaxException;
+
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -18,7 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.qindesign.json.schema.MalformedSchemaException;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft201909SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft3SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft4SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft6SchemaValidator;
@@ -27,29 +36,34 @@ import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7Sche
 public class SchemaValidator {
 
 	private final static String SCHEMA = "$schema";
+
 	private final static String CSV_FILE_NAME = "test.csv";
-	private final static String HASH_TAG = "#";
+	private final static String HASH_TAG ="#";
 	private static Logger logger = LoggerFactory.getLogger(SchemaValidator.class);
+	
+	private  Draft4SchemaValidator draft4SchemaValidator;
+	private  Draft6SchemaValidator draft6SchemaValidator;
+	private  Draft7SchemaValidator draft7SchemaValidator;
+	private  Draft3SchemaValidator draft3SchemaValidator;
+	private  Draft201909SchemaValidator draft201909SchemaValidator;
+	
+	public SchemaValidator() throws IOException, URISyntaxException, MalformedSchemaException {
+		this.draft4SchemaValidator= new Draft4SchemaValidator();
+		this.draft6SchemaValidator= new Draft6SchemaValidator();
+		this.draft7SchemaValidator= new Draft7SchemaValidator();
+		this.draft3SchemaValidator= new Draft3SchemaValidator();
+		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
 
-	private Draft4SchemaValidator draft4SchemaValidator;
-	private Draft6SchemaValidator draft6SchemaValidator;
-	private Draft7SchemaValidator draft7SchemaValidator;
-	private Draft3SchemaValidator draft3SchemaValidator;
-
-	public SchemaValidator() throws IOException {
-		this.draft4SchemaValidator = new Draft4SchemaValidator();
-		this.draft6SchemaValidator = new Draft6SchemaValidator();
-		this.draft7SchemaValidator = new Draft7SchemaValidator();
-		this.draft3SchemaValidator = new Draft3SchemaValidator();
 	}
 
-	public void validateDirectory(String pathToDir) throws IOException {
+
+	public void validateDirectory (String pathToDir) throws IOException, MalformedSchemaException {
+
 		File dir = new File(pathToDir);
 		if (dir.isDirectory()) {
 			for (File file : dir.listFiles()) {
-//	            FileReader fileReader = new FileReader(file);
-//	            JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
-//	            validateDraft4Or6Or7 ( jsonObject) ;
+
+
 				try {
 					validate(file);
 				} catch (Exception e) {
@@ -60,11 +74,15 @@ public class SchemaValidator {
 					});
 				}
 			}
+
 		}
 	}
 
-	public void validate(File file) throws IOException {
+	
+	public void validate (File file ) throws IOException, MalformedSchemaException {
+
 		FileReader fileReader = new FileReader(file);
+
 		JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
 		List<String> errors = null;
 		try {
@@ -72,12 +90,14 @@ public class SchemaValidator {
 
 				errors = validateDraft4Or6Or7(jsonObject);
 
-			} else {
-				if (isDraft3(jsonObject)) {
-					JsonNode jsonNode = JsonLoader.fromFile(file);
-					errors = validateDraft3(jsonNode);
-				}
-			}
+			} else if (isDraft3(jsonObject)) {
+				JsonNode jsonNode = JsonLoader.fromFile(file);
+				errors = validateDraft3(jsonNode);
+			}else if (isDraft201909(jsonObject)) {
+	        	JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
+	        	//JsonObject gsonObject = jsonElement.getAsJsonObject();
+	        	errors = draft201909SchemaValidator.validate(jsonElement);
+	        }
 		} catch (SchemaValidatorException e) {
 			logger.error(e.getMessage());
 		}
@@ -143,6 +163,17 @@ public class SchemaValidator {
 		return isDraft3;
 	}
 
+	private boolean isDraft201909(JSONObject jsonObject) {
+		boolean isDraft201909= false;
+		if(jsonObject.has(SCHEMA)) {
+			String schema = jsonObject.getString(SCHEMA);
+			if((Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL+HASH_TAG).equals(schema)) {
+				isDraft201909=true;
+			}
+		}
+		return isDraft201909;
+	}
+	
 	public void createCSVFile(String filename, List<String> errors) throws IOException {
 		FileWriter out;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
@@ -160,5 +191,10 @@ public class SchemaValidator {
 		}
 
 	}
+
+
+	
+	
+	
 
 }
