@@ -46,16 +46,10 @@ public abstract class DraftSchemaValidator {
 		try{
 			schema.validate(jsonObject);
 		}catch (ValidationException validationException) {
-			if(logger.isDebugEnabled()) {
-				logger.debug(validationException.getMessage());
-			}
 			validationException.getCausingExceptions().stream()
-				.map(ValidationException::getMessage).forEach(message->{
-					messages.add(message);
-					if(logger.isDebugEnabled()) {
-						logger.debug(message);
-					}
-				});
+				.map(ValidationException::getMessage).forEach(message->
+					messages.add(message)
+				);
 //			System.out.println(validationException.getMessage());
 //			validationException.getCausingExceptions().stream()
 //				.map(ValidationException::getMessage)
@@ -63,5 +57,5 @@ public abstract class DraftSchemaValidator {
 		}
 		return messages;
 	}
-	
+
 }
