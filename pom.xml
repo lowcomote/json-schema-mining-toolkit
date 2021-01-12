@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jku.bise</groupId>
 	<artifactId>jsonschemavalidator</artifactId>
@@ -8,63 +10,68 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<log4j.version>2.14.0</log4j.version>
-		
+
 	</properties>
 	<build>
-    	<sourceDirectory>src/main/java</sourceDirectory>
-    	<plugins>
-      		<plugin>
-        		<artifactId>maven-compiler-plugin</artifactId>
-        		<version>3.8.0</version>
-        		<configuration>
-          			<release>11</release>
-        		</configuration>
-     		</plugin>
-     		<plugin>
-            	<groupId>org.codehaus.mojo</groupId>
-            	<artifactId>exec-maven-plugin</artifactId>
-            	<version>3.0.0</version>
-            	<configuration>
-            		<cleanupDaemonThreads>false</cleanupDaemonThreads>
-                	<mainClass>jku.bise.jsonschemavalidator.Validate</mainClass>
-            	</configuration>
-        </plugin>
-    	</plugins>
-  	</build>
-  	<dependencies>
-  		<dependency>
-    		<groupId>com.github.everit-org.json-schema</groupId>
-    		<artifactId>org.everit.json.schema</artifactId>
-   			<version>1.12.1</version>
-  		</dependency>
-  		<dependency>
-    		<groupId>com.github.java-json-tools</groupId>
-    		<artifactId>json-schema-validator</artifactId>
-    		<version>2.2.14</version>
-		</dependency>
-		
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<cleanupDaemonThreads>false</cleanupDaemonThreads>
+					<mainClass>jku.bise.jsonschemavalidator.Validate</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		    <version>${log4j.version}</version>
+			<groupId>com.github.everit-org.json-schema</groupId>
+			<artifactId>org.everit.json.schema</artifactId>
+			<version>1.12.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>${log4j.version}</version>
+			<groupId>com.github.java-json-tools</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>2.2.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-slf4j-impl</artifactId>
-		    <version>${log4j.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
-  	</dependencies>
-  	
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.8</version>
+		</dependency>
+	</dependencies>
+
 	<repositories>
-    	<repository>
-        	<id>jitpack.io</id>
-        	<url>https://jitpack.io</url>
-    	</repository>
-    	
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+
 	</repositories>
 </project>
