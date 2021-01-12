@@ -1,5 +1,11 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftvalidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.SchemaVersion;
 import com.github.fge.jsonschema.cfg.ValidationConfiguration;
@@ -10,7 +16,7 @@ import com.github.fge.jsonschema.processors.syntax.SyntaxValidator;
 
 public class Draft3SchemaValidator {
 
-	
+	private static Logger logger = LoggerFactory.getLogger(Draft3SchemaValidator.class);
 	public final static String JSON_SCHEMA_DRAFT_O3_URL = "http://json-schema.org/draft-03/schema";
 	private  SyntaxValidator syntaxValidator;
 	
@@ -24,12 +30,18 @@ public class Draft3SchemaValidator {
 		
 	}
 	
-	public void validate (JsonNode schema) {
+	public List<String> validate (JsonNode schema) {
+		List<String> messages = new ArrayList<String>();
 		ProcessingReport processingReport =  this.syntaxValidator.validateSchema(schema);
 		processingReport.forEach(processingMessage->{
 			String message = processingMessage.getMessage();
-			System.out.println(message);
+			messages.add(message);
+			//System.out.println(message);
+			if(logger.isDebugEnabled()) {
+				logger.debug(message);
+			}
 		});
+		return messages;
 	}
 	
 }
