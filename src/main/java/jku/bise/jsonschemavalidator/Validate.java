@@ -14,6 +14,7 @@ import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaVal
 
 public class Validate {
 	public static void main(String[] args) throws IOException, MalformedSchemaException, URISyntaxException {
+
 		String outputCSV = "";
 		String inputFolderPath = "";
 		if (args.length == 2) {
@@ -25,7 +26,7 @@ public class Validate {
 			outputCSV = config.getString("output.csv.file");			
 		}
 		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
-		schemaValidator.validateDirectory(inputFolderPath);
+		schemaValidator.validateFileOrDirectory(inputFolderPath);
 	}
 
 	private static PropertiesConfiguration loadConfiguration() {
@@ -37,5 +38,4 @@ public class Validate {
 		}
 		return null;
 	}
-
 }

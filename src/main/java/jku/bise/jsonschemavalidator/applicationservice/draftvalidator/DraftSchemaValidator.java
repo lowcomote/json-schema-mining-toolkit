@@ -23,23 +23,7 @@ public abstract class DraftSchemaValidator {
 	}
 	
 	
-//	@Deprecated
-//	public boolean validate (String filePath) throws IOException {
-//		JSONObject jsonObject = Utils.buildJsonObjectFromFile(filePath);
-//		return validate (jsonObject);
-//	}
-//	
-//	@Deprecated
-//	public void validateDirectory (String pathToDir) throws IOException {
-//		File dir = new File(pathToDir);
-//		if(dir.isDirectory()) {
-//			for (File file : dir.listFiles()) {
-//	            FileReader fileReader = new FileReader(file);
-//	            JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
-//	            validate ( jsonObject) ;
-//	        }
-//		}
-//	}
+
 	
 	public List<String> validate (JSONObject jsonObject)  {
 		List<String> messages = new ArrayList<String>();
@@ -47,13 +31,14 @@ public abstract class DraftSchemaValidator {
 			schema.validate(jsonObject);
 		}catch (ValidationException validationException) {
 			validationException.getCausingExceptions().stream()
-				.map(ValidationException::getMessage).forEach(message->
-					messages.add(message)
-				);
-//			System.out.println(validationException.getMessage());
-//			validationException.getCausingExceptions().stream()
-//				.map(ValidationException::getMessage)
-//				.forEach(System.out::println);
+				.map(ValidationException::getMessage).forEach(message->{
+					messages.add(message);
+					if(logger.isDebugEnabled()) {
+						logger.debug(message);
+					}
+				});
+			
+
 		}
 		return messages;
 	}

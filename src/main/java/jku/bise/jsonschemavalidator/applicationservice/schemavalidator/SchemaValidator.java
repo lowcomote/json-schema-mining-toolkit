@@ -34,8 +34,9 @@ public class SchemaValidator {
 
 	private final static String SCHEMA = "$schema";
 
-	private String CSV_FILE_NAME = "";
+	private String CSV_FILE_NAME;
 	private final static String HASH_TAG = "#";
+
 	private static Logger logger = LoggerFactory.getLogger(SchemaValidator.class);
 
 	private Draft4SchemaValidator draft4SchemaValidator;
@@ -54,34 +55,43 @@ public class SchemaValidator {
 		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
 
 	}
+
 	public SchemaValidator(String csv_file_name) throws IOException, URISyntaxException, MalformedSchemaException {
 		this();
 		CSV_FILE_NAME = csv_file_name;
 		CSV_OUTPUT = true;
 	}
 
-	public void validateDirectory(String pathToDir) throws IOException, MalformedSchemaException {
-
-		File dir = new File(pathToDir);
-		if (dir.isDirectory()) {
-			for (File file : dir.listFiles()) {
+	public void validateFileOrDirectory(String pathToDir) throws IOException {
+		File fileOrdir = new File(pathToDir);
+		if (fileOrdir.isDirectory()) {
+			for (File file : fileOrdir.listFiles()) {
 
 				try {
 					validate(file);
 				} catch (Exception e) {
-					if (CSV_OUTPUT) createCSVFile(file.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
+					if (CSV_OUTPUT)
+						createCSVFile(file.toString(), null, new ArrayList<String>() {
+							{
+								add(e.getMessage());
+							}
+						});
 					logger.error("{} - {}", file.toString(), e.getMessage());
 				}
 			}
-
+		} else {
+			try {
+				validate(fileOrdir);
+			} catch (Exception e) {
+				if (CSV_OUTPUT)
+					createCSVFile(fileOrdir.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
+			}
 		}
 	}
 
 	public void validate(File file) throws IOException, MalformedSchemaException {
 
 		FileReader fileReader = new FileReader(file);
-
-		
 		try {
 			JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
 			List<String> errors = null;
@@ -96,14 +106,24 @@ public class SchemaValidator {
 				errors = draft201909SchemaValidator.validate(jsonElement);
 			}
 			if (errors != null && errors.size() > 0)
-				if (CSV_OUTPUT)createCSVFile(file.toString(), jsonObject, errors);
+				if (CSV_OUTPUT)
+					createCSVFile(file.toString(), jsonObject, errors);
 			if (errors != null && errors.size() == 0)
-				if (CSV_OUTPUT) createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("NONE");}});
+				if (CSV_OUTPUT)
+					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {
+						{
+							add("NONE");
+						}
+					});
 		} catch (SchemaValidatorException e) {
-			if (CSV_OUTPUT) createCSVFile(file.toString(), null, new ArrayList<String>() {{add("JSON PARSE EXCEPTION");}});
-//			logger.error("ROOT2 {}", e.getMessage());
+			if (CSV_OUTPUT)
+				createCSVFile(file.toString(), null, new ArrayList<String>() {
+					{
+						add("JSON PARSE EXCEPTION");
+					}
+				});
 		}
-		
+
 	}
 
 	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
@@ -122,28 +142,30 @@ public class SchemaValidator {
 	}
 
 	public List<String> validateDraft4Or6Or7(JSONObject jsonObject) throws SchemaValidatorException {
-		if (jsonObject.has(SCHEMA)) {
+		try {
 			String schema = jsonObject.getString(SCHEMA);
-			if (schema.equals(Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL + HASH_TAG)) {
+			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
 				return this.draft7SchemaValidator.validate(jsonObject);
-			} else if (schema.equals(Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL + HASH_TAG)) {
+			} else if (Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
 				return this.draft6SchemaValidator.validate(jsonObject);
-			} else if (schema.equals(Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL + HASH_TAG)) {
+			} else if (Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
 				return this.draft4SchemaValidator.validate(jsonObject);
-			} else
-				new SchemaValidatorException();
+			} else {
+				throw new SchemaValidatorException("schema :" + schema + " must be draft 4,6 or 7");
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new SchemaValidatorException("SCHEMA FIELD NOT FOUND");
 		}
-		throw new SchemaValidatorException("SCHEMA FIELD NOT FOUND");
-
 	}
 
 	private boolean isDraft4Or6Or7(JSONObject jsonObject) {
 		boolean isDraft4Or6Or7 = false;
 		if (jsonObject.has(SCHEMA)) {
 			String schema = jsonObject.getString(SCHEMA);
-			if ((Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL + HASH_TAG).equals(schema)
-					|| (Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL + HASH_TAG).equals(schema)
-					|| (Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL + HASH_TAG).equals(schema)) {
+			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)
+					|| Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)
+					|| Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
 				isDraft4Or6Or7 = true;
 			}
 
@@ -155,7 +177,7 @@ public class SchemaValidator {
 		boolean isDraft3 = false;
 		if (jsonObject.has(SCHEMA)) {
 			String schema = jsonObject.getString(SCHEMA);
-			if ((Draft3SchemaValidator.JSON_SCHEMA_DRAFT_O3_URL + HASH_TAG).equals(schema)) {
+			if (Draft3SchemaValidator.JSON_SCHEMA_DRAFT_O3_URL.equals(schema)) {
 				isDraft3 = true;
 			}
 
@@ -167,7 +189,8 @@ public class SchemaValidator {
 		boolean isDraft201909 = false;
 		if (jsonObject.has(SCHEMA)) {
 			String schema = jsonObject.getString(SCHEMA);
-			if ((Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL + HASH_TAG).equals(schema)) {
+
+			if (Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema)) {
 				isDraft201909 = true;
 			}
 		}
@@ -184,15 +207,15 @@ public class SchemaValidator {
 			errors.forEach(error -> {
 				try {
 					try {
-						
+
 						printer.printRecord(filename, getSchemaDraft(jsonObject), error);
 					} catch (JSONOBjectSchemaNotFoundException e) {
-						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND",error);
+						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
 					} catch (NullPointerException e) {
-						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND",error);
+						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
 					}
 				} catch (IOException e) {
-					logger.error("CREATECSV {} CSV IO Error",filename);
+					logger.error("CREATECSV {} CSV IO Error", filename);
 				}
 			});
 		}
