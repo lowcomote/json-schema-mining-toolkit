@@ -57,11 +57,11 @@ public class SchemaValidator {
 	}
 
 
-	public void validateDirectory (String pathToDir) throws IOException, MalformedSchemaException {
+	public void validateFileOrDirectory (String pathToDir) throws IOException, MalformedSchemaException {
 
-		File dir = new File(pathToDir);
-		if (dir.isDirectory()) {
-			for (File file : dir.listFiles()) {
+		File fileOrdir = new File(pathToDir);
+		if (fileOrdir.isDirectory()) {
+			for (File file : fileOrdir.listFiles()) {
 
 
 				try {
@@ -75,8 +75,12 @@ public class SchemaValidator {
 				}
 			}
 
+		}else {
+			validate(fileOrdir);
 		}
 	}
+	
+	
 
 	
 	public void validate (File file ) throws IOException, MalformedSchemaException {

@@ -12,7 +12,8 @@ public class Validate {
         if (args.length > 0) {
         	String pathToDir = args[0];
             SchemaValidator schemaValidator = new SchemaValidator();
-            schemaValidator.validateDirectory(pathToDir);
+            //schemaValidator.validateDirectory(pathToDir);
+            schemaValidator.validateFileOrDirectory(pathToDir);
         }
     }
 	
