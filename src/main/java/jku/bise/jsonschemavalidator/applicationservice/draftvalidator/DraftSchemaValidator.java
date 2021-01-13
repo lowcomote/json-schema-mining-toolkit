@@ -33,9 +33,6 @@ public abstract class DraftSchemaValidator {
 			validationException.getCausingExceptions().stream()
 				.map(ValidationException::getMessage).forEach(message->{
 					messages.add(message);
-					if(logger.isDebugEnabled()) {
-						logger.debug(message);
-					}
 				});
 			
 

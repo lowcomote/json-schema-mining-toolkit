@@ -36,9 +36,6 @@ public class Draft3SchemaValidator {
 		processingReport.forEach(processingMessage->{
 			String message = processingMessage.getMessage();
 			messages.add(message);
-			if(logger.isDebugEnabled()) {
-				logger.debug(message);
-			}
 		});
 		return messages;
 	}

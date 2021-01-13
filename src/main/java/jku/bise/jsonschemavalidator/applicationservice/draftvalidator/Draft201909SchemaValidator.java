@@ -81,9 +81,6 @@ public class Draft201909SchemaValidator {
 	        					error.addProperty("error", err.value.toString());
 	        				}
 	        				messages.add(error.toString());
-	        				if(logger.isDebugEnabled()) {
-	        					logger.debug(error.toString());
-	        				}
 	        			});
 	        	});
 		}
