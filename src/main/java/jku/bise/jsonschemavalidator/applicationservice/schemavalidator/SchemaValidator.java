@@ -65,20 +65,17 @@ public class SchemaValidator {
 	public void validateFileOrDirectory(String pathToDir) throws IOException {
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory()) {
+			int count = 0;
 			for (File file : fileOrdir.listFiles()) {
-
+				count++;
 				try {
 					validate(file);
 				} catch (Exception e) {
 					if (CSV_OUTPUT)
-						createCSVFile(file.toString(), null, new ArrayList<String>() {
-							{
-								add(e.getMessage());
-							}
-						});
-					logger.error("{} - {}", file.toString(), e.getMessage());
+						createCSVFile(file.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
 				}
 			}
+			logger.info("Num of files {}", count);
 		} else {
 			try {
 				validate(fileOrdir);
@@ -89,10 +86,10 @@ public class SchemaValidator {
 		}
 	}
 
-	public void validate(File file) throws IOException, MalformedSchemaException {
+	public void validate(File file) {
 
-		FileReader fileReader = new FileReader(file);
 		try {
+			FileReader fileReader = new FileReader(file);
 			JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
 			List<String> errors = null;
 			if (isDraft4Or6Or7(jsonObject)) {
@@ -110,20 +107,14 @@ public class SchemaValidator {
 					createCSVFile(file.toString(), jsonObject, errors);
 			if (errors != null && errors.size() == 0)
 				if (CSV_OUTPUT)
-					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {
-						{
-							add("NONE");
-						}
-					});
-		} catch (SchemaValidatorException e) {
+					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("NONE");}});
+			if (errors == null)
+				if (CSV_OUTPUT)
+					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("Schema Draft not supported");}});
+		} catch (MalformedSchemaException | SchemaValidatorException | IOException e) {
 			if (CSV_OUTPUT)
-				createCSVFile(file.toString(), null, new ArrayList<String>() {
-					{
-						add("JSON PARSE EXCEPTION");
-					}
-				});
-		}
-
+				createCSVFile(file.toString(), null, new ArrayList<String>() {{add("JSON PARSE EXCEPTION");}});
+		} 
 	}
 
 	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
@@ -154,7 +145,6 @@ public class SchemaValidator {
 				throw new SchemaValidatorException("schema :" + schema + " must be draft 4,6 or 7");
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
 			throw new SchemaValidatorException("SCHEMA FIELD NOT FOUND");
 		}
 	}
@@ -197,27 +187,25 @@ public class SchemaValidator {
 		return isDraft201909;
 	}
 
-	public void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) throws IOException {
-		FileWriter out;
+	public void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) {
+		boolean append;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
-			out = new FileWriter(CSV_FILE_NAME, true);
+			append = true;
 		else
-			out = new FileWriter(CSV_FILE_NAME);
-		try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
-			errors.forEach(error -> {
+			append = false;
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {
+			for (String error : errors) {
 				try {
-					try {
-
-						printer.printRecord(filename, getSchemaDraft(jsonObject), error);
-					} catch (JSONOBjectSchemaNotFoundException e) {
-						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
-					} catch (NullPointerException e) {
-						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
-					}
-				} catch (IOException e) {
-					logger.error("CREATECSV {} CSV IO Error", filename);
+					printer.printRecord(filename, getSchemaDraft(jsonObject), error);
+				} catch (JSONOBjectSchemaNotFoundException e) {
+					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
+				} catch (NullPointerException e) {
+					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
 				}
-			});
+			}
+
+		} catch (IOException e) {
+			logger.error("CREATECSV {} CSV IO Error", filename);
 		}
 
 	}
