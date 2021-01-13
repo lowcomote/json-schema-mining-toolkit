@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.net.URISyntaxException;
-
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -37,88 +34,91 @@ public class SchemaValidator {
 
 	private final static String SCHEMA = "$schema";
 
-	private final static String CSV_FILE_NAME = "test.csv";
-	private final static String HASH_TAG ="#";
+	private String CSV_FILE_NAME = "";
+	private final static String HASH_TAG = "#";
 	private static Logger logger = LoggerFactory.getLogger(SchemaValidator.class);
-	
-	private  Draft4SchemaValidator draft4SchemaValidator;
-	private  Draft6SchemaValidator draft6SchemaValidator;
-	private  Draft7SchemaValidator draft7SchemaValidator;
-	private  Draft3SchemaValidator draft3SchemaValidator;
-	private  Draft201909SchemaValidator draft201909SchemaValidator;
-	
+
+	private Draft4SchemaValidator draft4SchemaValidator;
+	private Draft6SchemaValidator draft6SchemaValidator;
+	private Draft7SchemaValidator draft7SchemaValidator;
+	private Draft3SchemaValidator draft3SchemaValidator;
+	private Draft201909SchemaValidator draft201909SchemaValidator;
+
+	private boolean CSV_OUTPUT;
+
 	public SchemaValidator() throws IOException, URISyntaxException, MalformedSchemaException {
-		this.draft4SchemaValidator= new Draft4SchemaValidator();
-		this.draft6SchemaValidator= new Draft6SchemaValidator();
-		this.draft7SchemaValidator= new Draft7SchemaValidator();
-		this.draft3SchemaValidator= new Draft3SchemaValidator();
+		this.draft4SchemaValidator = new Draft4SchemaValidator();
+		this.draft6SchemaValidator = new Draft6SchemaValidator();
+		this.draft7SchemaValidator = new Draft7SchemaValidator();
+		this.draft3SchemaValidator = new Draft3SchemaValidator();
 		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
 
 	}
+	public SchemaValidator(String csv_file_name) throws IOException, URISyntaxException, MalformedSchemaException {
+		this();
+		CSV_FILE_NAME = csv_file_name;
+		CSV_OUTPUT = true;
+	}
 
-
-	public void validateDirectory (String pathToDir) throws IOException, MalformedSchemaException {
+	public void validateDirectory(String pathToDir) throws IOException, MalformedSchemaException {
 
 		File dir = new File(pathToDir);
 		if (dir.isDirectory()) {
 			for (File file : dir.listFiles()) {
 
-
 				try {
 					validate(file);
 				} catch (Exception e) {
-					createCSVFile(file.toString(), new ArrayList<String>() {
-						{
-							add("Array of schemata");
-						}
-					});
+					if (CSV_OUTPUT) createCSVFile(file.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
+					logger.error("{} - {}", file.toString(), e.getMessage());
 				}
 			}
 
 		}
 	}
 
-	
-	public void validate (File file ) throws IOException, MalformedSchemaException {
+	public void validate(File file) throws IOException, MalformedSchemaException {
 
 		FileReader fileReader = new FileReader(file);
 
-		JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
-		List<String> errors = null;
+		
 		try {
+			JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
+			List<String> errors = null;
 			if (isDraft4Or6Or7(jsonObject)) {
-
 				errors = validateDraft4Or6Or7(jsonObject);
-
 			} else if (isDraft3(jsonObject)) {
 				JsonNode jsonNode = JsonLoader.fromFile(file);
 				errors = validateDraft3(jsonNode);
-			}else if (isDraft201909(jsonObject)) {
-	        	JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
-	        	//JsonObject gsonObject = jsonElement.getAsJsonObject();
-	        	errors = draft201909SchemaValidator.validate(jsonElement);
-	        }
+			} else if (isDraft201909(jsonObject)) {
+				JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
+				// JsonObject gsonObject = jsonElement.getAsJsonObject();
+				errors = draft201909SchemaValidator.validate(jsonElement);
+			}
+			if (errors != null && errors.size() > 0)
+				if (CSV_OUTPUT)createCSVFile(file.toString(), jsonObject, errors);
+			if (errors != null && errors.size() == 0)
+				if (CSV_OUTPUT) createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("NONE");}});
 		} catch (SchemaValidatorException e) {
-			logger.error(e.getMessage());
+			if (CSV_OUTPUT) createCSVFile(file.toString(), null, new ArrayList<String>() {{add("JSON PARSE EXCEPTION");}});
+//			logger.error("ROOT2 {}", e.getMessage());
 		}
-		if (errors != null && errors.size() > 0)
-			createCSVFile(file.toString(), errors);
-		if (errors != null && errors.size() == 0)
-			createCSVFile(file.toString(), new ArrayList<String>() {
-				{
-					add("NONE");
-				}
-			});
-//		logger.info("Validated {} file", file.toString());
+		
+	}
+
+	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
+		if (jsonObject.has(SCHEMA)) {
+			return jsonObject.getString(SCHEMA);
+		} else
+			throw new JSONOBjectSchemaNotFoundException();
 	}
 
 	public List<String> validateDraft3(JsonNode jsonNode) throws SchemaValidatorException {
 		try {
 			return draft3SchemaValidator.validate(jsonNode);
 		} catch (Exception e) {
-			throw new SchemaValidatorException();
+			throw new SchemaValidatorException(e.getMessage());
 		}
-
 	}
 
 	public List<String> validateDraft4Or6Or7(JSONObject jsonObject) throws SchemaValidatorException {
@@ -133,7 +133,7 @@ public class SchemaValidator {
 			} else
 				new SchemaValidatorException();
 		}
-		throw new SchemaValidatorException();
+		throw new SchemaValidatorException("SCHEMA FIELD NOT FOUND");
 
 	}
 
@@ -164,17 +164,17 @@ public class SchemaValidator {
 	}
 
 	private boolean isDraft201909(JSONObject jsonObject) {
-		boolean isDraft201909= false;
-		if(jsonObject.has(SCHEMA)) {
+		boolean isDraft201909 = false;
+		if (jsonObject.has(SCHEMA)) {
 			String schema = jsonObject.getString(SCHEMA);
-			if((Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL+HASH_TAG).equals(schema)) {
-				isDraft201909=true;
+			if ((Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL + HASH_TAG).equals(schema)) {
+				isDraft201909 = true;
 			}
 		}
 		return isDraft201909;
 	}
-	
-	public void createCSVFile(String filename, List<String> errors) throws IOException {
+
+	public void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) throws IOException {
 		FileWriter out;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
 			out = new FileWriter(CSV_FILE_NAME, true);
@@ -183,18 +183,20 @@ public class SchemaValidator {
 		try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
 			errors.forEach(error -> {
 				try {
-					printer.printRecord(filename, error);
+					try {
+						
+						printer.printRecord(filename, getSchemaDraft(jsonObject), error);
+					} catch (JSONOBjectSchemaNotFoundException e) {
+						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND",error);
+					} catch (NullPointerException e) {
+						printer.printRecord(filename, "SCHEMA FIELD NOT FOUND",error);
+					}
 				} catch (IOException e) {
-					logger.error(e.getMessage());
+					logger.error("CREATECSV {} CSV IO Error",filename);
 				}
 			});
 		}
 
 	}
-
-
-	
-	
-	
 
 }
