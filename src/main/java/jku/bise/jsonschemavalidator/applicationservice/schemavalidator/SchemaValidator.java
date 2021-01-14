@@ -33,9 +33,12 @@ import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7Sche
 public class SchemaValidator {
 
 	private final static String SCHEMA = "$schema";
-
+	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
+	private final static String SCHEMA_VERSION_NOT_SUPPORTED = "Schema version not supported";
+	
 	private String CSV_FILE_NAME;
-	private final static String HASH_TAG = "#";
+	
+	
 
 	private static Logger logger = LoggerFactory.getLogger(SchemaValidator.class);
 
@@ -72,45 +75,49 @@ public class SchemaValidator {
 	}
 
 	public void validate(File file) {
-
+		String schema = null;
+		List<String> errors = null;
 		try {
 			FileReader fileReader = new FileReader(file);
 			JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
-			List<String> errors = null;
-			if (isDraft4Or6Or7(jsonObject)) {
-				errors = validateDraft4Or6Or7(jsonObject);
-			} else if (isDraft3(jsonObject)) {
-				JsonNode jsonNode = JsonLoader.fromFile(file);
-				errors = validateDraft3(jsonNode);
-			} else if (isDraft201909(jsonObject)) {
-				JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
-				// JsonObject gsonObject = jsonElement.getAsJsonObject();
-				errors = draft201909SchemaValidator.validate(jsonElement);
+			schema = getSchemaDraft(jsonObject);
+			if(schema!=null) {
+				if (isDraft4Or6Or7(schema)) {
+					errors = validateDraft4Or6Or7(jsonObject, schema);
+				} else if (isDraft3(schema)) {
+					JsonNode jsonNode = JsonLoader.fromFile(file);
+					errors = validateDraft3(jsonNode);
+				} else if (isDraft201909(schema)) {
+					JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
+					errors = validateDraft201909(jsonElement);
+				}
 			}
 			if (CSV_OUTPUT) {
-				if (errors != null && errors.size() > 0)
-					createCSVFile(file.toString(), jsonObject, errors);
-				if (errors != null && errors.size() == 0)
-					createCSVFile(file.toString(), jsonObject, "VALID");
-				if (errors == null)
-					createCSVFile(file.toString(), jsonObject, "Schema version not supported");
-
+				if(schema==null)  
+					createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema);
+				else if (errors == null)
+					createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema);
+				else if (errors.size() > 0)
+					createCSVFile(file.toString(),  errors, schema);
+				else if (errors.size() == 0)
+					createCSVFile(file.toString(),  "VALID", schema);
 			}
-		} catch (JSONException | MalformedSchemaException | SchemaValidatorException | IOException e) {
+		} catch (JSONException | SchemaValidatorException | IOException e) {
 			if (CSV_OUTPUT)
-				createCSVFile(file.toString(), null, "JSON PARSE EXCEPTION");
+				createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema);
 		}
 	}
 
-	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
+	private String getSchemaDraft(JSONObject jsonObject)  {
 		if (jsonObject.has(SCHEMA)) {
 			String result = jsonObject.getString(SCHEMA);
 			return result.endsWith("#")? result.substring(0, result.length() - 1) : result;	
-		} else
-			throw new JSONOBjectSchemaNotFoundException();
+		} else {
+			return null;
+		}
 	}
 
-	public List<String> validateDraft3(JsonNode jsonNode) throws SchemaValidatorException {
+	private List<String> validateDraft3(JsonNode jsonNode) throws SchemaValidatorException {
 		try {
 			return draft3SchemaValidator.validate(jsonNode);
 		} catch (Exception e) {
@@ -118,9 +125,8 @@ public class SchemaValidator {
 		}
 	}
 
-	public List<String> validateDraft4Or6Or7(JSONObject jsonObject) throws SchemaValidatorException {
+	private List<String> validateDraft4Or6Or7(JSONObject jsonObject, String schema) throws SchemaValidatorException {
 		try {
-			String schema = jsonObject.getString(SCHEMA);
 			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
 				return this.draft7SchemaValidator.validate(jsonObject);
 			} else if (Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
@@ -131,49 +137,40 @@ public class SchemaValidator {
 				throw new SchemaValidatorException("schema :" + schema + " must be draft 4,6 or 7");
 			}
 		} catch (Exception e) {
-			throw new SchemaValidatorException("SCHEMA FIELD NOT FOUND");
+			throw new SchemaValidatorException(SCHEMA_FIELD_NOT_FOUND);
 		}
 	}
 
-	private boolean isDraft4Or6Or7(JSONObject jsonObject) {
-		boolean isDraft4Or6Or7 = false;
-		if (jsonObject.has(SCHEMA)) {
-			String schema = jsonObject.getString(SCHEMA);
-			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)
-					|| Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)
-					|| Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
-				isDraft4Or6Or7 = true;
-			}
-
+	private List<String> validateDraft201909(JsonElement jsonElement) throws SchemaValidatorException {
+		try {
+			return draft201909SchemaValidator.validate(jsonElement);
+		} catch (Exception e) {
+			throw new SchemaValidatorException(e.getMessage());
 		}
+	}
+	
+	private boolean isDraft4Or6Or7(String schema) {
+		boolean isDraft4Or6Or7 = 
+				Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
+				Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
+				Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
 		return isDraft4Or6Or7;
 	}
+	
+	
 
-	private boolean isDraft3(JSONObject jsonObject) {
-		boolean isDraft3 = false;
-		if (jsonObject.has(SCHEMA)) {
-			String schema = jsonObject.getString(SCHEMA);
-			if (Draft3SchemaValidator.JSON_SCHEMA_DRAFT_O3_URL.equals(schema)) {
-				isDraft3 = true;
-			}
-
-		}
-		return isDraft3;
+	private boolean isDraft3(String schema) {
+		return Draft3SchemaValidator.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
 	}
+	
+	
 
-	private boolean isDraft201909(JSONObject jsonObject) {
-		boolean isDraft201909 = false;
-		if (jsonObject.has(SCHEMA)) {
-			String schema = jsonObject.getString(SCHEMA);
-
-			if (Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema)) {
-				isDraft201909 = true;
-			}
-		}
-		return isDraft201909;
+	private boolean isDraft201909(String schema) {
+			return Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
 	}
-
-	private void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) {
+	
+	
+	private void createCSVFile(String filename,  List<String> errors, String schema) {
 		boolean append;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
 			append = true;
@@ -183,29 +180,29 @@ public class SchemaValidator {
 			for (String error : errors) {
 				try {
 					if (error.startsWith("#/allOf/"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "allOf parameter error");
+						printer.printRecord(filename, schema, "allOf parameter error");
 					else if (error.contains("schema violation"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Unrecognized Schema violations");
+						printer.printRecord(filename, schema, "Unrecognized Schema violations");
 					else if (error.contains("no subschema matched out of"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "No subschema");
+						printer.printRecord(filename, schema, "No subschema");
 					else if (error.contains("is not a valid URI"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid URI reference");
+						printer.printRecord(filename, schema, "Invalid URI reference");
 					else if (error.contains("expected minimum item count"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Expected minimum of items");
+						printer.printRecord(filename, schema, "Expected minimum of items");
 					else if (error.contains("expected type:") || error.contains("has incorrect type "))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Type error");
+						printer.printRecord(filename, schema, "Type error");
 					else if (error.contains("is not a valid enum value"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid enum value");
+						printer.printRecord(filename, schema, "Invalid enum value");
 					else if (error.contains("array items are not unique"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Array items are not unique");
+						printer.printRecord(filename, schema, "Array items are not unique");
 					else if (error.contains("the following keywords are unknown and will be ignored:"))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Unknow keywords");
+						printer.printRecord(filename, schema, "Unknow keywords");
 					else if (error.contains("is not a valid primitive type "))
-						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid primitiva type");
+						printer.printRecord(filename, schema, "Invalid primitiva type");
 
-					else printer.printRecord(filename, getSchemaDraft(jsonObject), error);
-				} catch (NullPointerException | JSONOBjectSchemaNotFoundException e) {
-					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
+					else printer.printRecord(filename, schema, error);
+				} catch (NullPointerException e) {
+					printer.printRecord(filename, SCHEMA_FIELD_NOT_FOUND, error);
 				} 
 			}
 
@@ -215,7 +212,7 @@ public class SchemaValidator {
 
 	}
 	
-	private void createCSVFile(String filename, JSONObject jsonObject, String error) {
+	private void createCSVFile(String filename,  String error, String schema) {
 		boolean append;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
 			append = true;
@@ -223,9 +220,9 @@ public class SchemaValidator {
 			append = false;
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {			
 			try {
-				printer.printRecord(filename, getSchemaDraft(jsonObject), error);
-			} catch (NullPointerException | JSONOBjectSchemaNotFoundException e) {
-				printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
+				printer.printRecord(filename, schema, error);
+			} catch (NullPointerException e) {
+				printer.printRecord(filename, SCHEMA_FIELD_NOT_FOUND, error);
 			}
 		} catch (IOException e) {
 			logger.error("CREATECSV {} CSV IO Error", filename);

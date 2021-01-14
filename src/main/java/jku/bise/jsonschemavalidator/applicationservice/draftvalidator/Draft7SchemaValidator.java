@@ -14,7 +14,7 @@ import jku.bise.jsonschemavalidator.common.Utils;
  */
 public class Draft7SchemaValidator extends DraftSchemaValidator{
 
-	public final static String JSON_SCHEMA_DRAFT_O7_URL = "http://json-schema.org/draft-07/schema#";
+	public final static String JSON_SCHEMA_DRAFT_O7_URL = "http://json-schema.org/draft-07/schema";
 	
 	
 	

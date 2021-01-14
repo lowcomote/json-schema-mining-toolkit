@@ -30,7 +30,7 @@ import jku.bise.jsonschemavalidator.common.Utils;
 public class Draft201909SchemaValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(Draft201909SchemaValidator.class);
-	public final static String JSON_SCHEMA_DRAFT_2019_09_URL = "https://json-schema.org/draft/2019-09/schema#";
+	public final static String JSON_SCHEMA_DRAFT_2019_09_URL = "https://json-schema.org/draft/2019-09/schema";
 	
 	private static final Specification spec = Specification.DRAFT_2019_09;
 	
