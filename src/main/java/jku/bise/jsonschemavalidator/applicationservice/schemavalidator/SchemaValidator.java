@@ -104,7 +104,8 @@ public class SchemaValidator {
 
 	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
 		if (jsonObject.has(SCHEMA)) {
-			return jsonObject.getString(SCHEMA);
+			String result = jsonObject.getString(SCHEMA);
+			return result.endsWith("#")? result.substring(0, result.length() - 1) : result;	
 		} else
 			throw new JSONOBjectSchemaNotFoundException();
 	}
@@ -181,7 +182,28 @@ public class SchemaValidator {
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {
 			for (String error : errors) {
 				try {
-					printer.printRecord(filename, getSchemaDraft(jsonObject), error);
+					if (error.startsWith("#/allOf/"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "allOf parameter error");
+					else if (error.contains("schema violation"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Unrecognized Schema violations");
+					else if (error.contains("no subschema matched out of"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "No subschema");
+					else if (error.contains("is not a valid URI"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid URI reference");
+					else if (error.contains("expected minimum item count"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Expected minimum of items");
+					else if (error.contains("expected type:") || error.contains("has incorrect type "))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Type error");
+					else if (error.contains("is not a valid enum value"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid enum value");
+					else if (error.contains("array items are not unique"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Array items are not unique");
+					else if (error.contains("the following keywords are unknown and will be ignored:"))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Unknow keywords");
+					else if (error.contains("is not a valid primitive type "))
+						printer.printRecord(filename, getSchemaDraft(jsonObject), "Invalid primitiva type");
+
+					else printer.printRecord(filename, getSchemaDraft(jsonObject), error);
 				} catch (NullPointerException | JSONOBjectSchemaNotFoundException e) {
 					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
 				} 
@@ -202,9 +224,7 @@ public class SchemaValidator {
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {			
 			try {
 				printer.printRecord(filename, getSchemaDraft(jsonObject), error);
-			} catch (JSONOBjectSchemaNotFoundException e) {
-				printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
-			} catch (NullPointerException e) {
+			} catch (NullPointerException | JSONOBjectSchemaNotFoundException e) {
 				printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
 			}
 		} catch (IOException e) {
