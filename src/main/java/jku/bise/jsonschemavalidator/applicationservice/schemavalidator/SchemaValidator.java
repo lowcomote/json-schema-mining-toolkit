@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class SchemaValidator {
 		this.draft7SchemaValidator = new Draft7SchemaValidator();
 		this.draft3SchemaValidator = new Draft3SchemaValidator();
 		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
-
+		CSV_OUTPUT = false;
 	}
 
 	public SchemaValidator(String csv_file_name) throws IOException, URISyntaxException, MalformedSchemaException {
@@ -64,26 +64,11 @@ public class SchemaValidator {
 
 	public void validateFileOrDirectory(String pathToDir) throws IOException {
 		File fileOrdir = new File(pathToDir);
-		if (fileOrdir.isDirectory()) {
-			int count = 0;
-			for (File file : fileOrdir.listFiles()) {
-				count++;
-				try {
-					validate(file);
-				} catch (Exception e) {
-					if (CSV_OUTPUT)
-						createCSVFile(file.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
-				}
-			}
-			logger.info("Num of files {}", count);
-		} else {
-			try {
-				validate(fileOrdir);
-			} catch (Exception e) {
-				if (CSV_OUTPUT)
-					createCSVFile(fileOrdir.toString(), null, new ArrayList<String>() {{add(e.getMessage());}});
-			}
-		}
+		if (fileOrdir.isDirectory())
+			for (File file : fileOrdir.listFiles())
+				validate(file);
+		else
+			validate(fileOrdir);
 	}
 
 	public void validate(File file) {
@@ -102,19 +87,19 @@ public class SchemaValidator {
 				// JsonObject gsonObject = jsonElement.getAsJsonObject();
 				errors = draft201909SchemaValidator.validate(jsonElement);
 			}
-			if (errors != null && errors.size() > 0)
-				if (CSV_OUTPUT)
+			if (CSV_OUTPUT) {
+				if (errors != null && errors.size() > 0)
 					createCSVFile(file.toString(), jsonObject, errors);
-			if (errors != null && errors.size() == 0)
-				if (CSV_OUTPUT)
-					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("NONE");}});
-			if (errors == null)
-				if (CSV_OUTPUT)
-					createCSVFile(file.toString(), jsonObject, new ArrayList<String>() {{add("Schema Draft not supported");}});
-		} catch (MalformedSchemaException | SchemaValidatorException | IOException e) {
+				if (errors != null && errors.size() == 0)
+					createCSVFile(file.toString(), jsonObject, "VALID");
+				if (errors == null)
+					createCSVFile(file.toString(), jsonObject, "Schema version not supported");
+
+			}
+		} catch (JSONException | MalformedSchemaException | SchemaValidatorException | IOException e) {
 			if (CSV_OUTPUT)
-				createCSVFile(file.toString(), null, new ArrayList<String>() {{add("JSON PARSE EXCEPTION");}});
-		} 
+				createCSVFile(file.toString(), null, "JSON PARSE EXCEPTION");
+		}
 	}
 
 	private String getSchemaDraft(JSONObject jsonObject) throws JSONOBjectSchemaNotFoundException {
@@ -187,7 +172,7 @@ public class SchemaValidator {
 		return isDraft201909;
 	}
 
-	public void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) {
+	private void createCSVFile(String filename, JSONObject jsonObject, List<String> errors) {
 		boolean append;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
 			append = true;
@@ -197,13 +182,31 @@ public class SchemaValidator {
 			for (String error : errors) {
 				try {
 					printer.printRecord(filename, getSchemaDraft(jsonObject), error);
-				} catch (JSONOBjectSchemaNotFoundException e) {
+				} catch (NullPointerException | JSONOBjectSchemaNotFoundException e) {
 					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
-				} catch (NullPointerException e) {
-					printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
-				}
+				} 
 			}
 
+		} catch (IOException e) {
+			logger.error("CREATECSV {} CSV IO Error", filename);
+		}
+
+	}
+	
+	private void createCSVFile(String filename, JSONObject jsonObject, String error) {
+		boolean append;
+		if (Files.exists(Paths.get(CSV_FILE_NAME)))
+			append = true;
+		else
+			append = false;
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {			
+			try {
+				printer.printRecord(filename, getSchemaDraft(jsonObject), error);
+			} catch (JSONOBjectSchemaNotFoundException e) {
+				printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
+			} catch (NullPointerException e) {
+				printer.printRecord(filename, "SCHEMA FIELD NOT FOUND", error);
+			}
 		} catch (IOException e) {
 			logger.error("CREATECSV {} CSV IO Error", filename);
 		}
