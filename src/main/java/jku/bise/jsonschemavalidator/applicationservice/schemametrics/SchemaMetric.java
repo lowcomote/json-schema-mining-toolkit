@@ -14,7 +14,11 @@ public class SchemaMetric {
 		keywords.stream().forEach(key->{metrics.put(key, 0);});
 		Set<String> keys =jsonObject.keySet();
 		keys.stream().forEach(key->{
-			
+			if(keywords.contains(key)) {
+				int i = metrics.get(key);
+				metrics.put(key, i+1);				
+			}
+			//jsonObject.get(key);
 		});
 		
 		return metrics;
