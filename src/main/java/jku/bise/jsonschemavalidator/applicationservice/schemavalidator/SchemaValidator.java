@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -29,7 +30,10 @@ import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft3Sche
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft4SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft6SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7SchemaValidator;
+import jku.bise.jsonschemavalidator.applicationservice.schemametrics.SchemaMetric;
 
+
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.*;
 public class SchemaValidator {
 
 	private final static String SCHEMA = "$schema";
@@ -128,7 +132,11 @@ public class SchemaValidator {
 	private List<String> validateDraft4Or6Or7(JSONObject jsonObject, String schema) throws SchemaValidatorException {
 		try {
 			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
-				return this.draft7SchemaValidator.validate(jsonObject);
+				List<String> result = this.draft7SchemaValidator.validate(jsonObject);
+				SchemaMetric m = new SchemaMetric();
+				Map<String,Integer> metric = m.findSchemaMetrics(jsonObject, Draf07Keywords.KEYWORDS_LIST);
+				
+				return result;
 			} else if (Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
 				return this.draft6SchemaValidator.validate(jsonObject);
 			} else if (Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
