@@ -25,8 +25,11 @@ public class Validate {
 			inputFolderPath = config.getString("input.json.schema.path");
 			outputCSV = config.getString("output.csv.file");			
 		}
-		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
-		schemaValidator.validateFileOrDirectory(inputFolderPath);
+//		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
+//		schemaValidator.validateFileOrDirectory(inputFolderPath);
+		
+		SchemaValidator schemaValidator = new SchemaValidator();
+		schemaValidator.validateFileOrDirectory(inputFolderPath, outputCSV);
 	}
 
 	private static PropertiesConfiguration loadConfiguration() {

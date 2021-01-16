@@ -55,7 +55,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		String abort =console.nextLine();
 		if(!"A".equalsIgnoreCase(abort)) {
 			System.out.println("Ok... we go on");
-			schemaValidatorServiceFacade.validateFileOrDirectory(inputFolderPath);
+			schemaValidatorServiceFacade.validateFileOrDirectory(inputFolderPath, outputCSV);
 		}
 		console.close();
 		

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
@@ -13,6 +14,7 @@ import jku.bise.jsonschemavalidator.common.Utils;
  * @author alessandro.colantoni
  *
  */
+@Service
 public class Draft7SchemaValidator extends DraftSchemaValidator{
 
 	

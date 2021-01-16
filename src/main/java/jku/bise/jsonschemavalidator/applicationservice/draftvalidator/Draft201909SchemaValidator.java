@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,10 +28,9 @@ import com.qindesign.json.schema.net.URI;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
-import jku.bise.jsonschemavalidator.exception.JsonParseException;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
-
+@Service
 public class Draft201909SchemaValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(Draft201909SchemaValidator.class);

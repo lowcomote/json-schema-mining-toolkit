@@ -1,22 +1,23 @@
 package jku.bise.jsonschemavalidator.servicefacade.schemavalidator;
 
 import java.io.File;
-import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jku.bise.jsonschemavalidator.exception.ServiceFacadeException;
+import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
 
 @Service
 public class SchemaValidatorServiceFacade {
 	
+	@Autowired
+	private SchemaValidator schemaValidator;
 	
-	
-	public void validateFileOrDirectory(String pathToDir) throws ServiceFacadeException {
-		System.out.println("pathToDir: "+pathToDir);
+	public void validateFileOrDirectory(String pathToDir, String csvFileName)  {
+		schemaValidator.validateFileOrDirectory(pathToDir, csvFileName);
 	}
 
-	public void validate(File file) throws ServiceFacadeException {
-		
+	public void validate(File file, String csvFileName)  {
+		schemaValidator.validate(file, csvFileName);
 	}
 }

@@ -3,7 +3,6 @@ package jku.bise.jsonschemavalidator.applicationservice.schemavalidator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -13,11 +12,11 @@ import org.apache.commons.csv.CSVPrinter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonElement;
-import com.qindesign.json.schema.MalformedSchemaException;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft201909SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft3SchemaValidator;
@@ -38,46 +37,49 @@ public class SchemaValidator {
 
 	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
 	private final static String SCHEMA_VERSION_NOT_SUPPORTED = "Schema version not supported";
-	
-	private String CSV_FILE_NAME;
-	
-	
 
 	private static Logger logger = LoggerFactory.getLogger(SchemaValidator.class);
+	
+	//private String csvFileName;
 
+	@Autowired
 	private Draft4SchemaValidator draft4SchemaValidator;
+	@Autowired
 	private Draft6SchemaValidator draft6SchemaValidator;
+	@Autowired
 	private Draft7SchemaValidator draft7SchemaValidator;
+	@Autowired
 	private Draft3SchemaValidator draft3SchemaValidator;
+	@Autowired
 	private Draft201909SchemaValidator draft201909SchemaValidator;
 
-	private boolean CSV_OUTPUT;
+	//private boolean CSV_OUTPUT;
 
-	public SchemaValidator() throws IOException, URISyntaxException, MalformedSchemaException {
-		this.draft4SchemaValidator = new Draft4SchemaValidator();
-		this.draft6SchemaValidator = new Draft6SchemaValidator();
-		this.draft7SchemaValidator = new Draft7SchemaValidator();
-		this.draft3SchemaValidator = new Draft3SchemaValidator();
-		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
-		CSV_OUTPUT = false;
-	}
+//	public SchemaValidator() throws IOException, URISyntaxException, MalformedSchemaException {
+//		this.draft4SchemaValidator = new Draft4SchemaValidator();
+//		this.draft6SchemaValidator = new Draft6SchemaValidator();
+//		this.draft7SchemaValidator = new Draft7SchemaValidator();
+//		this.draft3SchemaValidator = new Draft3SchemaValidator();
+//		this.draft201909SchemaValidator = new Draft201909SchemaValidator();
+//		//CSV_OUTPUT = false;
+//	}
 
-	public SchemaValidator(String csv_file_name) throws IOException, URISyntaxException, MalformedSchemaException {
-		this();
-		CSV_FILE_NAME = csv_file_name;
-		CSV_OUTPUT = true;
-	}
+//	public SchemaValidator(String csv_file_name) throws IOException, URISyntaxException, MalformedSchemaException {
+//		this();
+//		csvFileName = csv_file_name;
+//		//CSV_OUTPUT = true;
+//	}
 
-	public void validateFileOrDirectory(String pathToDir) throws IOException {
+	public void validateFileOrDirectory(String pathToDir, String csvFileName)  {
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory())
 			for (File file : fileOrdir.listFiles())
-				validate(file);
+				validate(file, csvFileName);
 		else
-			validate(fileOrdir);
+			validate(fileOrdir, csvFileName);
 	}
 
-	public void validate(File file) {
+	public void validate(File file, String csvFileName) {
 		String schema = null;
 		List<String> errors = null;
 		try {
@@ -105,19 +107,19 @@ public class SchemaValidator {
 					
 				}
 			}
-			if (CSV_OUTPUT) {
-				if(schema==null)  
-					createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema);
-				else if (errors == null)
-					createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema);
-				else if (errors.size() > 0)
-					createCSVFile(file.toString(),  errors, schema);
-				else if (errors.size() == 0)
-					createCSVFile(file.toString(),  "VALID", schema);
-			}
+			//if (CSV_OUTPUT) {
+			if(schema==null)  
+				createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema, csvFileName);
+			else if (errors == null)
+				createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema, csvFileName);
+			else if (errors.size() > 0)
+				createCSVFile(file.toString(),  errors, schema, csvFileName);
+			else if (errors.size() == 0)
+				createCSVFile(file.toString(),  "VALID", schema, csvFileName);
+			//}
 		} catch ( JsonParseException | SchemaValidatorException e) {
-			if (CSV_OUTPUT)
-				createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema);
+			//if (CSV_OUTPUT)
+			createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema, csvFileName);
 		}
 	}
 
@@ -193,13 +195,13 @@ public class SchemaValidator {
 //	}
 	
 	
-	private void createCSVFile(String filename,  List<String> errors, String schema) {
+	private void createCSVFile(String filename,  List<String> errors, String schema, String csvFileName) {
 		boolean append;
-		if (Files.exists(Paths.get(CSV_FILE_NAME)))
+		if (Files.exists(Paths.get(csvFileName)))
 			append = true;
 		else
 			append = false;
-		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {
 			for (String error : errors) {
 				try {
 					if (error.startsWith("#/allOf/"))
@@ -235,13 +237,13 @@ public class SchemaValidator {
 
 	}
 	
-	private void createCSVFile(String filename,  String error, String schema) {
+	private void createCSVFile(String filename,  String error, String schema, String csvFileName) {
 		boolean append;
-		if (Files.exists(Paths.get(CSV_FILE_NAME)))
+		if (Files.exists(Paths.get(csvFileName)))
 			append = true;
 		else
 			append = false;
-		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {			
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {			
 			try {
 				printer.printRecord(filename, schema, error);
 			} catch (NullPointerException e) {
