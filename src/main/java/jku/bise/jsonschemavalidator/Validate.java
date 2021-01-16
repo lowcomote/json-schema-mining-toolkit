@@ -11,7 +11,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import com.qindesign.json.schema.MalformedSchemaException;
 
 import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
-
+@Deprecated
 public class Validate {
 	public static void main(String[] args) throws IOException, MalformedSchemaException, URISyntaxException {
 
@@ -25,8 +25,11 @@ public class Validate {
 			inputFolderPath = config.getString("input.json.schema.path");
 			outputCSV = config.getString("output.csv.file");			
 		}
-		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
-		schemaValidator.validateFileOrDirectory(inputFolderPath);
+//		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
+//		schemaValidator.validateFileOrDirectory(inputFolderPath);
+		
+		SchemaValidator schemaValidator = new SchemaValidator();
+		schemaValidator.validateFileOrDirectory(inputFolderPath, outputCSV);
 	}
 
 	private static PropertiesConfiguration loadConfiguration() {

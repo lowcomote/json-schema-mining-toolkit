@@ -10,11 +10,14 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<log4j.version>2.14.0</log4j.version>
+		<spring-boot-version>2.4.1</spring-boot-version>
+		<java.version>13</java.version>
 
 	</properties>
 	<build>
 
 		<plugins>
+			
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
@@ -22,6 +25,7 @@
 					<release>13</release>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -31,11 +35,20 @@
 					<mainClass>jku.bise.jsonschemavalidator.Validate</mainClass>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot-version}</version>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
 		
-		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring-boot-version}</version>
+		</dependency>
 
 
 		<dependency>

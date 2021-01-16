@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 
 /**
@@ -12,15 +14,16 @@ import jku.bise.jsonschemavalidator.common.Utils;
  * @author alessandro.colantoni
  *
  */
+@Service
 public class Draft6SchemaValidator extends DraftSchemaValidator{
 
-	public final static String JSON_SCHEMA_DRAFT_O6_URL = "http://json-schema.org/draft-06/schema";
+	 
 	
 	
 	
 	public Draft6SchemaValidator () throws IOException {
 		
-		JSONObject jsonObject = Utils.buildJsonObjectFromURL(JSON_SCHEMA_DRAFT_O6_URL);
+		JSONObject jsonObject = Utils.buildJsonObjectFromURL(Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL);
 		
 		SchemaLoader loader = SchemaLoader.builder()
                 .schemaJson(jsonObject)
