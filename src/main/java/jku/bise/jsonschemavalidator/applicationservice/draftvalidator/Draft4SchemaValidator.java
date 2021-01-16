@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft04Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 
 /**
@@ -14,13 +15,12 @@ import jku.bise.jsonschemavalidator.common.Utils;
  */
 public class Draft4SchemaValidator extends DraftSchemaValidator{
 
-	public final static String JSON_SCHEMA_DRAFT_O4_URL = "http://json-schema.org/draft-04/schema";
 	
 	
 	
 	public Draft4SchemaValidator () throws IOException {
 		
-		JSONObject jsonObject = Utils.buildJsonObjectFromURL(JSON_SCHEMA_DRAFT_O4_URL);
+		JSONObject jsonObject = Utils.buildJsonObjectFromURL(Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL);
 		this.schema = SchemaLoader.load(jsonObject);
 		
 	}

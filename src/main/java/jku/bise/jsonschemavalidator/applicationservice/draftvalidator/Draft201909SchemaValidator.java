@@ -24,13 +24,13 @@ import com.qindesign.json.schema.Specification;
 import com.qindesign.json.schema.Validator;
 import com.qindesign.json.schema.net.URI;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 
 
 public class Draft201909SchemaValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(Draft201909SchemaValidator.class);
-	public final static String JSON_SCHEMA_DRAFT_2019_09_URL = "https://json-schema.org/draft/2019-09/schema";
 	
 	private static final Specification spec = Specification.DRAFT_2019_09;
 	
@@ -45,9 +45,9 @@ public class Draft201909SchemaValidator {
 		opts.set(Option.CONTENT, true);
 		opts.set(Option.DEFAULT_SPECIFICATION, spec);
 		
-		URI schemaID = new URI(new URL(JSON_SCHEMA_DRAFT_2019_09_URL).toURI());
+		URI schemaID = new URI(new URL(Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL).toURI());
 		
-		JsonElement schema = Utils.buildJsonElementFromURL(JSON_SCHEMA_DRAFT_2019_09_URL);
+		JsonElement schema = Utils.buildJsonElementFromURL(Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL);
 		
 		this.validator = new Validator(schema, schemaID, null, null, opts);
 		

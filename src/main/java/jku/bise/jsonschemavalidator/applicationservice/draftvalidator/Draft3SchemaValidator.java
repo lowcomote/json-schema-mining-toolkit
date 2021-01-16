@@ -17,7 +17,6 @@ import com.github.fge.jsonschema.processors.syntax.SyntaxValidator;
 public class Draft3SchemaValidator {
 
 	private static Logger logger = LoggerFactory.getLogger(Draft3SchemaValidator.class);
-	public final static String JSON_SCHEMA_DRAFT_O3_URL = "http://json-schema.org/draft-03/schema";
 	private  SyntaxValidator syntaxValidator;
 	
 	

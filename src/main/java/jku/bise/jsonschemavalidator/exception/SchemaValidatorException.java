@@ -1,4 +1,4 @@
-package jku.bise.jsonschemavalidator.applicationservice.schemavalidator;
+package jku.bise.jsonschemavalidator.exception;
 
 public class SchemaValidatorException extends Exception {
 	 

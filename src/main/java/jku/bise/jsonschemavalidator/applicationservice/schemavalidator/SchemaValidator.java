@@ -1,42 +1,38 @@
 package jku.bise.jsonschemavalidator.applicationservice.schemavalidator;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jackson.JsonLoader;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.qindesign.json.schema.MalformedSchemaException;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft04Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft201909SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft3SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft4SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft6SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7SchemaValidator;
-import jku.bise.jsonschemavalidator.applicationservice.schemametrics.SchemaMetric;
-
-
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.*;
+import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.exception.JsonParseException;
+import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 public class SchemaValidator {
 
-	private final static String SCHEMA = "$schema";
 	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
 	private final static String SCHEMA_VERSION_NOT_SUPPORTED = "Schema version not supported";
 	
@@ -82,17 +78,17 @@ public class SchemaValidator {
 		String schema = null;
 		List<String> errors = null;
 		try {
-			FileReader fileReader = new FileReader(file);
-			JSONObject jsonObject = new JSONObject(new JSONTokener(fileReader));
-			schema = getSchemaDraft(jsonObject);
+			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
+			schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
 			if(schema!=null) {
 				if (isDraft4Or6Or7(schema)) {
 					errors = validateDraft4Or6Or7(jsonObject, schema);
 				} else if (isDraft3(schema)) {
-					JsonNode jsonNode = JsonLoader.fromFile(file);
+					//JsonNode jsonNode = JsonLoader.fromFile(file);
+					JsonNode jsonNode = Utils.buildJsonNodeFromFile(file);
 					errors = validateDraft3(jsonNode);
 				} else if (isDraft201909(schema)) {
-					JsonElement jsonElement = JsonParser.parseReader(new JsonReader(new FileReader(file)));
+					JsonElement jsonElement = Utils.buildJsonElementFromFile(file);
 					errors = validateDraft201909(jsonElement);
 				}
 			}
@@ -106,20 +102,20 @@ public class SchemaValidator {
 				else if (errors.size() == 0)
 					createCSVFile(file.toString(),  "VALID", schema);
 			}
-		} catch (JSONException | SchemaValidatorException | IOException e) {
+		} catch ( JsonParseException | SchemaValidatorException e) {
 			if (CSV_OUTPUT)
 				createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema);
 		}
 	}
 
-	private String getSchemaDraft(JSONObject jsonObject)  {
-		if (jsonObject.has(SCHEMA)) {
-			String result = jsonObject.getString(SCHEMA);
-			return result.endsWith("#")? result.substring(0, result.length() - 1) : result;	
-		} else {
-			return null;
-		}
-	}
+//	private String getSchemaDraftWithoutHashtag(JSONObject jsonObject)  {
+//		if (jsonObject.has(SCHEMA)) {
+//			String result = jsonObject.getString(SCHEMA);
+//			return result.endsWith("#")? result.substring(0, result.length() - 1) : result;	
+//		} else {
+//			return null;
+//		}
+//	}
 
 	private List<String> validateDraft3(JsonNode jsonNode) throws SchemaValidatorException {
 		try {
@@ -131,15 +127,15 @@ public class SchemaValidator {
 
 	private List<String> validateDraft4Or6Or7(JSONObject jsonObject, String schema) throws SchemaValidatorException {
 		try {
-			if (Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
+			if (Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
 				List<String> result = this.draft7SchemaValidator.validate(jsonObject);
-				SchemaMetric m = new SchemaMetric();
-				Map<String,Integer> metric = m.findSchemaMetrics(jsonObject, Draf07Keywords.KEYWORDS_LIST);
+//				SchemaMetric m = new SchemaMetric();
+//				Map<String,Integer> metric = m.findSchemaMetrics(jsonObject, Draft07Keywords.KEYWORDS_LIST);
 				
 				return result;
-			} else if (Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
+			} else if (Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
 				return this.draft6SchemaValidator.validate(jsonObject);
-			} else if (Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
+			} else if (Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
 				return this.draft4SchemaValidator.validate(jsonObject);
 			} else {
 				throw new SchemaValidatorException("schema :" + schema + " must be draft 4,6 or 7");
@@ -159,22 +155,22 @@ public class SchemaValidator {
 	
 	private boolean isDraft4Or6Or7(String schema) {
 		boolean isDraft4Or6Or7 = 
-				Draft7SchemaValidator.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
-				Draft6SchemaValidator.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
-				Draft4SchemaValidator.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
+				Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
+				Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
+				Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
 		return isDraft4Or6Or7;
 	}
 	
 	
 
 	private boolean isDraft3(String schema) {
-		return Draft3SchemaValidator.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
+		return Draft03Keywords.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
 	}
 	
 	
 
 	private boolean isDraft201909(String schema) {
-			return Draft201909SchemaValidator.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
+			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
 	}
 	
 	
