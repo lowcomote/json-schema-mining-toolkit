@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
@@ -20,7 +22,8 @@ import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaMetricsApplicationService {
-
+	private static Logger logger = LoggerFactory.getLogger(SchemaMetricsApplicationService.class);
+	
 	public void findSchemaMetricsInFileOrDirectory(String pathToDir, String csvFileName) throws ApplicationServiceException  {
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory())
@@ -31,6 +34,7 @@ public class SchemaMetricsApplicationService {
 	}
 
 	public Map<String,Integer> findSchemaMetrics(File file, String csvFileName) throws ApplicationServiceException  {
+		logger.debug("findSchemaMetrics");
 		Map<String,Integer> metrics = null;
 		try {
 			List<String> keywordList=null;
@@ -54,7 +58,7 @@ public class SchemaMetricsApplicationService {
 			}
 			return  metrics;
 		} catch (JsonParseException e) {
-			throw new ApplicationServiceException(e.getMessage());
+			throw new ApplicationServiceException(e.getMessage(),e);
 		}
 	}
 	

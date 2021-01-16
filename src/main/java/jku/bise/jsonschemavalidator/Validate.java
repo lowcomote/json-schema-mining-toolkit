@@ -11,7 +11,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import com.qindesign.json.schema.MalformedSchemaException;
 
 import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
-
+@Deprecated
 public class Validate {
 	public static void main(String[] args) throws IOException, MalformedSchemaException, URISyntaxException {
 
