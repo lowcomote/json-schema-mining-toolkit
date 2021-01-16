@@ -1,77 +1,94 @@
 package jku.bise.jsonschemavalidator;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 public class DuplicatesDiscovery {
 
-	private static final String path = "/Users/juri/PycharmProjects/JSON_SCHEMA/DATA";
-	private static Logger logger = LoggerFactory.getLogger(DuplicatesDiscovery.class);
-	private static final String CSV_FILE_NAME = "dup.csv";
+	private static Logger logger = LoggerFactory.getLogger(Manuel.class);
 
-	public static boolean compare(File file1, File file2) {
-		try {
-			JSONObject jsonObject1 = getJSONObject(file1);
-			JSONObject jsonObject2 = getJSONObject(file2);
-			return (jsonObject1.similar(jsonObject2));
-		} catch (Exception e) {
-			return false;
-		}
+	private static String getFileChecksum(MessageDigest digest, File file) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+
+		byte[] byteArray = new byte[1024];
+		int bytesCount = 0;
+
+		while ((bytesCount = fis.read(byteArray)) != -1)
+			digest.update(byteArray, 0, bytesCount);
+		fis.close();
+		byte[] bytes = digest.digest();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < bytes.length; i++)
+			sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+		return sb.toString();
 	}
 
-	public static JSONObject getJSONObject(File f) throws FileNotFoundException, IOException {
-		try (FileReader fileReader1 = new FileReader(f)) {
-			return new JSONObject(new JSONTokener(fileReader1));
-		}
+	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+		checkDuplicates("/Users/juri/PycharmProjects/JSON_SCHEMA/DATA","dup2.csv");
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		File dir = new File(path);
-		if (dir.isDirectory()) {
-			File[] files = dir.listFiles();
-			for (int i = 0; i < files.length - 2; i++) {
-				logger.info("{}", i);
-				try {
-					for (int j = i + 1; j < files.length - 1; j++)
-						try {
-							boolean similarity = compare(files[i], files[j]);
-							if (similarity) createCSVFile(files[i].toString(), files[j].toString());
-							
-						} catch (Exception e) {
-//							logger.error(files[i].toString(), files[j].toString());
-						}
-				} catch (Exception e) {
-//					for (int j = i + 1; j < files.length - 1; j++)
-//						createCSVFile(files[i].toString(), files[j].toString());
-				}
-			}
-		}
-	}
-
-	private static void createCSVFile(String file1, String file2) {
+	public static List<File> checkDuplicates(String inputFoler, String CSV_FILE_NAME) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+		MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
+		List<File> duplicates = Lists.newArrayList();
+		Map<String, File> checksum_fileMap = Maps.newHashMap();
+		Map<String, Integer> checksum_countMap = Maps.newHashMap();
+		File dir = new File(inputFoler);
 		boolean append;
 		if (Files.exists(Paths.get(CSV_FILE_NAME)))
 			append = true;
 		else
 			append = false;
+
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {
-			printer.printRecord(file1, file2);
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				int i = 0;
+				for (File file : files) {
+					String shaChecksum1 = getFileChecksum(shaDigest, file);
+					if (checksum_fileMap.containsKey(shaChecksum1)) {
+						duplicates.add(file);
+						checksum_countMap.put(shaChecksum1, checksum_countMap.get(shaChecksum1) + 1);
+						printer.printRecord(checksum_fileMap.get(shaChecksum1).toString(), file.toString());
+					} else {
+						checksum_fileMap.put(shaChecksum1, file);
+						checksum_countMap.put(shaChecksum1, 1);
+					}
+					if (i % 100 == 0)
+						logger.info("{}", i);
+					i++;
+				}
+			}
 		} catch (IOException e) {
 			logger.error("CREATECSV {} CSV IO Error", CSV_FILE_NAME);
 		}
-
+		logger.info("{}", checksum_countMap.size());
+		Map<String, Integer> sorted = checksum_countMap.entrySet().stream().filter(z -> z.getValue() > 1)
+				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+				.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+		sorted.entrySet().stream().limit(10)
+				.forEach(z -> logger.info("{} - {}", checksum_fileMap.get(z.getKey()), z.getValue()));
+		return duplicates;
 	}
 
 }
