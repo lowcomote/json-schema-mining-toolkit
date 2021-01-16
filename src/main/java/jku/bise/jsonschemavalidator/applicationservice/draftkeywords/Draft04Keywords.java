@@ -1,6 +1,7 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftkeywords;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Draft04Keywords {
@@ -51,7 +52,7 @@ public class Draft04Keywords {
 	public final static String ONE_OF = "oneOf";
 	public final static String NOT = "not";
 	
-	public final static List<String> KEYWORDS_LIST = new ArrayList<>(List.of(
+	public final static List<String> KEYWORDS_LIST = Collections.unmodifiableList(new ArrayList<>(List.of(
 			PROPERTIES,
 			ID,
 			SCHEMA,
@@ -87,9 +88,9 @@ public class Draft04Keywords {
 			ONE_OF,
 			NOT
 			
-		));
+		)));
 	
-	public final static List<String> TYPE_LIST = new ArrayList<>(List.of(
+	public final static List<String> TYPE_LIST = Collections.unmodifiableList(new ArrayList<>(List.of(
 			TYPE_ARRAY,
 			TYPE_BOOLEAN,
 			TYPE_INTEGER,
@@ -97,6 +98,6 @@ public class Draft04Keywords {
 			TYPE_NUMBER,
 			TYPE_OBJECT,
 			TYPE_STRING
-	));
+	)));
 	
 }
