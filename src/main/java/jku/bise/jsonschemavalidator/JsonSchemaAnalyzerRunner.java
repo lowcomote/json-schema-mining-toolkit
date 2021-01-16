@@ -11,12 +11,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
-
+import jku.bise.jsonschemavalidator.servicefacade.schemavalidator.SchemaValidatorServiceFacade;
+/**
+ * https://stackoverflow.com/questions/56358562/receive-input-from-command-line-with-spring-boot/58215035
+ * @author alessandro.colantoni
+ *
+ */
 @Component
 public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 
-//	@Autowired
-//	private SchemaValidator schemaValidator;
+	@Autowired
+	private SchemaValidatorServiceFacade schemaValidatorServiceFacade;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -50,6 +55,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		String abort =console.nextLine();
 		if(!"A".equalsIgnoreCase(abort)) {
 			System.out.println("Ok... we go on");
+			schemaValidatorServiceFacade.validateFileOrDirectory(inputFolderPath);
 		}
 		console.close();
 		

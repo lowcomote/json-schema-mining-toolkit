@@ -13,6 +13,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonElement;
@@ -26,6 +27,13 @@ import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7Sche
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.exception.JsonParseException;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
+
+/**
+ * TODO change name to SchemaValidatorApplicationService
+ * @author alessandro.colantoni
+ *
+ */
+@Service
 public class SchemaValidator {
 
 	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
