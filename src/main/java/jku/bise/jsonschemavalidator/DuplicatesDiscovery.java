@@ -26,7 +26,7 @@ import com.google.common.collect.Maps;
 
 public class DuplicatesDiscovery {
 
-	private static Logger logger = LoggerFactory.getLogger(Manuel.class);
+	private static Logger logger = LoggerFactory.getLogger(DuplicatesDiscovery.class);
 
 	private static String getFileChecksum(MessageDigest digest, File file) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
