@@ -26,15 +26,7 @@
 				</configuration>
 			</plugin>
 			
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<cleanupDaemonThreads>false</cleanupDaemonThreads>
-					<mainClass>jku.bise.jsonschemavalidator.Validate</mainClass>
-				</configuration>
-			</plugin>
+			
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

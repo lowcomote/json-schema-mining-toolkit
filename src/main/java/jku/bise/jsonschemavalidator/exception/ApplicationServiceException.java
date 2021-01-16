@@ -3,6 +3,11 @@ package jku.bise.jsonschemavalidator.exception;
 public class ApplicationServiceException  extends Exception{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5341856404459059259L;
+
 	public ApplicationServiceException() {
 		super();
 		// TODO Auto-generated constructor stub
