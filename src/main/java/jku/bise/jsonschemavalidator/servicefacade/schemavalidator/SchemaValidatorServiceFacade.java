@@ -5,19 +5,19 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
+import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidatorApplicationService;
 
 @Service
 public class SchemaValidatorServiceFacade {
 	
 	@Autowired
-	private SchemaValidator schemaValidator;
+	private SchemaValidatorApplicationService schemaValidatorApplicationService;
 	
 	public void validateFileOrDirectory(String pathToDir, String csvFileName)  {
-		schemaValidator.validateFileOrDirectory(pathToDir, csvFileName);
+		schemaValidatorApplicationService.validateFileOrDirectory(pathToDir, csvFileName);
 	}
 
 	public void validate(File file, String csvFileName)  {
-		schemaValidator.validate(file, csvFileName);
+		schemaValidatorApplicationService.validate(file, csvFileName);
 	}
 }

@@ -10,7 +10,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import com.qindesign.json.schema.MalformedSchemaException;
 
-import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidator;
+import jku.bise.jsonschemavalidator.applicationservice.schemavalidator.SchemaValidatorApplicationService;
 @Deprecated
 public class Validate {
 	public static void main(String[] args) throws IOException, MalformedSchemaException, URISyntaxException {
@@ -28,7 +28,7 @@ public class Validate {
 //		SchemaValidator schemaValidator = new SchemaValidator(outputCSV);
 //		schemaValidator.validateFileOrDirectory(inputFolderPath);
 		
-		SchemaValidator schemaValidator = new SchemaValidator();
+		SchemaValidatorApplicationService schemaValidator = new SchemaValidatorApplicationService();
 		schemaValidator.validateFileOrDirectory(inputFolderPath, outputCSV);
 	}
 
