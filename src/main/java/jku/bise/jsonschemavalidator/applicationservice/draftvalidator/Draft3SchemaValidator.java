@@ -1,5 +1,6 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftvalidator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,10 @@ import com.github.fge.jsonschema.cfg.ValidationConfiguration;
 import com.github.fge.jsonschema.cfg.ValidationConfigurationBuilder;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.processors.syntax.SyntaxValidator;
+
+import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.exception.JsonParseException;
+import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
 
 public class Draft3SchemaValidator {
@@ -27,6 +32,15 @@ public class Draft3SchemaValidator {
 		ValidationConfiguration validationConfiguration = validationConfigurationBuilder.freeze();
 		this.syntaxValidator = new SyntaxValidator(validationConfiguration);
 		
+	}
+	
+	public List<String> validate (File file) throws SchemaValidatorException {
+		try {
+			JsonNode jsonNode = Utils.buildJsonNodeFromFile(file);
+			return  validate(jsonNode);
+		} catch (Exception e) {
+			throw new SchemaValidatorException(e.getMessage());
+		}
 	}
 	
 	public List<String> validate (JsonNode schema) {

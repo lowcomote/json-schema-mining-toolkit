@@ -1,5 +1,6 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftvalidator;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,6 +27,8 @@ import com.qindesign.json.schema.net.URI;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.exception.JsonParseException;
+import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
 
 public class Draft201909SchemaValidator {
@@ -53,6 +56,15 @@ public class Draft201909SchemaValidator {
 		
 		
 		
+	}
+	
+	public List<String> validate (File file) throws SchemaValidatorException{
+		try {
+			JsonElement jsonElement = Utils.buildJsonElementFromFile(file);
+			return validate(jsonElement);
+		} catch (Exception e) {
+			throw new SchemaValidatorException(e.getMessage());
+		}
 	}
 	
 	public List<String> validate (JsonElement jsonElement) throws MalformedSchemaException {

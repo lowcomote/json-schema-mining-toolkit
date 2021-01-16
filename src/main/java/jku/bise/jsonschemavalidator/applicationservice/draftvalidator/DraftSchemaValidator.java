@@ -1,5 +1,6 @@
 package jku.bise.jsonschemavalidator.applicationservice.draftvalidator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

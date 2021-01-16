@@ -21,6 +21,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft04Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keywords;
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 public final class Utils {
@@ -84,5 +89,36 @@ public final class Utils {
 		} else {
 			return null;
 		}
+	}
+	
+	public static boolean isDraft4Or6Or7(String schema) {
+//		boolean isDraft4Or6Or7 = 
+//				Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
+//				Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
+//				Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
+//		return isDraft4Or6Or7;
+		return isDraft4(schema) || isDraft6(schema) || isDraft7(schema);
+	}
+	
+	public static boolean isDraft7(String schema) {
+		return Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema);
+	}
+	
+	public static boolean isDraft6(String schema) {
+		return Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema);
+	}
+	
+	public static boolean isDraft4(String schema) {
+		return Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
+	}
+
+	public static boolean isDraft3(String schema) {
+		return Draft03Keywords.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
+	}
+	
+	
+
+	public static boolean isDraft201909(String schema) {
+			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
 	}
 }

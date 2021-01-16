@@ -18,11 +18,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonElement;
 import com.qindesign.json.schema.MalformedSchemaException;
 
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft04Keywords;
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keywords;
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keywords;
-import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft201909SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft3SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft4SchemaValidator;
@@ -81,15 +76,25 @@ public class SchemaValidator {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
 			if(schema!=null) {
-				if (isDraft4Or6Or7(schema)) {
+				if(Utils.isDraft4(schema)) {
+					errors = this.draft4SchemaValidator.validate(jsonObject);
+				}else if (Utils.isDraft6(schema)){
+					errors = this.draft6SchemaValidator.validate(jsonObject);
+				}else if (Utils.isDraft7(schema)) {
+					errors = this.draft7SchemaValidator.validate(jsonObject);
+				}
+				/*if (Utils.isDraft4Or6Or7(schema)) {
 					errors = validateDraft4Or6Or7(jsonObject, schema);
-				} else if (isDraft3(schema)) {
+				}*/ else if (Utils.isDraft3(schema)) {
 					//JsonNode jsonNode = JsonLoader.fromFile(file);
-					JsonNode jsonNode = Utils.buildJsonNodeFromFile(file);
-					errors = validateDraft3(jsonNode);
-				} else if (isDraft201909(schema)) {
-					JsonElement jsonElement = Utils.buildJsonElementFromFile(file);
-					errors = validateDraft201909(jsonElement);
+//					JsonNode jsonNode = Utils.buildJsonNodeFromFile(file);
+//					errors = validateDraft3(jsonNode);
+					errors= draft3SchemaValidator.validate(file);
+				} else if (Utils.isDraft201909(schema)) {
+//					JsonElement jsonElement = Utils.buildJsonElementFromFile(file);
+//					errors = validateDraft201909(jsonElement);
+					errors = draft201909SchemaValidator.validate(file);
+					
 				}
 			}
 			if (CSV_OUTPUT) {
@@ -117,6 +122,7 @@ public class SchemaValidator {
 //		}
 //	}
 
+	@Deprecated
 	private List<String> validateDraft3(JsonNode jsonNode) throws SchemaValidatorException {
 		try {
 			return draft3SchemaValidator.validate(jsonNode);
@@ -125,17 +131,21 @@ public class SchemaValidator {
 		}
 	}
 
+	@Deprecated
 	private List<String> validateDraft4Or6Or7(JSONObject jsonObject, String schema) throws SchemaValidatorException {
 		try {
-			if (Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
-				List<String> result = this.draft7SchemaValidator.validate(jsonObject);
+			//if (Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema)) {
+			if (Utils.isDraft7(schema)) {
+				return this.draft7SchemaValidator.validate(jsonObject);
+//				List<String> result = this.draft7SchemaValidator.validate(jsonObject);
 //				SchemaMetric m = new SchemaMetric();
 //				Map<String,Integer> metric = m.findSchemaMetrics(jsonObject, Draft07Keywords.KEYWORDS_LIST);
-				
-				return result;
-			} else if (Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
+//				return result;
+			//} else if (Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema)) {
+			} else if (Utils.isDraft6(schema)) {
 				return this.draft6SchemaValidator.validate(jsonObject);
-			} else if (Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
+			//} else if (Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema)) {
+			} else if (Utils.isDraft4(schema)) {
 				return this.draft4SchemaValidator.validate(jsonObject);
 			} else {
 				throw new SchemaValidatorException("schema :" + schema + " must be draft 4,6 or 7");
@@ -145,6 +155,7 @@ public class SchemaValidator {
 		}
 	}
 
+	@Deprecated
 	private List<String> validateDraft201909(JsonElement jsonElement) throws SchemaValidatorException {
 		try {
 			return draft201909SchemaValidator.validate(jsonElement);
@@ -153,25 +164,25 @@ public class SchemaValidator {
 		}
 	}
 	
-	private boolean isDraft4Or6Or7(String schema) {
-		boolean isDraft4Or6Or7 = 
-				Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
-				Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
-				Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
-		return isDraft4Or6Or7;
-	}
-	
-	
-
-	private boolean isDraft3(String schema) {
-		return Draft03Keywords.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
-	}
-	
-	
-
-	private boolean isDraft201909(String schema) {
-			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
-	}
+//	private boolean isDraft4Or6Or7(String schema) {
+//		boolean isDraft4Or6Or7 = 
+//				Draft07Keywords.JSON_SCHEMA_DRAFT_O7_URL.equals(schema) ||
+//				Draft06Keywords.JSON_SCHEMA_DRAFT_O6_URL.equals(schema) ||
+//				Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL.equals(schema);
+//		return isDraft4Or6Or7;
+//	}
+//	
+//	
+//
+//	private boolean isDraft3(String schema) {
+//		return Draft03Keywords.JSON_SCHEMA_DRAFT_O3_URL.equals(schema);
+//	}
+//	
+//	
+//
+//	private boolean isDraft201909(String schema) {
+//			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
+//	}
 	
 	
 	private void createCSVFile(String filename,  List<String> errors, String schema) {
