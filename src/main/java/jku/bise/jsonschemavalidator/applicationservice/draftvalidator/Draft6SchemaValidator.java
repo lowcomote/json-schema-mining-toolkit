@@ -16,10 +16,6 @@ import jku.bise.jsonschemavalidator.common.Utils;
  */
 @Service
 public class Draft6SchemaValidator extends DraftSchemaValidator{
-
-	 
-	
-	
 	
 	public Draft6SchemaValidator () throws IOException {
 		
@@ -31,7 +27,4 @@ public class Draft6SchemaValidator extends DraftSchemaValidator{
                 .build();
 		buildSchema(loader);
 	}
-	
-	
-	
 }
