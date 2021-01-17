@@ -12,7 +12,14 @@
   				"prop6":"aaaaaa"
   			}
   		},
-  		"prop7":true
+  		"prop7":true,
+  		"prop8": {"type":"integer", "minimum":"zz"},
+  		"maxProperties":-7,
+  		"prop9": {"enum":"integer"},
+  		"prop10": {
+  			"allOf":"schemaError"
+  		}
   		
-  }	
+  },
+  "required": "alessandro"
 }

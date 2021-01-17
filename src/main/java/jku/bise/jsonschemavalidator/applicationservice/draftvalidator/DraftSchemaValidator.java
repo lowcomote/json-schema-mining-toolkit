@@ -34,23 +34,19 @@ public abstract class DraftSchemaValidator {
 				messages.stream().forEach(message->{
 					logger.debug("Message from everit: addMessages {}", message);
 				});
-			}
-			
-			validationException.getAllMessages().stream().forEach(message->{
-				//messages.add(message);
-				if(logger.isDebugEnabled()) {//logger.isErrorEnabled()
+				
+				validationException.getAllMessages().stream().forEach(message->{
+					//messages.add(message);
 					logger.debug("Message from everit: getAllMessages {}", message);
-				}
-			});
-			validationException.getCausingExceptions().stream()
+					
+				});
+				
+				validationException.getCausingExceptions().stream()
 				.map(ValidationException::getMessage).forEach(message->{
 					//messages.add(message);
-					if(logger.isDebugEnabled()) {//logger.isErrorEnabled()
-						logger.debug("Message from everit:::: getCausingExceptions  : {}", message);
-					}
+					logger.debug("Message from everit:::: getCausingExceptions  : {}", message);
 				});
-			
-
+			}
 		}
 		return messages;
 	}
@@ -66,11 +62,7 @@ public abstract class DraftSchemaValidator {
 							|| !TO_BE_DISCARDED_ERROR_MESSAGE.equals(childValidationException.getErrorMessage()) ){
 					addMessages(childValidationException, messages);
 					}
-				
-				
 			});
-			
 		}
 	}
-
 }
