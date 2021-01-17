@@ -9,7 +9,7 @@
 		</layout>
 	</appender>
 
-	<logger name="jku.bise.jsonschemavalidator" level="debug" additivity="false">
+	<logger name="jku.bise.jsonschemavalidator" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 
