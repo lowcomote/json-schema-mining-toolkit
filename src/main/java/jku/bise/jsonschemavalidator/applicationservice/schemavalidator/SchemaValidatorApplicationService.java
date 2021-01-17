@@ -18,7 +18,7 @@ import jku.bise.jsonschemavalidator.exception.JsonParseException;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
 /**
- * TODO change name to SchemaValidatorApplicationService
+ * 
  * @author alessandro.colantoni
  *
  */

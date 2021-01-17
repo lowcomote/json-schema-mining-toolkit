@@ -1,0 +1,18 @@
+{
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties":{
+  		"prop1": {"type":"integer"},
+  		"prop2": {"type":"integer1"},
+  		"prop3": 4,
+  		"prop4": {"$ref":"@@@@@@pirupiru@@@@@@@@"},
+  		"prop5": {
+  			"type":"object",
+  			"properties":{
+  				"prop6":"aaaaaa"
+  			}
+  		},
+  		"prop7":true
+  		
+  }	
+}
