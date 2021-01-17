@@ -1,0 +1,25 @@
+{
+  "id" : "myId",
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-03/schema",
+  "properties":{
+  		"prop1": {"type":"integer"},
+  		"prop4": {"$ref":"@@@@@@pirupiru@@@@@@@@"},
+  		"prop5": {
+  			"type":"object",
+  			"properties":{
+  				"prop6":{"type":"integer", "minimum":1}
+  			},
+  			"required": true
+  		},
+  		"prop8": {"type":"integer", "minimum":10},
+  		"prop9": {"enum":["red","yellow","green"]},
+  		"prop10":{
+  			"type":"array", 
+  			"items":{"type":"integer", "minimum":10}
+  		}
+  		
+  		
+  }
+  
+}
