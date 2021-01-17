@@ -1,20 +1,30 @@
 {
-        "$schema": "https://json-schema.org/draft/2019-09/schema",
-        "description": "additionalItems as schema",
-        "schema": {
-            "items": [{}],
-            "additionalItems": {"type": "integer"}
-        },
-        "tests": [
-            {
-                "description": "additional items match schema",
-                "data": [ null, 2, 3, 4 ],
-                "valid": true
-            },
-            {
-                "description": "additional items do not match schema",
-                "data": [ null, 2, 3, "foo" ],
-                "valid": false
-            }
-        ]
-    }
+	"$id":100,
+  	"$schema": "https://json-schema.org/draft/2019-09/schema",
+  	"type":"object",
+	"properties":{
+  		"prop1": {"type":"integer"},
+  		"prop2": {"type":"integer1"},
+  		"prop3": 4,
+  		"prop4": {"$ref":"@@@@@@pirupiru@@@@@@@@"},
+  		"prop5": {
+  			"type":"object",
+  			"properties":{
+  				"prop6":"aaaaaa"
+  			}
+  		},
+  		"prop7":true,
+  		"prop8": {"type":"integer", "minimum":"zz"},
+  		"maxProperties":-7,
+  		"prop9": {"enum":"integer"},
+  		"prop10": {
+  			"allOf":"schemaError"
+  		},
+  		"prop11":{
+  			"type":"array", 
+  			"items" :"boolean"
+  		}
+  		
+  },
+  "required": "alessandro"        
+}

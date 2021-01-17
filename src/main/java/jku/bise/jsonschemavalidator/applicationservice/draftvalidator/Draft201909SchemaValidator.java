@@ -92,11 +92,17 @@ public class Draft201909SchemaValidator {
 	        				if (err.value != null) {
 	        					error.addProperty("error", err.value.toString());
 	        				}
-	        				messages.add(error.toString());
+	        				String message = error.toString();
+	        				messages.add(message);
+	        				if(logger.isDebugEnabled()) {
+	        					logger.debug("Draft 2019-09 validator message . {}",message);
+	        				}
 	        			});
 	        	});
 		}
 		return messages;
 	}
+	
+	
 	
 }
