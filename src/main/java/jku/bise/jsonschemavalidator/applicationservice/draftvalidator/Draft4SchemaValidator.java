@@ -17,16 +17,11 @@ import jku.bise.jsonschemavalidator.common.Utils;
 @Service
 public class Draft4SchemaValidator extends DraftSchemaValidator{
 
-	
-	
-	
 	public Draft4SchemaValidator () throws IOException {
 		
 		JSONObject jsonObject = Utils.buildJsonObjectFromURL(Draft04Keywords.JSON_SCHEMA_DRAFT_O4_URL);
 		this.schema = SchemaLoader.load(jsonObject);
 		
 	}
-	
-	
 	
 }
