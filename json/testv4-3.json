@@ -1,0 +1,26 @@
+{
+  
+  "id":"myId",
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "properties":{
+  		"prop1": {"type":"integer"},
+  		"prop4": {"$ref":"myRef"},
+  		"prop5": {
+  			"type":"object",
+  			"properties":{
+  				"prop6":{"type":"string"}
+  			}
+  		},
+  		"prop8": {"type":"integer", "minimum":10,"multipleOf":10 },
+  		"prop10": {
+  			"allOf":[ 
+  				{"type":"integer", "minimum":10,"multipleOf":10 },
+  				{"type":"integer", "maximum":1000,"multipleOf":10 }
+  			]
+  		}
+  		
+  },
+  "maxProperties":100,
+  "required": ["prop1","notExists"]
+}

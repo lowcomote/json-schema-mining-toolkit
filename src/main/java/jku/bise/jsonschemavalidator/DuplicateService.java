@@ -58,8 +58,6 @@ public class DuplicateService {
 		
 	}
 	
-	
-
 	public List<File> getDuplicates(String inputFoler, String CSV_FILE_NAME) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
 		MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
 		if(logger.isInfoEnabled()) logger.info("IDENTIFIYNG DUPICATES");
@@ -88,7 +86,7 @@ public class DuplicateService {
 						checksum_countMap.put(shaChecksum1, 1);
 					}
 					if (i % 100 == 0)
-						logger.info("{}", i);
+						logger.debug("{}", i);
 					i++;
 				}
 			}

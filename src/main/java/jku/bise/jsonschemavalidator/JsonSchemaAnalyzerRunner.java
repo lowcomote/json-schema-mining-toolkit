@@ -71,6 +71,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			inputFolderPath = config.getString("input.json.schema.path");
 			outputCSV = config.getString("output.csv.file");		
 			duplicates = config.getBoolean("remove.dupicates");		
+
 		}else {
 			System.out.println("Please introcuce the path to the folder or file you want to analyze (e.g., json/)");
 			inputFolderPath = console.nextLine().trim();
@@ -97,6 +98,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			}
 		}
 		console.close();
+		System.out.println("The task is done");
 		
 	}
 	

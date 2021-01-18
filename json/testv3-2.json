@@ -1,8 +1,8 @@
 {
-	"$id":100,
-  	"$schema": "https://json-schema.org/draft/2019-09/schema",
-  	"type":"object",
-	"properties":{
+  "id" : 100,
+  "type":"object",
+  "$schema": "http://json-schema.org/draft-03/schema",
+  "properties":{
   		"prop1": {"type":"integer"},
   		"prop2": {"type":"integer1"},
   		"prop3": 4,
@@ -15,16 +15,13 @@
   		},
   		"prop7":true,
   		"prop8": {"type":"integer", "minimum":"zz"},
-  		"maxProperties":-7,
   		"prop9": {"enum":"integer"},
-  		"prop10": {
-  			"allOf":"schemaError"
-  		},
-  		"prop11":{
+  		"prop10":{
   			"type":"array", 
   			"items" :"boolean"
   		}
   		
+  		
   },
-  "required": "alessandro"        
+  "required": "alessandro"
 }
