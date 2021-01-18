@@ -51,7 +51,11 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		String inputFolderPath = "";
 		
 		Scanner console = new Scanner(System.in);
-		 
+		
+		System.out.println("*********************************");
+		System.out.println("*********************************");
+		System.out.println("*********************************");
+		System.out.println();
 		System.out.println("Hello! Welcome to Json Schema Analyzer. Ready to analyze? We are!");
 		while (!VALIDATION_CHOICE.equalsIgnoreCase(choice) 
 				&& !METRICS_CHOICE.equalsIgnoreCase(choice)

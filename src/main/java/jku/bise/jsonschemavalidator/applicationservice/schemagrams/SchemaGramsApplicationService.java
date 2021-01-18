@@ -17,14 +17,16 @@ import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keyw
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.SchemaGramsDTO;
-import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaGramsApplicationService {
 
 	private static Logger logger = LoggerFactory.getLogger(SchemaGramsApplicationService.class);
 	
-	public List<SchemaGramsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir)    {
+	
+	
+	
+	public List<SchemaGramsDTO> buildGramsInFileOrDirectory(String pathToDir)    {
 		List<SchemaGramsDTO> schemaGramsDTOs = new ArrayList<SchemaGramsDTO>();
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory())
@@ -47,41 +49,53 @@ public class SchemaGramsApplicationService {
 		try {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			return createSchemaGramsDTO(file.getName(),  jsonObject);
-		} catch (JsonParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
-	private SchemaGramsDTO createSchemaGramsDTO(String name, JSONObject jsonObject) {
-		SchemaGramsDTO schemaGramsDTO = new SchemaGramsDTO();
-		schemaGramsDTO.setName(name);
-		List<String> keywordList=null;
-		String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
-		schemaGramsDTO.setSchema(schema);
-		if(schema!=null) {
-			if(Utils.isDraft4(schema)) {
-				keywordList = Draft04Keywords.KEYWORDS_LIST;
-			}else if (Utils.isDraft6(schema)){
-				keywordList = Draft06Keywords.KEYWORDS_LIST;
-			}else if (Utils.isDraft7(schema)) {
-				keywordList = Draft07Keywords.KEYWORDS_LIST;
-			}else if (Utils.isDraft3(schema)) {
-				keywordList = Draft03Keywords.KEYWORDS_LIST;
-			} else if (Utils.isDraft201909(schema)) {
-				keywordList = Draft201909Keywords.KEYWORDS_LIST;
+	private SchemaGramsDTO createSchemaGramsDTO(String name, JSONObject jsonObject) throws Exception {
+		
+			SchemaGramsDTO schemaGramsDTO = new SchemaGramsDTO();
+			schemaGramsDTO.setName(name);
+			List<String> keywordList=null;
+			String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
+			schemaGramsDTO.setSchema(schema);
+			String parent = "";
+			if(schema!=null) {
+				if(Utils.isDraft4(schema)) {
+					keywordList = Draft04Keywords.KEYWORDS_LIST;
+					String keyId= Draft04Keywords.ID;
+					parent = getParentName(jsonObject, keyId, name);
+				}else if (Utils.isDraft6(schema)){
+					keywordList = Draft06Keywords.KEYWORDS_LIST;
+					String keyId= Draft06Keywords.ID;
+					parent = getParentName(jsonObject, keyId, name);
+				}else if (Utils.isDraft7(schema)) {
+					keywordList = Draft07Keywords.KEYWORDS_LIST;
+					String keyId= Draft07Keywords.ID;
+					parent = getParentName(jsonObject, keyId, name);
+				}else if (Utils.isDraft3(schema)) {
+					keywordList = Draft03Keywords.KEYWORDS_LIST;
+					String keyId= Draft03Keywords.ID;
+					parent = getParentName(jsonObject, keyId, name);
+				} else if (Utils.isDraft201909(schema)) {
+					keywordList = Draft201909Keywords.KEYWORDS_LIST;
+					String keyId= Draft201909Keywords.ID;
+					parent = getParentName(jsonObject, keyId, name);
+				}
 			}
-		}
-		if(keywordList!=null) {
-			addUnigrams(jsonObject, schemaGramsDTO, keywordList);
-			//addBigrams(ROOT_PARENT,jsonObject, schemaGramsDTO,keywordList);
-			String parent = Utils.stripDot(name);
-			addBigrams(parent,jsonObject, schemaGramsDTO,keywordList);
-		}
-		if(logger.isDebugEnabled()) {
-			logger.debug("GRAMS : {}", schemaGramsDTO.toString());
-		}
-		return schemaGramsDTO;
+			if(keywordList!=null) {
+				addUnigrams(jsonObject, schemaGramsDTO, keywordList);
+				//String parent = Utils.stripDot(name);
+				addBigrams(parent,jsonObject, schemaGramsDTO,keywordList);
+			}
+			if(logger.isDebugEnabled()) {
+				logger.debug("GRAMS : {}", schemaGramsDTO.toString());
+			}
+			return schemaGramsDTO;
+		
 	}
 	
 	private void addUnigrams(JSONObject jsonObject, SchemaGramsDTO schemaGramsDTO, List<String> keywords) {
@@ -127,6 +141,16 @@ public class SchemaGramsApplicationService {
 	private String toAntiCamelCase(String s) {
 		String antiCamelCase= s.substring(0, 1).toLowerCase() + s.substring(1);
 		return antiCamelCase;
+	}
+	
+	private String getParentName(JSONObject jsonObject, String keyId, String fileName) throws Exception {
+		//String parentName= fileName;
+		String id = jsonObject.optString(keyId);
+		if(id==null || id.isBlank()) {
+			id=fileName;
+		}
+		String parentName = Utils.getSemanticNameFromUri(id);
+		return parentName;
 	}
 //	private String stripDot(String s) {
 //		String strip = s;

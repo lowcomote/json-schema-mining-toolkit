@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 
 import org.json.JSONException;
@@ -122,6 +123,12 @@ public final class Utils {
 			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
 	}
 	
+	@Deprecated
+	/**
+	 * see @link{#/digestSlashAndDot}
+	 * @param s
+	 * @return
+	 */
 	public static String stripDot(String s) {
 		String strip = s;
 		int lastDotIndex = s.lastIndexOf(".");
@@ -129,5 +136,27 @@ public final class Utils {
 			strip=s.substring(0, lastDotIndex);
 		}
 		return strip;
+	}
+	
+	public static String getSemanticNameFromUri(String uriString) throws Exception {
+		URI uri = new URI(uriString);
+		String toBeDigested = uri.getFragment();
+		if (toBeDigested==null) {
+			toBeDigested=uri.getPath();
+		}
+		String semanticName= digestSlashAndDot(toBeDigested);
+		return semanticName;
+		
+		
+	}
+	
+	public static String digestSlashAndDot(String name) throws Exception{
+		String[] splitName = name.split("/");
+		String lastNameElement = splitName[splitName.length-1];
+		int index = lastNameElement.lastIndexOf(".");
+		if(index > 0) {
+			return lastNameElement.substring(0, index);
+		}
+		return lastNameElement;
 	}
 }

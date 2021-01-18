@@ -1,7 +1,6 @@
 package jku.bise.jsonschemavalidator.applicationservice.csvwriter;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,27 +27,34 @@ public class CsvGramsWriterApplicationService {
 	}
 	
 	private void createCSVFile(SchemaGramsDTO schemaGramsDTO) {
-		String csvFileName = Utils.stripDot(schemaGramsDTO.getName())+".csv";
-		boolean append;
-		if (Files.exists(Paths.get(csvFileName)))
-			append = true;
-		else
-			append = false;
-		String jsonFileame = schemaGramsDTO.getName();
-		String schema = schemaGramsDTO.getSchema();
-		
-		try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {
-			for (String unigram : schemaGramsDTO.getUnigrams()) {
-				printer.printRecord(jsonFileame, schema, "UNIGRAM", unigram);
+		//String csvFileName = Utils.stripDot(schemaGramsDTO.getName())+".csv";
+		//try {
+		try {
+			String csvFileName = Utils.digestSlashAndDot(schemaGramsDTO.getName())+".csv";
+			boolean append;
+			if (Files.exists(Paths.get(csvFileName)))
+				append = true;
+			else
+				append = false;
+			String jsonFileame = schemaGramsDTO.getName();
+			String schema = schemaGramsDTO.getSchema();
+				
+			try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {
+				//CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT);
+				for (String unigram : schemaGramsDTO.getUnigrams()) {
+					printer.printRecord(jsonFileame, schema, "UNIGRAM", unigram);
+				}
+				for (String bigram : schemaGramsDTO.getBigrams()) {
+					printer.printRecord(jsonFileame, schema, "BIGRAM", bigram);
+				}
+			} catch (Exception e) {
+				if(logger.isErrorEnabled()) {
+					logger.error("CREATECSV for grams of file: {} CSV IO Error", schemaGramsDTO.getName());
+				}
+				
 			}
-			for (String bigram : schemaGramsDTO.getBigrams()) {
-				printer.printRecord(jsonFileame, schema, "BIGRAM", bigram);
-			}
-		} catch (IOException e) {
-			if(logger.isErrorEnabled()) {
-				logger.error("CREATECSV for grams of file: {} CSV IO Error", csvFileName);
-			}
-			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

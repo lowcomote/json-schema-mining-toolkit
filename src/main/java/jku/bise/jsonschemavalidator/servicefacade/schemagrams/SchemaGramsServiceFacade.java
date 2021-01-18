@@ -19,7 +19,7 @@ public class SchemaGramsServiceFacade {
 	private CsvGramsWriterApplicationService csvGramsWriterApplicationService;
 	
 	public void findSchemaMetricsInFileOrDirectory(String pathToDir, String csvFileName){
-		List<SchemaGramsDTO> schemaGramsDTOs = schemaGramsApplicationService.findSchemaMetricsInFileOrDirectory(pathToDir);
+		List<SchemaGramsDTO> schemaGramsDTOs = schemaGramsApplicationService.buildGramsInFileOrDirectory(pathToDir);
 		csvGramsWriterApplicationService.createCSVFile(schemaGramsDTOs, csvFileName);
 	}
 }

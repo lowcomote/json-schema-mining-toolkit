@@ -1,0 +1,78 @@
+{
+	"$id":"path1#/path2/supermarket.json",
+	"type":"object",
+  	"$schema": "http://json-schema.org/draft-07/schema",
+  	"definitions":{
+  		"category":{
+  			"type":"object",
+  			"properties":{
+  				"idCategory":{"type":"integer"},
+  				"shortDescription":{"type":"string"},
+  				"largeDescription":{"type":"string"},
+  				"area":{"enum":["House","Food","Bricolage"]},
+  				"products":{
+  					"type":"array",
+  					"items":{"$ref":"#/definitions/product"}
+  				}
+  			}
+  		},
+  		"product":{
+  			"type":"object",
+  			"properties":{
+  				"idProduct":{"type":"integer"},
+  				"name":{"type":"string"},
+  				"price":{"type":"number"},
+  				"categories":{
+  					"type":"array",
+  					"items":{"$ref":"#/definitions/category"}
+  				}
+  			}
+  		},
+  		"address": {
+      		"type": "object",
+      		"properties": {
+        		"street_address": { "type": "string" },
+        		"city":           { "type": "string" },
+        		"state":          { "type": "string" }
+      		},
+      		"required": ["street_address", "city", "state"]
+    	}
+  	},
+  	"properties":{
+  		"openDate":{
+  			"type":"string",
+  			"format":"date"
+  		},
+  		"address": {"$ref":"#/definitions/address"},
+  		"categories":{
+ 			"type":"array",
+			"items":{"$ref":"#/definitions/category"}
+  		},
+  		"products":{
+			"type":"array",
+			"items":{"$ref":"#/definitions/product"}
+		},
+		"director":{
+			"type":"object",
+			"properties":{
+				"personalInfo":{
+					"type":"object",
+					"properties":{
+						"name":{"type":"string"},
+						"surname":{"type":"string"},
+						"birtdate":{
+  							"type":"string",
+  							"format":"date"
+  						},
+  						"address": {"$ref":"#/definitions/address"}
+					}
+				},
+				"startingDate":{
+					"type":"string",
+  					"format":"date"
+				}
+			}
+		}
+		
+	}
+}
