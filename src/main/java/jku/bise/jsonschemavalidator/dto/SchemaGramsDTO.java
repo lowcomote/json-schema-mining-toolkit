@@ -1,10 +1,8 @@
 package jku.bise.jsonschemavalidator.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class SchemaGramsDTO implements Serializable {
 
@@ -16,8 +14,9 @@ public class SchemaGramsDTO implements Serializable {
 	private String name;
 	private String schema;
 	
-	private Set<String> unigrams = new HashSet<>();
-	private Set<String> bigrams = new HashSet<>();
+	//private Set<String> unigrams = new HashSet<>();
+	private Set<String> unigrams = new TreeSet<String>();
+	private Set<String> bigrams = new TreeSet<String>();
 	
 	public void addUnigram (String unigram) {
 		this.unigrams.add(unigram);

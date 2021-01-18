@@ -23,8 +23,6 @@ import jku.bise.jsonschemavalidator.exception.JsonParseException;
 @Service
 public class SchemaGramsApplicationService {
 
-	private final static String ROOT_PARENT = "#";
-	
 	private static Logger logger = LoggerFactory.getLogger(SchemaGramsApplicationService.class);
 	
 	public List<SchemaGramsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir) throws ApplicationServiceException   {
