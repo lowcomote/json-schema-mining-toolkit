@@ -17,7 +17,6 @@ import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keyw
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.SchemaGramsDTO;
-import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
 import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
@@ -25,27 +24,32 @@ public class SchemaGramsApplicationService {
 
 	private static Logger logger = LoggerFactory.getLogger(SchemaGramsApplicationService.class);
 	
-	public List<SchemaGramsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir) throws ApplicationServiceException   {
+	public List<SchemaGramsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir)    {
 		List<SchemaGramsDTO> schemaGramsDTOs = new ArrayList<SchemaGramsDTO>();
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory())
 			for (File file : fileOrdir.listFiles()) {
 				SchemaGramsDTO schemaGramsDTO =createSchemaGramsDTO(file);
-				schemaGramsDTOs.add(schemaGramsDTO);
+				if(schemaGramsDTO!=null) {
+					schemaGramsDTOs.add(schemaGramsDTO);
+				}
 			}
 		else {
 			SchemaGramsDTO schemaGramsDTO = createSchemaGramsDTO(fileOrdir);
-			schemaGramsDTOs.add(schemaGramsDTO);
+			if(schemaGramsDTO!=null) {
+				schemaGramsDTOs.add(schemaGramsDTO);
+			}
 		}
 		return schemaGramsDTOs;
 	}
 	
-	public SchemaGramsDTO createSchemaGramsDTO(File file) throws ApplicationServiceException {
+	public SchemaGramsDTO createSchemaGramsDTO(File file) {
 		try {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			return createSchemaGramsDTO(file.getName(),  jsonObject);
 		} catch (JsonParseException e) {
-			throw new ApplicationServiceException(e.getMessage(),e);
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -71,7 +75,7 @@ public class SchemaGramsApplicationService {
 		if(keywordList!=null) {
 			addUnigrams(jsonObject, schemaGramsDTO, keywordList);
 			//addBigrams(ROOT_PARENT,jsonObject, schemaGramsDTO,keywordList);
-			String parent = stripDot(name);
+			String parent = Utils.stripDot(name);
 			addBigrams(parent,jsonObject, schemaGramsDTO,keywordList);
 		}
 		if(logger.isDebugEnabled()) {
@@ -124,13 +128,13 @@ public class SchemaGramsApplicationService {
 		String antiCamelCase= s.substring(0, 1).toLowerCase() + s.substring(1);
 		return antiCamelCase;
 	}
-	private String stripDot(String s) {
-		String strip = s;
-		int lastDotIndex = s.lastIndexOf(".");
-		if(lastDotIndex>=0) {
-			strip=s.substring(0, lastDotIndex);
-		}
-		return strip;
-	}
+//	private String stripDot(String s) {
+//		String strip = s;
+//		int lastDotIndex = s.lastIndexOf(".");
+//		if(lastDotIndex>=0) {
+//			strip=s.substring(0, lastDotIndex);
+//		}
+//		return strip;
+//	}
 	
 }

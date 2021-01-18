@@ -38,6 +38,10 @@
     	}
   	},
   	"properties":{
+  		"openDate":{
+  			"type":"string",
+  			"format":"date"
+  		},
   		"address": {"$ref":"#/definitions/address"},
   		"categories":{
  			"type":"array",
@@ -46,6 +50,28 @@
   		"products":{
 			"type":"array",
 			"items":{"$ref":"#/definitions/product"}
+		},
+		"director":{
+			"type":"object",
+			"properties":{
+				"personalInfo":{
+					"type":"object",
+					"properties":{
+						"name":{"type":"string"},
+						"surname":{"type":"string"},
+						"birtdate":{
+  							"type":"string",
+  							"format":"date"
+  						},
+  						"address": {"$ref":"#/definitions/address"}
+					}
+				},
+				"startingDate":{
+					"type":"string",
+  					"format":"date"
+				}
+			}
 		}
+		
 	}
 }

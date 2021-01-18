@@ -121,4 +121,13 @@ public final class Utils {
 	public static boolean isDraft201909(String schema) {
 			return Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL.equals(schema);
 	}
+	
+	public static String stripDot(String s) {
+		String strip = s;
+		int lastDotIndex = s.lastIndexOf(".");
+		if(lastDotIndex>=0) {
+			strip=s.substring(0, lastDotIndex);
+		}
+		return strip;
+	}
 }
