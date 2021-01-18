@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import jku.bise.jsonschemavalidator.servicefacade.schemametrics.SchemaMetricsServiceFacade;
+import jku.bise.jsonschemavalidator.servicefacade.schemagrams.SchemaGramsServiceFacade;
 import jku.bise.jsonschemavalidator.servicefacade.schemavalidator.SchemaValidatorServiceFacade;
 /**
  * https://stackoverflow.com/questions/56358562/receive-input-from-command-line-with-spring-boot/58215035
@@ -22,6 +22,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 
 	private static final String VALIDATION_CHOICE = "V";
 	private static final String METRICS_CHOICE = "M";
+	private static final String GRAMS_CHOICE = "G";
 	private static final String USE_CONFIG_PROPERTIES = "Y";
 	private static final String NOT_USE_CONFIG_PROPERTIES = "N";
 	private static final String ABORT ="A";
@@ -29,8 +30,11 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 	@Autowired
 	private SchemaValidatorServiceFacade schemaValidatorServiceFacade;
 	
+//	@Autowired
+//	private SchemaMetricsServiceFacade schemaMetricsServiceFacade;
+	
 	@Autowired
-	private SchemaMetricsServiceFacade schemaMetricsServiceFacade;
+	private SchemaGramsServiceFacade  schemaGramsServiceFacade;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -49,10 +53,13 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		Scanner console = new Scanner(System.in);
 		 
 		System.out.println("Hello! Welcome to Json Schema Analyzer. Ready to analyze? We are!");
-		while (!VALIDATION_CHOICE.equalsIgnoreCase(choice)&& !METRICS_CHOICE.equalsIgnoreCase(choice)) {
+		while (!VALIDATION_CHOICE.equalsIgnoreCase(choice) 
+				&& !METRICS_CHOICE.equalsIgnoreCase(choice)
+				&& !GRAMS_CHOICE.equalsIgnoreCase(choice)) {
 			System.out.println("Please choose an option");
 			System.out.println("["+VALIDATION_CHOICE+"] Validate a json file or a directory of json files");
 			System.out.println("["+METRICS_CHOICE+"] Calculate the metrics of a json file or a directory of json files");
+			System.out.println("["+GRAMS_CHOICE+"] Calculate unigrams and bigrams");
 			choice = console.nextLine().trim();
 		}
 		while(!USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig) && ! NOT_USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig)) {
@@ -79,8 +86,11 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			System.out.println("Ok... we go on");
 			if(VALIDATION_CHOICE.equalsIgnoreCase(choice)) {
 				schemaValidatorServiceFacade.validateFileOrDirectory(inputFolderPath, outputCSV);
+			}else if(GRAMS_CHOICE.equalsIgnoreCase(choice)) {
+				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
-				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
+				System.out.println("NOT SUPPORTED YET");
+				//schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}
 		}
 		console.close();
