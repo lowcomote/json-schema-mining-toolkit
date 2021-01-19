@@ -14,6 +14,7 @@ import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft4Sche
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft6SchemaValidator;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft7SchemaValidator;
 import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.dto.SchemaViolationDetailDTO;
 import jku.bise.jsonschemavalidator.exception.JsonParseException;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
@@ -52,30 +53,45 @@ public class SchemaValidatorApplicationService {
 
 	public void validate(File file, String csvFileName) {
 		String schema = null;
-		List<String> errors = null;
+		//List<String> errors = null;
+		List<SchemaViolationDetailDTO> schemaViolationDetailDTOs = null;
 		try {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
 			if(schema!=null) {
 				if(Utils.isDraft4(schema)) {
-					errors = this.draft4SchemaValidator.validate(jsonObject);
+					//errors = this.draft4SchemaValidator.validate(jsonObject);
+					schemaViolationDetailDTOs = this.draft4SchemaValidator.validate(jsonObject);
 				}else if (Utils.isDraft6(schema)){
-					errors = this.draft6SchemaValidator.validate(jsonObject);
+					//errors = this.draft6SchemaValidator.validate(jsonObject);
+					schemaViolationDetailDTOs = this.draft6SchemaValidator.validate(jsonObject);
 				}else if (Utils.isDraft7(schema)) {
-					errors = this.draft7SchemaValidator.validate(jsonObject);
+					//errors = this.draft7SchemaValidator.validate(jsonObject);
+					schemaViolationDetailDTOs = this.draft7SchemaValidator.validate(jsonObject);
 				}else if (Utils.isDraft3(schema)) {
-					errors= draft3SchemaValidator.validate(file);
+					//errors= draft3SchemaValidator.validate(file);
+					schemaViolationDetailDTOs= draft3SchemaValidator.validate(file);
 				} else if (Utils.isDraft201909(schema)) {
-					errors = draft201909SchemaValidator.validate(file);
+					//errors = draft201909SchemaValidator.validate(file);
+					schemaViolationDetailDTOs = draft201909SchemaValidator.validate(file);
+				}
+				if(schemaViolationDetailDTOs!=null) {
+					for(SchemaViolationDetailDTO schemaViolationDetailDTO:schemaViolationDetailDTOs) {
+						schemaViolationDetailDTO.setFileName(file.toString());
+						schemaViolationDetailDTO.setSchema(schema);
+					}
 				}
 			}
+			
 			if(schema==null)  
 				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema, csvFileName);
-			else if (errors == null)
+			//else if (errors == null)
+			else if (schemaViolationDetailDTOs == null)
 				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema, csvFileName);
-			else if (errors.size() > 0)
-				csvWriterApplicationService.createCSVFile(file.toString(),  errors, schema, csvFileName);
-			else if (errors.size() == 0)
+			else if (schemaViolationDetailDTOs.size() > 0)
+				//csvWriterApplicationService.createCSVFile(file.toString(),  errors, schema, csvFileName);
+				csvWriterApplicationService.createCSVFile(schemaViolationDetailDTOs,   csvFileName);
+			else if (schemaViolationDetailDTOs.size() == 0)
 				csvWriterApplicationService.createCSVFile(file.toString(),  "VALID", schema, csvFileName);
 		} catch ( JsonParseException | SchemaValidatorException e) {
 			csvWriterApplicationService.createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema, csvFileName);
