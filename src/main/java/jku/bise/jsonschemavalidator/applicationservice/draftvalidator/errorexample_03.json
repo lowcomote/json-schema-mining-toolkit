@@ -1,0 +1,11 @@
+{  "level" : "error",  
+	"message" : "\"foreign_key\" is not a valid primitive type (valid values are: [array, boolean, integer, null, number, object, string])",  
+	"domain" : "syntax",  
+	"schema" : {    
+		"loadingURI" : "#",    
+		"pointer" : "/properties/user_id"  
+	},  
+	"keyword" : "type",  
+	"found" : "foreign_key",  
+	"valid" : [ "array", "boolean", "integer", "null", "number", "object", "string" ]
+}

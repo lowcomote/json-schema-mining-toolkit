@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -158,5 +159,9 @@ public final class Utils {
 			return lastNameElement.substring(0, index);
 		}
 		return lastNameElement;
+	}
+	
+	public static int countMatchesSlash(String slashed) {
+		return StringUtils.countMatches(slashed, "/");
 	}
 }

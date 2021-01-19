@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qindesign.json.schema.Annotation;
@@ -28,6 +30,7 @@ import com.qindesign.json.schema.net.URI;
 
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.dto.SchemaViolationDetailDTO;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 
 @Service
@@ -42,7 +45,6 @@ public class Draft201909SchemaValidator {
 	
 	
 	public Draft201909SchemaValidator () throws URISyntaxException, IOException, MalformedSchemaException {
-		
 		Options opts = new Options();
 		opts.set(Option.FORMAT, true);
 		opts.set(Option.CONTENT, true);
@@ -53,12 +55,10 @@ public class Draft201909SchemaValidator {
 		JsonElement schema = Utils.buildJsonElementFromURL(Draft201909Keywords.JSON_SCHEMA_DRAFT_2019_09_URL);
 		
 		this.validator = new Validator(schema, schemaID, null, null, opts);
-		
-		
-		
 	}
 	
-	public List<String> validate (File file) throws SchemaValidatorException{
+	//public List<String> validate (File file) throws SchemaValidatorException{
+	public List<SchemaViolationDetailDTO> validate (File file) throws SchemaValidatorException{
 		try {
 			JsonElement jsonElement = Utils.buildJsonElementFromFile(file);
 			return validate(jsonElement);
@@ -67,14 +67,65 @@ public class Draft201909SchemaValidator {
 		}
 	}
 	
-	public List<String> validate (JsonElement jsonElement) throws MalformedSchemaException {
+	//public List<String> validate (JsonElement jsonElement) throws MalformedSchemaException {
+	public List<SchemaViolationDetailDTO> validate (JsonElement jsonElement) throws MalformedSchemaException {
 		Map<JSONPath, Map<String, Map<JSONPath, Annotation<?>>>> annotations = new HashMap<>();
 	    Map<JSONPath, Map<JSONPath, Error <?>>> errors = new HashMap<>();
 	    boolean result = validator.validate(jsonElement, annotations, errors);
-	    List<String> messages =createErrorList(result,errors);
-		return messages;
+	    List<SchemaViolationDetailDTO> schemaViolationDetailDTOs = createSchemaViolationDetailList(result,errors);
+		return schemaViolationDetailDTOs;
+//	    List<String> messages =createErrorList(result,errors);
+//		return messages;
 	}
 	
+	private List<SchemaViolationDetailDTO> createSchemaViolationDetailList(boolean result, Map<JSONPath, Map<JSONPath, Error <?>>> errors) {
+		//List<String> messages = new ArrayList<String>();
+		List<SchemaViolationDetailDTO> schemaViolationDetailDTOs = new ArrayList<SchemaViolationDetailDTO>();
+		if(!result) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			errors.entrySet().stream()
+	        	.sorted(Map.Entry.comparingByKey())
+	        	.forEach(e -> {
+	        		e.getValue().values().stream()
+	        			.filter(err -> !err.isPruned() && !err.result)
+	        			.sorted(Comparator.comparing(err -> err.loc.keyword))
+	        			.forEach(err -> {
+	        				
+	        				SchemaViolationDetailDTO schemaViolationDetailDTO = new SchemaViolationDetailDTO();
+	        				//schemaViolationDetailDTO.setKeyword(err.loc.absKeyword.toString());
+	        				try {
+								String keyword = Utils.digestSlashAndDot(err.loc.keyword.toString());
+								schemaViolationDetailDTO.setKeyword(keyword);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+	        				//schemaViolationDetailDTO.setPointerToViolation(err.loc.keyword.toString());
+	        				schemaViolationDetailDTO.setPointerToViolation(err.loc.instance.toString());
+	        				
+	        				JsonObject error = new JsonObject();
+	        				error.addProperty("keywordLocation", err.loc.keyword.toString());
+	        				error.addProperty("absoluteKeywordLocation", err.loc.absKeyword.toString());
+	        				error.addProperty("instanceLocation", err.loc.instance.toString());
+	        				if (err.value != null) {
+	        					error.addProperty("error", err.value.toString());
+	        					schemaViolationDetailDTO.setMessage(err.value.toString());
+	        				}
+	        				//String message = error.toString();
+	        				String message = gson.toJson(error);
+	        				schemaViolationDetailDTO.setExtendedMessage(message);
+	        				schemaViolationDetailDTOs.add(schemaViolationDetailDTO);
+	        				//messages.add(message);
+	        				if(logger.isDebugEnabled()) {
+	        					logger.debug("Draft 2019-09 validator message . {}",message);
+	        				}
+	        			});
+	        	});
+		}
+		//return messages;
+		return schemaViolationDetailDTOs;
+	}
+	
+	@Deprecated
 	private List<String> createErrorList(boolean result, Map<JSONPath, Map<JSONPath, Error <?>>> errors) {
 		List<String> messages = new ArrayList<String>();
 		if(!result) {

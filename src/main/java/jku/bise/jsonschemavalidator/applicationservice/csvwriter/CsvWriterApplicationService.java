@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import jku.bise.jsonschemavalidator.dto.SchemaViolationDetailDTO;
+
 
 @Service
 public class CsvWriterApplicationService {
@@ -19,6 +21,7 @@ public class CsvWriterApplicationService {
 	
 	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
 	
+	@Deprecated
 	public void createCSVFile(String filename,  List<String> errors, String schema, String csvFileName) {
 		boolean append;
 		if (Files.exists(Paths.get(csvFileName)))
@@ -75,6 +78,31 @@ public class CsvWriterApplicationService {
 			}
 		} catch (IOException e) {
 			logger.error("CREATECSV {} CSV IO Error", filename);
+		}
+
+	}
+	
+	public void createCSVFile(List<SchemaViolationDetailDTO> schemaViolationDetailDTOs,  String csvFileName) {
+		boolean append;
+		if (Files.exists(Paths.get(csvFileName)))
+			append = true;
+		else
+			append = false;
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {
+			for (SchemaViolationDetailDTO schemaValidationDetailDTO : schemaViolationDetailDTOs) {
+				printer.printRecord(schemaValidationDetailDTO.getFileName(), 
+						schemaValidationDetailDTO.getSchema(), 
+						schemaValidationDetailDTO.getKeyword(),
+						schemaValidationDetailDTO.getPointerToViolation(),
+						schemaValidationDetailDTO.getLevel(),
+						schemaValidationDetailDTO.getMessage(),
+						schemaValidationDetailDTO.getExtendedMessage());
+				
+				
+			}
+
+		} catch (IOException e) {
+			logger.error("CREATECSV {} CSV IO Error", schemaViolationDetailDTOs.get(0).getFileName());
 		}
 
 	}
