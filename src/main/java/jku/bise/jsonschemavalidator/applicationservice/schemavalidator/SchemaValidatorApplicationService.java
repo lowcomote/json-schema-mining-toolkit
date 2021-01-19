@@ -73,12 +73,14 @@ public class SchemaValidatorApplicationService {
 				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema, csvFileName);
 			else if (errors == null)
 				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema, csvFileName);
-			else if (errors.size() > 0)
-				csvWriterApplicationService.createCSVFile(file.toString(),  errors, schema, csvFileName);
+//			else if (errors.size() > 0)
+//				csvWriterApplicationService.createCSVFile(file.toString(),  errors, schema, csvFileName);
 			else if (errors.size() == 0)
 				csvWriterApplicationService.createCSVFile(file.toString(),  "VALID", schema, csvFileName);
-		} catch ( JsonParseException | SchemaValidatorException e) {
+		} catch ( JsonParseException e) {
 			csvWriterApplicationService.createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema, csvFileName);
+		} catch ( SchemaValidatorException e) {
+			csvWriterApplicationService.createCSVFile(file.toString(),  "UNSUPPORTED SCHEMA", schema, csvFileName);
 		}
 	}
 }
