@@ -90,33 +90,40 @@ public class Draft201909SchemaValidator {
 	        			.filter(err -> !err.isPruned() && !err.result)
 	        			.sorted(Comparator.comparing(err -> err.loc.keyword))
 	        			.forEach(err -> {
-	        				
-	        				SchemaViolationDetailDTO schemaViolationDetailDTO = new SchemaViolationDetailDTO();
-	        				//schemaViolationDetailDTO.setKeyword(err.loc.absKeyword.toString());
-	        				try {
-								String keyword = Utils.digestSlashAndDot(err.loc.keyword.toString());
-								schemaViolationDetailDTO.setKeyword(keyword);
-							} catch (Exception e1) {
-								e1.printStackTrace();
-							}
-	        				//schemaViolationDetailDTO.setPointerToViolation(err.loc.keyword.toString());
-	        				schemaViolationDetailDTO.setPointerToViolation(err.loc.instance.toString());
-	        				
-	        				JsonObject error = new JsonObject();
-	        				error.addProperty("keywordLocation", err.loc.keyword.toString());
-	        				error.addProperty("absoluteKeywordLocation", err.loc.absKeyword.toString());
-	        				error.addProperty("instanceLocation", err.loc.instance.toString());
-	        				if (err.value != null) {
-	        					error.addProperty("error", err.value.toString());
-	        					schemaViolationDetailDTO.setMessage(err.value.toString());
-	        				}
-	        				//String message = error.toString();
-	        				String message = gson.toJson(error);
-	        				schemaViolationDetailDTO.setExtendedMessage(message);
-	        				schemaViolationDetailDTOs.add(schemaViolationDetailDTO);
-	        				//messages.add(message);
-	        				if(logger.isDebugEnabled()) {
-	        					logger.debug("Draft 2019-09 validator message . {}",message);
+	        				if(!err.loc.instance.toString().isBlank()) {
+	        					JsonObject error = new JsonObject();
+		        				SchemaViolationDetailDTO schemaViolationDetailDTO = new SchemaViolationDetailDTO();
+		        				String pointerToViolation = err.loc.instance.toString();
+		        				schemaViolationDetailDTO.setPointerToViolation(pointerToViolation);
+		        				error.addProperty("instanceLocation", pointerToViolation);
+		        				int level = Utils.countMatchesSlash(pointerToViolation);
+		        				schemaViolationDetailDTO.setLevel(level);
+		        				
+		        				try {
+									String keyword = Utils.digestSlashAndDot(err.loc.keyword.toString());
+									schemaViolationDetailDTO.setKeyword(keyword);
+								} catch (Exception e1) {
+									e1.printStackTrace();
+								}
+		        				//schemaViolationDetailDTO.setPointerToViolation(err.loc.keyword.toString());
+		        				
+		        				
+		        				
+		        				error.addProperty("keywordLocation", err.loc.keyword.toString());
+		        				error.addProperty("absoluteKeywordLocation", err.loc.absKeyword.toString());
+		        				
+		        				if (err.value != null) {
+		        					error.addProperty("error", err.value.toString());
+		        					schemaViolationDetailDTO.setMessage(err.value.toString());
+		        				}
+		        				//String message = error.toString();
+		        				String message = gson.toJson(error);
+		        				schemaViolationDetailDTO.setExtendedMessage(message);
+		        				schemaViolationDetailDTOs.add(schemaViolationDetailDTO);
+		        				//messages.add(message);
+		        				if(logger.isDebugEnabled()) {
+		        					logger.debug("Draft 2019-09 validator message . {}",message);
+		        				}
 	        				}
 	        			});
 	        	});

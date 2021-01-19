@@ -17,6 +17,7 @@ import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.processors.syntax.SyntaxValidator;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.SchemaViolationDetailDTO;
 import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
@@ -98,7 +99,15 @@ public class Draft3SchemaValidator {
 //					pointerToViolation += schemaJsonNode.get(LOADING_URI).asText();
 //				}
 				if(schemaJsonNode.has(POINTER)) {
-					pointerToViolation += schemaJsonNode.get(POINTER).asText();
+					String pointer = schemaJsonNode.get(POINTER).asText();
+					if(pointer.isBlank()) {
+						pointer="/";
+					}
+					pointerToViolation += pointer;
+					if(schemaViolationDetailDTO.getKeyword().isEmpty()) {
+						String keyword= extractKeywordFromPointer(pointer);
+						schemaViolationDetailDTO.setKeyword(keyword);
+					}
 				}
 				schemaViolationDetailDTO.setPointerToViolation(pointerToViolation);
 				int level = Utils.countMatchesSlash(pointerToViolation);
@@ -115,4 +124,15 @@ public class Draft3SchemaValidator {
 		return schemaViolationDetailDTO;
 	}
 	
+	private String extractKeywordFromPointer(String pointer) {
+		String keyword="";
+		String[] splittedPointer = pointer.split("/");
+		for(int i=splittedPointer.length-1; i>=0; i-- ) {
+			if(Draft03Keywords.KEYWORDS_LIST.contains(splittedPointer[i])) {
+				keyword=splittedPointer[i];
+				break;
+			}
+		}
+		return keyword;
+	}
 }

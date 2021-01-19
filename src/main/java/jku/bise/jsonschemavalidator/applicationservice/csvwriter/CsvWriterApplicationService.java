@@ -97,8 +97,6 @@ public class CsvWriterApplicationService {
 						schemaValidationDetailDTO.getLevel(),
 						schemaValidationDetailDTO.getMessage(),
 						schemaValidationDetailDTO.getExtendedMessage());
-				
-				
 			}
 
 		} catch (IOException e) {
