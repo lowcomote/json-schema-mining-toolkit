@@ -28,6 +28,7 @@ import com.qindesign.json.schema.Specification;
 import com.qindesign.json.schema.Validator;
 import com.qindesign.json.schema.net.URI;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.SchemaViolationDetailDTO;
@@ -98,13 +99,16 @@ public class Draft201909SchemaValidator {
 		        				error.addProperty("instanceLocation", pointerToViolation);
 		        				int level = Utils.countMatchesSlash(pointerToViolation);
 		        				schemaViolationDetailDTO.setLevel(level);
-		        				
+		        				String keyword = extractKeywordFromPointer(pointerToViolation);
+		        				schemaViolationDetailDTO.setKeyword(keyword);
+		        				/**********
 		        				try {
 									String keyword = Utils.digestSlashAndDot(err.loc.keyword.toString());
 									schemaViolationDetailDTO.setKeyword(keyword);
 								} catch (Exception e1) {
 									e1.printStackTrace();
 								}
+		        				****/
 		        				//schemaViolationDetailDTO.setPointerToViolation(err.loc.keyword.toString());
 		        				
 		        				
@@ -159,6 +163,23 @@ public class Draft201909SchemaValidator {
 	        	});
 		}
 		return messages;
+	}
+	
+	/**
+	 * TODO move in a base class
+	 * @param pointer
+	 * @return
+	 */
+	private String extractKeywordFromPointer(String pointer) {
+		String keyword="";
+		String[] splittedPointer = pointer.split("/");
+		for(int i=splittedPointer.length-1; i>=0; i-- ) {
+			if(Draft201909Keywords.KEYWORDS_LIST.contains(splittedPointer[i])) {
+				keyword=splittedPointer[i];
+				break;
+			}
+		}
+		return keyword;
 	}
 	
 	

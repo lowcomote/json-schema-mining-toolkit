@@ -27,7 +27,7 @@ public class Draft3SchemaValidator {
 
 	private static final String KEYWORD = "keyword";
 	private static final String SCHEMA = "schema";
-	private static final String LOADING_URI= "loadingURI";
+//	private static final String LOADING_URI= "loadingURI";
 	private static final String POINTER = "pointer";
 	
 	
@@ -124,6 +124,11 @@ public class Draft3SchemaValidator {
 		return schemaViolationDetailDTO;
 	}
 	
+	/**
+	 * TODO move in a base class
+	 * @param pointer
+	 * @return
+	 */
 	private String extractKeywordFromPointer(String pointer) {
 		String keyword="";
 		String[] splittedPointer = pointer.split("/");
