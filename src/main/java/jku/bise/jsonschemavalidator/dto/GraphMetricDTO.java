@@ -12,6 +12,16 @@ public class GraphMetricDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1073658294102415897L;
 	
+	public static final String DEPTH_SCHEMA ="Depth Schema"; 
+	public static final String DEPTH_RESOLVED_TREE ="Depth Resolved Tree"; 
+	public static final String FAN_IN ="Fan In"; 
+	public static final String FAN_OUT ="Fan Out";
+	public static final String HAS_RECURSION ="Has Recursion";
+	public static final String MIN_CYCLE_LEN ="Min Cycle Len";
+	public static final String WIDTH ="Width";
+	public static final String REACHABILITY ="Reachability";
+	
+	
 	/**
 	 * Depth of the tree that emerges from loading the raw JSON Schema into an schema_graph .
 	 */

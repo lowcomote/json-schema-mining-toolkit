@@ -11,6 +11,9 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 7556533730002406407L;
 	
+	public static final String FILE_NAME ="File Name"; 
+	public static final String SCHEMA ="schema"; 
+	
 	private String name;
 	
 	private String schema;
@@ -27,7 +30,11 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	}
 
 	public Integer getKeywordsCount(String keyword) {
-		return this.keywordsCount.get(keyword);
+		if(this.keywordsCount.containsKey(keyword)) {
+			return this.keywordsCount.get(keyword);
+		}else {
+			return 0;
+		}
 	}
 	
 	public Map<String, Integer> getKeywordsCount() {
@@ -40,7 +47,12 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	}
 
 	public Integer getTypesCount(String keyword) {
-		return this.typesCount.get(keyword);
+		if(this.typesCount.containsKey(keyword)) {
+			return this.typesCount.get(keyword);
+		}else {
+			return 0;
+		}
+		
 	}
 	
 	public Map<String, Integer> getTypesCount() {
