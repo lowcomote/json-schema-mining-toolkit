@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import jku.bise.jsonschemavalidator.servicefacade.schemagrams.SchemaGramsServiceFacade;
+import jku.bise.jsonschemavalidator.servicefacade.schemametrics.SchemaMetricsServiceFacade;
 import jku.bise.jsonschemavalidator.servicefacade.schemavalidator.SchemaValidatorServiceFacade;
 /**
  * https://stackoverflow.com/questions/56358562/receive-input-from-command-line-with-spring-boot/58215035
@@ -32,8 +33,8 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 	@Autowired
 	private SchemaValidatorServiceFacade schemaValidatorServiceFacade;
 	
-//	@Autowired
-//	private SchemaMetricsServiceFacade schemaMetricsServiceFacade;
+	@Autowired
+	private SchemaMetricsServiceFacade schemaMetricsServiceFacade;
 	
 	@Autowired
 	private DuplicateService duplicateService;
@@ -108,7 +109,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
 				System.out.println("NOT SUPPORTED YET");
-				//schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
+				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}
 		}
 		console.close();

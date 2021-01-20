@@ -17,6 +17,11 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	
 	private Map<String,Integer> keywordsCount = new HashMap<String,Integer>();
 	
+	private Map<String,Integer> typesCount = new HashMap<String,Integer>();
+	
+	private GraphMetricDTO graphMetricDTO = new GraphMetricDTO();
+	
+	
 	public void putKeywordsCount(String keyword, Integer count) {
 		this.keywordsCount.put(keyword, count) ;
 	}
@@ -25,6 +30,23 @@ public class JsonSchemaMetricsDTO implements Serializable {
 		return this.keywordsCount.get(keyword);
 	}
 	
+	public Map<String, Integer> getKeywordsCount() {
+		return keywordsCount;
+	}
+	
+	
+	public void putTypesCount(String keyword, Integer count) {
+		this.typesCount.put(keyword, count) ;
+	}
+
+	public Integer getTypesCount(String keyword) {
+		return this.typesCount.get(keyword);
+	}
+	
+	public Map<String, Integer> getTypesCount() {
+		return typesCount;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -43,9 +65,13 @@ public class JsonSchemaMetricsDTO implements Serializable {
 		this.schema = schema;
 	}
 
-	public Map<String, Integer> getKeywordsCount() {
-		return keywordsCount;
+	public GraphMetricDTO getGraphMetricDTO() {
+		return graphMetricDTO;
 	}
+
+	
+	
+	
 
 	
 	
