@@ -108,7 +108,6 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			}else if(GRAMS_CHOICE.equalsIgnoreCase(choice)) {
 				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
-				System.out.println("NOT SUPPORTED YET");
 				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}
 		}
