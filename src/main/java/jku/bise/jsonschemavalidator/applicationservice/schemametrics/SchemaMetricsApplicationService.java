@@ -17,6 +17,7 @@ import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keyw
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
+import jku.bise.jsonschemavalidator.dto.JsonSchemaMetricsDTO;
 import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
 import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
@@ -62,6 +63,30 @@ public class SchemaMetricsApplicationService {
 		}
 	}
 	
+	
+	public JsonSchemaMetricsDTO countKeywords(JSONObject jsonObject, List<String> keywords) {
+		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = new JsonSchemaMetricsDTO();
+		keywords.stream().forEach(key->{
+			jsonSchemaMetricsDTO.putKeywordsCount(key, 0);
+		});
+		countKeywords(jsonObject, keywords,  jsonSchemaMetricsDTO);
+		return jsonSchemaMetricsDTO;
+	}
+	
+	private void countKeywords(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO) {
+		
+		Set<String> keys =jsonObject.keySet();
+		keys.stream().forEach(key->{
+			if(keywords.contains(key)) {
+				int count = jsonSchemaMetricsDTO.getKeywordsCount(key);
+				jsonSchemaMetricsDTO.putKeywordsCount(key, count+1);
+			}
+			JSONObject child = jsonObject.optJSONObject(key);
+			if(child!=null) {
+				countKeywords(child,  keywords,  jsonSchemaMetricsDTO);
+			}
+		});
+	}
 	
 	public Map<String,Integer> findSchemaMetrics(JSONObject jsonObject, List<String> keywords){
 		Map<String,Integer> metrics = new HashMap<String,Integer>();
