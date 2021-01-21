@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.CommonDraftsKeywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft03Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft04Keywords;
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft06Keywords;
@@ -100,9 +101,9 @@ public class SchemaGramsApplicationService {
 				}
 			}
 			if(keywordList!=null) {
-				addUnigrams(jsonObject, schemaGramsDTO, keywordList);
+				addUnigrams(jsonObject, schemaGramsDTO, keywordList,"");
 				//String parent = Utils.stripDot(name);
-				addBigrams("",jsonObject, schemaGramsDTO,keywordList);
+				addBigrams("",jsonObject, schemaGramsDTO,keywordList,"");
 			}
 			if(logger.isDebugEnabled()) {
 				logger.debug("GRAMS : {}", schemaGramsDTO.toString());
@@ -111,22 +112,22 @@ public class SchemaGramsApplicationService {
 		
 	}
 	
-	private void addUnigrams(JSONObject jsonObject, SchemaGramsDTO schemaGramsDTO, List<String> keywords) {
+	private void addUnigrams(JSONObject jsonObject, SchemaGramsDTO schemaGramsDTO, List<String> keywords, String parentKey) {
 		Set<String> keys= jsonObject.keySet();
 		keys.forEach(key->{
-			if(!keywords.contains(key)) {
+			if(!keywords.contains(key) && !CommonDraftsKeywords.PATTERN_PROPERTIES.equals(parentKey)) {
 				schemaGramsDTO.addUnigram(key);
 			}
 			JSONObject childNodeJSONObject =  jsonObject.optJSONObject(key);
-			if(childNodeJSONObject!=null) {
-				addUnigrams(childNodeJSONObject,  schemaGramsDTO,  keywords);
+			if(childNodeJSONObject!=null ) {
+				addUnigrams(childNodeJSONObject,  schemaGramsDTO,  keywords, key);
 			}else {
 				JSONArray childNodeJSONArray = jsonObject.optJSONArray(key);
 				if(childNodeJSONArray!=null) {
 					for (int i=0; i<childNodeJSONArray.length(); i++) {
 						JSONObject childNodeJSONArrayJSONObject = childNodeJSONArray.optJSONObject(i);
 						if(childNodeJSONArrayJSONObject!=null) {
-							addUnigrams(childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords);
+							addUnigrams(childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords, key );
 						}
 					}
 				}
@@ -134,28 +135,28 @@ public class SchemaGramsApplicationService {
 		});
 	}
 	
-	private void addBigrams(String parent, JSONObject jsonObject, SchemaGramsDTO schemaGramsDTO, List<String> keywords) {
+	private void addBigrams(String parentBigram, JSONObject jsonObject, SchemaGramsDTO schemaGramsDTO, List<String> keywords, String parentKey) {
 		Set<String> keys= jsonObject.keySet();
 		
 		keys.forEach(key->{
-			String nextParent = parent;
-			if(!keywords.contains(key)) {
-				nextParent=key;
-				String camelParent = toCamelCase(parent);
+			String nextParentBigram = parentBigram;
+			if(!keywords.contains(key) && !CommonDraftsKeywords.PATTERN_PROPERTIES.equals(parentKey)) {
+				nextParentBigram=key;
+				String camelParent = toCamelCase(parentBigram);
 				String antiCamelKey= toAntiCamelCase(key);
 				String bigram = camelParent+"."+antiCamelKey;
 				schemaGramsDTO.addBigram(bigram);
 			}
 			JSONObject childNode =  jsonObject.optJSONObject(key);
 			if(childNode!=null) {
-				addBigrams(nextParent,childNode,  schemaGramsDTO,  keywords);
+				addBigrams(nextParentBigram,childNode,  schemaGramsDTO,  keywords, key);
 			}else {
 				JSONArray childNodeJSONArray = jsonObject.optJSONArray(key);
 				if(childNodeJSONArray!=null) {
 					for (int i=0; i<childNodeJSONArray.length(); i++) {
 						JSONObject childNodeJSONArrayJSONObject = childNodeJSONArray.optJSONObject(i);
 						if(childNodeJSONArrayJSONObject!=null) {
-							addBigrams(nextParent, childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords);
+							addBigrams(nextParentBigram, childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords, key);
 						}
 					}
 				}
