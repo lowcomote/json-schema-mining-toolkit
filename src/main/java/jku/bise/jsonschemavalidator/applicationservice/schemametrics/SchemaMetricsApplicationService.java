@@ -1,7 +1,6 @@
 package jku.bise.jsonschemavalidator.applicationservice.schemametrics;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.GraphMetricDTO;
 import jku.bise.jsonschemavalidator.dto.JsonSchemaMetricsDTO;
 import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
-import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaMetricsApplicationService {
@@ -97,6 +95,9 @@ public class SchemaMetricsApplicationService {
 		GraphMetricDTO parentGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO().clone();
 		findMetrics(jsonObject, keywords, jsonSchemaMetricsDTO,parentGraphMetricDTO);
 		processReferences(jsonSchemaMetricsDTO);
+		if(logger.isDebugEnabled()) {
+			logger.debug("Metrics : {}", jsonSchemaMetricsDTO.toString());
+		}
 		return jsonSchemaMetricsDTO;
 	}
 	
@@ -110,7 +111,8 @@ public class SchemaMetricsApplicationService {
 				GraphMetricDTO localKeyGraphMetricDTO = parentGraphMetricDTO.clone();
 				localKeyGraphMetricDTO.appendToPointer(key);
 				localKeyGraphMetricDTO.incrementDepthSchema();
-
+				updateDepthSchema(jsonSchemaMetricsDTO, localKeyGraphMetricDTO );
+				
 				boolean isKeyword= updateKeywordsAndTypeCounter(jsonObject, keywords, jsonSchemaMetricsDTO,  key);
 //				boolean isKeyword=false;
 //				if(keywords.contains(key)) {
@@ -124,12 +126,14 @@ public class SchemaMetricsApplicationService {
 				
 				JSONObject child = jsonObject.optJSONObject(key);
 				if(child!=null) {
-					if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
-						localKeyGraphMetricDTO.setFanOut(child.keySet().size());
-					}
+//					if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
+//						localKeyGraphMetricDTO.setFanOut(child.keySet().size());
+//					}
 
-					if(isParentKeyProperty && child.has(CommonDraftsKeywords.REF)) {
+					//if(isParentKeyProperty && child.has(CommonDraftsKeywords.REF)) {
+					if(child.has(CommonDraftsKeywords.REF)) {
 						String ref = child.getString(CommonDraftsKeywords.REF);
+						//TODO referecencer hash map value must be a Map<String, List<GraphMetricDTO>>
 						jsonSchemaMetricsDTO.getReferencer().put(ref, localKeyGraphMetricDTO);
 					}
 					/**
@@ -137,7 +141,7 @@ public class SchemaMetricsApplicationService {
 					 */
 					if(!isKeyword) {
 						/**
-						 * Reachable object. If it i
+						 * Reachable object. 
 						 */
 						jsonSchemaMetricsDTO.getReferable().put(localKeyGraphMetricDTO.getPointer(), localKeyGraphMetricDTO);
 						String idKey = getIdKey(keywords);
@@ -149,7 +153,7 @@ public class SchemaMetricsApplicationService {
 							jsonSchemaMetricsDTO.getReferable().put(id, localKeyGraphMetricDTO);
 						}
 						/**
-						 * if its parent is "property" it is already reference by its father.
+						 * FAN IN: if its parent is "property" it is already reference by its father.
 						 */
 						if(isParentKeyProperty) {
 							localKeyGraphMetricDTO.setFanIn(1);
@@ -164,17 +168,43 @@ public class SchemaMetricsApplicationService {
 					
 				}else {
 					/**
-					 *  key is a leaf 
+					 * It could be an array
 					 */
-					jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+					JSONArray childArray = jsonObject.optJSONArray(key);
+					if(childArray!=null) {
+						boolean isLeaf=true;
+						for (int i=0; i<childArray.length();i++) {
+							JSONObject childArrayJSONObject = childArray.optJSONObject(i);
+							if(childArrayJSONObject !=null) {
+								isLeaf=false;
+								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
+							}
+						}
+						if(isLeaf) {
+							jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+						}
+					}else {
+					
+						/**
+						 *  key is a leaf 
+						 */
+						jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+					}
 				}
 			}
-			updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, parentGraphMetricDTO);
+			//updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, parentGraphMetricDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private void updateDepthSchema(JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO localKeyGraphMetricDTO) {
+		if(jsonSchemaMetricsDTO.getGraphMetricDTO().getDepthSchema()<localKeyGraphMetricDTO.getDepthSchema()) {
+			jsonSchemaMetricsDTO.getGraphMetricDTO().setDepthSchema(localKeyGraphMetricDTO.getDepthSchema());
+		}
+		
+	}
+
 	/**
 	 * 
 	 * If parent.childKey is a JSONObject the fanout is the number of its keys
@@ -276,16 +306,6 @@ public class SchemaMetricsApplicationService {
 	}
 	
 	
-	private void updateJsonSchemaGraphMetric(JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO localGraphMetricDTO) {
-		GraphMetricDTO jsonSchemaGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO();
-		if(jsonSchemaGraphMetricDTO.getDepthSchema()<localGraphMetricDTO.getDepthSchema()) {
-			jsonSchemaGraphMetricDTO.setDepthSchema(localGraphMetricDTO.getDepthSchema());
-		}
-		if(jsonSchemaGraphMetricDTO.getFanOut()<localGraphMetricDTO.getFanOut()) {
-			jsonSchemaGraphMetricDTO.setFanOut(localGraphMetricDTO.getFanOut());
-		}
-		
-	}
 	
 	/**
 	 * This method accumulates the occurrences for each type if potentialTypeKeyword is "type"

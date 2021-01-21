@@ -207,11 +207,27 @@ public class GraphMetricDTO implements Serializable{
 		//clone.setFanIn(this.fanIn);
 		//clone.setFanOut(this.fanOut);
 		//clone.setRecursions(this.recursions);
-		clone.setMinCycleLen(this.minCycleLen);
-		clone.setMaxCycleLen(this.maxCycleLen);
+//		clone.setMinCycleLen(this.minCycleLen);
+//		clone.setMaxCycleLen(this.maxCycleLen);
 		clone.setWidth(this.width);
 		return clone;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		//stringBuffer.append("pointer :" +this.pointer+"\n");
+		stringBuffer.append("depthSchema :" +this.depthSchema+"\n");
+		stringBuffer.append("depthResolvedTree :" +this.depthResolvedTree+"\n");
+		stringBuffer.append("fanIn :" +this.fanIn+"\n");
+		stringBuffer.append("fanOut :" +this.fanOut+"\n");
+		stringBuffer.append("recursions :" +this.recursions+"\n");
+		stringBuffer.append("minCycleLen :" +this.minCycleLen+"\n");
+		stringBuffer.append("maxCycleLen :" +this.maxCycleLen+"\n");
+		stringBuffer.append("width :" +this.width+"\n");
+		stringBuffer.append("unreachables :" +this.unreachables+"\n");
+		stringBuffer.append("unsolvedRefs :" +this.unsolvedRefs+"\n");
+		return stringBuffer.toString();
+	}
 
 }

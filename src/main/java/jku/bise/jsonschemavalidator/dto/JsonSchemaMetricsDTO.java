@@ -93,13 +93,15 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	}
 
 	
+	@Override
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("name :" +this.name+"\n");
+		stringBuffer.append("schema :" +this.schema+"\n");
+		stringBuffer.append("keywordsCount :" +this.keywordsCount.toString()+"\n");
+		stringBuffer.append("typesCount :" +this.typesCount.toString()+"\n");
+		stringBuffer.append("graphMetricDTO :" +this.graphMetricDTO.toString()+"\n");
+		return stringBuffer.toString();
+	}
 
-	
-	
-	
-
-	
-	
-	
-	
 }
