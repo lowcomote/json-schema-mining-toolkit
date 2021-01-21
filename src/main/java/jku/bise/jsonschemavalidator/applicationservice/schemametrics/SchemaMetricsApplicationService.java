@@ -106,8 +106,10 @@ public class SchemaMetricsApplicationService {
 		try {
 			String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
 			boolean isParentKeyProperty = CommonDraftsKeywords.PROPERTIES.equals(parentKey);
+			
 			Set<String> keys =jsonObject.keySet();
 			for(String key :keys) {
+				boolean isLeaf=true;
 				GraphMetricDTO localKeyGraphMetricDTO = parentGraphMetricDTO.clone();
 				localKeyGraphMetricDTO.appendToPointer(key);
 				localKeyGraphMetricDTO.incrementDepthSchema();
@@ -126,6 +128,7 @@ public class SchemaMetricsApplicationService {
 				
 				JSONObject child = jsonObject.optJSONObject(key);
 				if(child!=null) {
+					isLeaf=false;
 //					if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
 //						localKeyGraphMetricDTO.setFanOut(child.keySet().size());
 //					}
@@ -133,8 +136,9 @@ public class SchemaMetricsApplicationService {
 					//if(isParentKeyProperty && child.has(CommonDraftsKeywords.REF)) {
 					if(child.has(CommonDraftsKeywords.REF)) {
 						String ref = child.getString(CommonDraftsKeywords.REF);
-						//TODO referecencer hash map value must be a Map<String, List<GraphMetricDTO>>
-						jsonSchemaMetricsDTO.getReferencer().put(ref, localKeyGraphMetricDTO);
+						
+						//jsonSchemaMetricsDTO.getReferencer().put(ref, localKeyGraphMetricDTO);
+						jsonSchemaMetricsDTO.putReferencer(ref, localKeyGraphMetricDTO);
 					}
 					/**
 					 * if key is not keyword and its value is a schema (JsonObject) it is a reachable object
@@ -161,10 +165,10 @@ public class SchemaMetricsApplicationService {
 					}
 					
 					findMetrics(child,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
-					
-					if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
-						parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
-					}
+					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
+//					if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
+//						parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
+//					}
 					
 				}else {
 					/**
@@ -172,7 +176,7 @@ public class SchemaMetricsApplicationService {
 					 */
 					JSONArray childArray = jsonObject.optJSONArray(key);
 					if(childArray!=null) {
-						boolean isLeaf=true;
+						//boolean isLeaf=true;
 						for (int i=0; i<childArray.length();i++) {
 							JSONObject childArrayJSONObject = childArray.optJSONObject(i);
 							if(childArrayJSONObject !=null) {
@@ -180,21 +184,34 @@ public class SchemaMetricsApplicationService {
 								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
 							}
 						}
-						if(isLeaf) {
-							jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
-						}
-					}else {
+//						if(isLeaf) {
+//							jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+//						}
+					}/*else {
 					
-						/**
-						 *  key is a leaf 
-						 */
+						
 						jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
-					}
+					}*/
+				}
+				if(isLeaf) {
+					/**
+					 *  A key is leaf when its child is not a JsonObject and is not an array with json objects inside
+					 */
+					jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
 				}
 			}
 			//updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, parentGraphMetricDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	private void updateDepthResolvedTree(GraphMetricDTO parentGraphMetricDTO,  GraphMetricDTO localKeyGraphMetricDTO) {
+		if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
+			parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
 		}
 	}
 	
@@ -249,32 +266,40 @@ public class SchemaMetricsApplicationService {
 	
 	private void processReferences(JsonSchemaMetricsDTO jsonSchemaMetricsDTO) {
 		GraphMetricDTO mainGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO();
-		Map<String, GraphMetricDTO> referencers = jsonSchemaMetricsDTO.getReferencer();
+		Map<String, List<GraphMetricDTO>> referencers = jsonSchemaMetricsDTO.getReferencer();
 		Map<String, GraphMetricDTO> referables = jsonSchemaMetricsDTO.getReferable();
-		//for(Entry<String, GraphMetricDTO> referencersEntry: referencers.entrySet()) {
-		for(Iterator<Entry<String, GraphMetricDTO>> referencersIterator = referencers.entrySet().iterator(); referencersIterator.hasNext();) {
-			Entry<String, GraphMetricDTO> referencersEntry = referencersIterator.next(); 
+		
+		for(Iterator<Entry<String, List<GraphMetricDTO>>> referencersIterator = referencers.entrySet().iterator(); referencersIterator.hasNext();) {
+			Entry<String, List<GraphMetricDTO>> referencersEntry = referencersIterator.next(); 
 			String ref = referencersEntry.getKey();
-			GraphMetricDTO referencerGraphMetricDTO = referencersEntry.getValue();
+			List<GraphMetricDTO> referencerGraphMetricDTOs = referencersEntry.getValue();
 			GraphMetricDTO referredGraphMetricDTO = referables.get(ref);
 			
 			if(referredGraphMetricDTO!=null) {
-				referredGraphMetricDTO.incrementFanIn();
-				int depthResolvedTree =referredGraphMetricDTO.getDepthResolvedTree()+referencerGraphMetricDTO.getDepthSchema();
-				if(mainGraphMetricDTO.getDepthResolvedTree()<depthResolvedTree) {
-					mainGraphMetricDTO.setDepthResolvedTree(depthResolvedTree);
-				}
-				/**
-				 * Recursion management
-				 */
-				if(referencerGraphMetricDTO.getPointer().startsWith(referredGraphMetricDTO.getPointer())) {
-					mainGraphMetricDTO.incrementRecursions();
-					int cicleLength = referencerGraphMetricDTO.getDepthSchema()-referredGraphMetricDTO.getDepthSchema();
-					if(cicleLength < mainGraphMetricDTO.getMinCycleLen()) {
-						mainGraphMetricDTO.setMinCycleLen(cicleLength);
+				for (Iterator<GraphMetricDTO>  referencerGraphMetricDTOsIterator = referencerGraphMetricDTOs.iterator(); referencerGraphMetricDTOsIterator.hasNext();) {
+					
+					GraphMetricDTO referencerGraphMetricDTO = referencerGraphMetricDTOsIterator.next();
+					referredGraphMetricDTO.incrementFanIn();
+					/**
+					 * DEPTH_RESOLVED_TREE we sum +2 because the $ref and the root of the referred
+					 */
+					int depthResolvedTree =referredGraphMetricDTO.getDepthResolvedTree()+referencerGraphMetricDTO.getDepthSchema()+2;
+					if(mainGraphMetricDTO.getDepthResolvedTree()<depthResolvedTree) {
+						mainGraphMetricDTO.setDepthResolvedTree(depthResolvedTree);
 					}
-					if(cicleLength>mainGraphMetricDTO.getMaxCycleLen()) {
-						mainGraphMetricDTO.setMaxCycleLen(cicleLength);
+					
+					/**
+					 * Recursion management
+					 */
+					if(referencerGraphMetricDTO.getPointer().startsWith(referredGraphMetricDTO.getPointer())) {
+						mainGraphMetricDTO.incrementRecursions();
+						int cicleLength = referencerGraphMetricDTO.getDepthSchema()-referredGraphMetricDTO.getDepthSchema();
+						if(cicleLength < mainGraphMetricDTO.getMinCycleLen()) {
+							mainGraphMetricDTO.setMinCycleLen(cicleLength);
+						}
+						if(cicleLength>mainGraphMetricDTO.getMaxCycleLen()) {
+							mainGraphMetricDTO.setMaxCycleLen(cicleLength);
+						}
 					}
 				}
 				referencersIterator.remove();
