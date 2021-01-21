@@ -167,23 +167,6 @@ public class SchemaGramsApplicationService {
 		return antiCamelCase;
 	}
 	
-	@Deprecated
-	private String getParentName(JSONObject jsonObject, String keyId, String fileName) throws Exception {
-		//String parentName= fileName;
-		String id = jsonObject.optString(keyId);
-		if(id==null || id.isBlank()) {
-			id=fileName;
-		}
-		String parentName = Utils.getSemanticNameFromUri(id);
-		return parentName;
-	}
-//	private String stripDot(String s) {
-//		String strip = s;
-//		int lastDotIndex = s.lastIndexOf(".");
-//		if(lastDotIndex>=0) {
-//			strip=s.substring(0, lastDotIndex);
-//		}
-//		return strip;
-//	}
+
 	
 }
