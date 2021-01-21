@@ -12,7 +12,7 @@
 	<logger name="jku.bise.jsonschemavalidator" level="info" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
-		<logger name="jku.bise.jsonschemavalidator.applicationservice.schemagrams" level="debug" additivity="false">
+		<logger name="jku.bise.jsonschemavalidator.applicationservice.schemagrams" level="info" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 	
