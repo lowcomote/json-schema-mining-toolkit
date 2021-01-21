@@ -27,8 +27,11 @@ import jku.bise.jsonschemavalidator.exception.SchemaValidatorException;
 public class SchemaValidatorApplicationService {
 
 	private final static String SCHEMA_FIELD_NOT_FOUND = "SCHEMA FIELD NOT FOUND";
-	private final static String SCHEMA_VERSION_NOT_SUPPORTED = "Schema version not supported";
+	private final static String SCHEMA_VERSION_NOT_SUPPORTED = "UNSUPPORTED SCHEMA";
+	private final static String JSON_PARSE_EXCEPTION = "JSON PARSE EXCEPTION";
+	private final static String VALID = "VALID";
 	
+
 	@Autowired
 	private Draft4SchemaValidator draft4SchemaValidator;
 	@Autowired
@@ -42,7 +45,7 @@ public class SchemaValidatorApplicationService {
 	@Autowired
 	private CsvWriterApplicationService csvWriterApplicationService;
 
-	public void validateFileOrDirectory(String pathToDir, String csvFileName)  {
+	public void validateFileOrDirectory(String pathToDir, String csvFileName) {
 		File fileOrdir = new File(pathToDir);
 		if (fileOrdir.isDirectory())
 			for (File file : fileOrdir.listFiles())
@@ -53,51 +56,40 @@ public class SchemaValidatorApplicationService {
 
 	public void validate(File file, String csvFileName) {
 		String schema = null;
-		//List<String> errors = null;
 		List<SchemaViolationDetailDTO> schemaViolationDetailDTOs = null;
 		try {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
-			if(schema!=null) {
-				if(Utils.isDraft4(schema)) {
-					//errors = this.draft4SchemaValidator.validate(jsonObject);
+			if (schema != null) 
+				if (Utils.isDraft4(schema))
 					schemaViolationDetailDTOs = this.draft4SchemaValidator.validate(jsonObject);
-				}else if (Utils.isDraft6(schema)){
-					//errors = this.draft6SchemaValidator.validate(jsonObject);
+				else if (Utils.isDraft6(schema))
 					schemaViolationDetailDTOs = this.draft6SchemaValidator.validate(jsonObject);
-				}else if (Utils.isDraft7(schema)) {
-					//errors = this.draft7SchemaValidator.validate(jsonObject);
+				else if (Utils.isDraft7(schema))
 					schemaViolationDetailDTOs = this.draft7SchemaValidator.validate(jsonObject);
-				}else if (Utils.isDraft3(schema)) {
-					//errors= draft3SchemaValidator.validate(file);
-					schemaViolationDetailDTOs= draft3SchemaValidator.validate(file);
-				} else if (Utils.isDraft201909(schema)) {
-					//errors = draft201909SchemaValidator.validate(file);
+				else if (Utils.isDraft3(schema))
+					schemaViolationDetailDTOs = draft3SchemaValidator.validate(file);
+				else if (Utils.isDraft201909(schema))
 					schemaViolationDetailDTOs = draft201909SchemaValidator.validate(file);
-				}
-				if(schemaViolationDetailDTOs!=null) {
-					for(SchemaViolationDetailDTO schemaViolationDetailDTO:schemaViolationDetailDTOs) {
+				if (schemaViolationDetailDTOs != null)
+					for (SchemaViolationDetailDTO schemaViolationDetailDTO : schemaViolationDetailDTOs) {
 						schemaViolationDetailDTO.setFileName(file.toString());
 						schemaViolationDetailDTO.setSchema(schema);
 					}
-				}
-			}
 			
-			if(schema==null)  
-				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_FIELD_NOT_FOUND, schema, csvFileName);
-			//else if (errors == null)
+			if (schema == null)
+				csvWriterApplicationService.createCSVFile(file.toString(), SCHEMA_FIELD_NOT_FOUND, schema, csvFileName);
 			else if (schemaViolationDetailDTOs == null)
-				csvWriterApplicationService.createCSVFile(file.toString(),  SCHEMA_VERSION_NOT_SUPPORTED, schema, csvFileName);
-
+				csvWriterApplicationService.createCSVFile(file.toString(), SCHEMA_VERSION_NOT_SUPPORTED, schema,
+						csvFileName);
 			else if (schemaViolationDetailDTOs.size() > 0)
-				//csvWriterApplicationService.createCSVFile(file.toString(),  errors, schema, csvFileName);
-				csvWriterApplicationService.createCSVFile(schemaViolationDetailDTOs,   csvFileName);
+				csvWriterApplicationService.createCSVFile(schemaViolationDetailDTOs, csvFileName);
 			else if (schemaViolationDetailDTOs.size() == 0)
-				csvWriterApplicationService.createCSVFile(file.toString(),  "VALID", schema, csvFileName);
-		} catch ( JsonParseException e) {
-			csvWriterApplicationService.createCSVFile(file.toString(),  "JSON PARSE EXCEPTION", schema, csvFileName);
-		} catch ( SchemaValidatorException e) {
-			csvWriterApplicationService.createCSVFile(file.toString(),  "UNSUPPORTED SCHEMA", schema, csvFileName);
+				csvWriterApplicationService.createCSVFile(file.toString(), VALID, schema, csvFileName);
+		} catch (JsonParseException e) {
+			csvWriterApplicationService.createCSVFile(file.toString(), JSON_PARSE_EXCEPTION, schema, csvFileName);
+		} catch (SchemaValidatorException e) {
+			csvWriterApplicationService.createCSVFile(file.toString(), SCHEMA_VERSION_NOT_SUPPORTED, schema, csvFileName);
 		}
 	}
 }

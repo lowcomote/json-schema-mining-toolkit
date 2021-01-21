@@ -50,6 +50,8 @@ public class SchemaGramsApplicationService {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			return createSchemaGramsDTO(file.getName(),  jsonObject);
 		} catch (Exception e) {
+			if(logger.isDebugEnabled()) 
+				logger.error("{} with {}",file.toString(), e.getMessage());
 			e.printStackTrace();
 			return null;
 		}

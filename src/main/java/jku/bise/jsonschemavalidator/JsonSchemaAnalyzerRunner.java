@@ -27,7 +27,6 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 	private static final String USE_CONFIG_PROPERTIES = "Y";
 	private static final String NOT_USE_CONFIG_PROPERTIES = "N";
 	private static final String DELETE_DUPLICATES = "Y";
-	private static final String MAINTAIN_DUPLICATES = "N";
 	private static final String ABORT ="A";
 	
 	@Autowired
@@ -84,7 +83,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			outputCSV = config.getString("output.csv.file");		
 			duplicates = config.getBoolean("remove.dupicates");		
 
-		}else {
+		} else {
 			System.out.println("Please introcuce the path to the folder or file you want to analyze (e.g., json/)");
 			inputFolderPath = console.nextLine().trim();
 			System.out.println("Please introcuce the name  of the csv file you want to create or update (e.g., test.csv)");
@@ -92,6 +91,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			System.out.println("Please introcuce if duplicates should be removed: (Y remove duplicates, N maintain duplicates");
 			duplicates = console.nextLine().trim().equals(DELETE_DUPLICATES);
 		}
+		
 		System.out.println("Choice: "+choice);
 		System.out.println("Input Folder Path: "+inputFolderPath);
 		System.out.println("Output CSV: "+outputCSV);

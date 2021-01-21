@@ -90,13 +90,14 @@ public class CsvWriterApplicationService {
 			append = false;
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(csvFileName, append), CSVFormat.DEFAULT)) {
 			for (SchemaViolationDetailDTO schemaValidationDetailDTO : schemaViolationDetailDTOs) {
-				printer.printRecord(schemaValidationDetailDTO.getFileName(), 
+				printer.printRecord(
+						schemaValidationDetailDTO.getFileName(), 
 						schemaValidationDetailDTO.getSchema(), 
 						schemaValidationDetailDTO.getKeyword(),
 						schemaValidationDetailDTO.getPointerToViolation(),
 						schemaValidationDetailDTO.getLevel(),
 						schemaValidationDetailDTO.getMessage(),
-						schemaValidationDetailDTO.getExtendedMessage());
+						schemaValidationDetailDTO.getExtendedMessage().replace("\n", ""));
 			}
 
 		} catch (IOException e) {
