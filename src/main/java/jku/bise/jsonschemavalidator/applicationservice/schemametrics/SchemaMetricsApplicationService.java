@@ -2,9 +2,16 @@ package jku.bise.jsonschemavalidator.applicationservice.schemametrics;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +27,6 @@ import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.GraphMetricDTO;
 import jku.bise.jsonschemavalidator.dto.JsonSchemaMetricsDTO;
 import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
-import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaMetricsApplicationService {
@@ -45,7 +51,7 @@ public class SchemaMetricsApplicationService {
 		return jsonSchemaMetricsDTOs;
 	}
 
-	public JsonSchemaMetricsDTO findSchemaMetrics(File file, String csvFileName) throws ApplicationServiceException  {
+	public JsonSchemaMetricsDTO findSchemaMetrics(File file, String csvFileName)   {
 		logger.debug("findSchemaMetrics");
 		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = null;
 		try {
@@ -69,10 +75,14 @@ public class SchemaMetricsApplicationService {
 				jsonSchemaMetricsDTO = findSchemaMetrics( jsonObject, keywordList);
 				jsonSchemaMetricsDTO.setName(file.getName());
 				jsonSchemaMetricsDTO.setSchema(schema);
+				if(logger.isDebugEnabled()) {
+					logger.debug("Metrics : {}", jsonSchemaMetricsDTO.toString());
+				}
 			}
 			return  jsonSchemaMetricsDTO;
-		} catch (JsonParseException e) {
-			throw new ApplicationServiceException(e.getMessage(),e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -87,39 +97,252 @@ public class SchemaMetricsApplicationService {
 		});
 		GraphMetricDTO parentGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO().clone();
 		findMetrics(jsonObject, keywords, jsonSchemaMetricsDTO,parentGraphMetricDTO);
+		processReferences(jsonSchemaMetricsDTO);
+		
 		return jsonSchemaMetricsDTO;
 	}
 	
-	/**
-	 * TODO rename
-	 * @param jsonObject
-	 * @param keywords
-	 * @param jsonSchemaMetricsDTO
-	 */
+	
 	private void findMetrics(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO parentGraphMetricDTO) {
-		GraphMetricDTO localGraphMetricDTO = parentGraphMetricDTO.clone();
-		localGraphMetricDTO.incrementDepthSchema();
-		Set<String> keys =jsonObject.keySet();
-		keys.stream().forEach(key->{
-			if(keywords.contains(key)) {
-				int count = jsonSchemaMetricsDTO.getKeywordsCount(key);
-				jsonSchemaMetricsDTO.putKeywordsCount(key, count+1);
-				accumulateType(key, jsonObject,  jsonSchemaMetricsDTO) ;
-			}
-			JSONObject child = jsonObject.optJSONObject(key);
+		try {
+			String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
+			boolean isParentKeyProperty = CommonDraftsKeywords.PROPERTIES.equals(parentKey);
+			
+			Set<String> keys =jsonObject.keySet();
+			for(String key :keys) {
+				boolean isLeaf=true;
+				GraphMetricDTO localKeyGraphMetricDTO = parentGraphMetricDTO.clone();
+				localKeyGraphMetricDTO.appendToPointer(key);
+				localKeyGraphMetricDTO.incrementDepthSchema();
+				updateDepthSchema(jsonSchemaMetricsDTO, localKeyGraphMetricDTO );
+				
+				boolean isKeyword= updateKeywordsAndTypeCounter(jsonObject, keywords, jsonSchemaMetricsDTO,  key);
+//				boolean isKeyword=false;
+//				if(keywords.contains(key)) {
+//					isKeyword = true;
+//					int count = jsonSchemaMetricsDTO.getKeywordsCount(key);
+//					jsonSchemaMetricsDTO.putKeywordsCount(key, count+1);
+//					updateTypeCounters(key, jsonObject,  jsonSchemaMetricsDTO) ;
+//				}
+				
+				updateFanOut(jsonSchemaMetricsDTO, jsonObject, key);
+				
+				JSONObject child = jsonObject.optJSONObject(key);
+				if(child!=null) {
+					isLeaf=false;
+//					if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
+//						localKeyGraphMetricDTO.setFanOut(child.keySet().size());
+//					}
 
-			if(child!=null) {
-				if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
-					localGraphMetricDTO.setFanOut(child.keySet().size());
+					//if(isParentKeyProperty && child.has(CommonDraftsKeywords.REF)) {
+					if(child.has(CommonDraftsKeywords.REF)) {
+						String ref = child.getString(CommonDraftsKeywords.REF);
+						
+						//jsonSchemaMetricsDTO.getReferencer().put(ref, localKeyGraphMetricDTO);
+						jsonSchemaMetricsDTO.putReferencer(ref, localKeyGraphMetricDTO);
+					}
+					/**
+					 * if key is not keyword and its value is a schema (JsonObject) it is a reachable object
+					 */
+					if(!isKeyword) {
+						/**
+						 * Reachable object. 
+						 */
+						jsonSchemaMetricsDTO.getReferable().put(localKeyGraphMetricDTO.getPointer(), localKeyGraphMetricDTO);
+						String idKey = getIdKey(keywords);
+						if(child.has(idKey)) {
+							/**
+							 * We can reference child with its id too. If it has one.
+							 */
+							String id = jsonObject.getString(idKey);
+							jsonSchemaMetricsDTO.getReferable().put(id, localKeyGraphMetricDTO);
+						}
+						/**
+						 * FAN IN: if its parent is "property" it is already reference by its father.
+						 */
+						if(isParentKeyProperty) {
+							localKeyGraphMetricDTO.setFanIn(1);
+						}
+					}
+					
+					findMetrics(child,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
+					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
+//					if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
+//						parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
+//					}
+					
+				}else {
+					/**
+					 * It could be an array
+					 */
+					JSONArray childArray = jsonObject.optJSONArray(key);
+					if(childArray!=null) {
+						//boolean isLeaf=true;
+						for (int i=0; i<childArray.length();i++) {
+							JSONObject childArrayJSONObject = childArray.optJSONObject(i);
+							if(childArrayJSONObject !=null) {
+								isLeaf=false;
+								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
+							}
+						}
+//						if(isLeaf) {
+//							jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+//						}
+					}/*else {
+					
+						
+						jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+					}*/
 				}
-				findMetrics(child,  keywords,   jsonSchemaMetricsDTO, localGraphMetricDTO.clone());
-			}else {
-				// it is a leaf
-				jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+				if(isLeaf) {
+					/**
+					 *  A key is leaf when its child is not a JsonObject and is not an array with json objects inside
+					 */
+					jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
+					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
+				}
 			}
-			updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, localGraphMetricDTO);
-		});
+			//updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, parentGraphMetricDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+	
+	
+	
+	private void updateDepthResolvedTree(GraphMetricDTO parentGraphMetricDTO,  GraphMetricDTO localKeyGraphMetricDTO) {
+		if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
+			parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
+		}
+	}
+	
+	private void updateDepthSchema(JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO localKeyGraphMetricDTO) {
+		if(jsonSchemaMetricsDTO.getGraphMetricDTO().getDepthSchema()<localKeyGraphMetricDTO.getDepthSchema()) {
+			jsonSchemaMetricsDTO.getGraphMetricDTO().setDepthSchema(localKeyGraphMetricDTO.getDepthSchema());
+		}
+		
+	}
+
+	/**
+	 * 
+	 * If parent.childKey is a JSONObject the fanout is the number of its keys
+	 * If parent.childKey is a JSONArray the fanout is the number of its elements that are JSONObject
+	 * 
+	 * @param jsonSchemaMetricsDTO
+	 * @param parent
+	 * @param childKey
+	 */
+	private void updateFanOut(JsonSchemaMetricsDTO jsonSchemaMetricsDTO, JSONObject parent, String childKey) {
+		int fanOut = 0;
+		JSONObject childObject = parent.optJSONObject(childKey);
+		if(childObject!=null) {
+			fanOut = childObject.keySet().size();
+		}else {
+			JSONArray childArray=parent.optJSONArray(childKey);
+			if(childArray!=null) {
+				for (int i=0; i<childArray.length();i++) {
+					if(childArray.optJSONObject(i)!=null) {
+						fanOut++;
+					}
+				}
+			}
+		}
+		if(jsonSchemaMetricsDTO.getGraphMetricDTO().getFanOut()<fanOut) {
+			jsonSchemaMetricsDTO.getGraphMetricDTO().setFanOut(fanOut);
+		}
+		
+		
+	}
+	
+	private boolean updateKeywordsAndTypeCounter(JSONObject jsonObject, List<String> keywords,  JsonSchemaMetricsDTO jsonSchemaMetricsDTO, String key) {
+		boolean isKeyword = false;
+		if(keywords.contains(key)) {
+			isKeyword = true;
+			int count = jsonSchemaMetricsDTO.getKeywordsCount(key);
+			jsonSchemaMetricsDTO.putKeywordsCount(key, count+1);
+			updateTypeCounters(key, jsonObject,  jsonSchemaMetricsDTO) ;
+		}
+		return isKeyword;
+	}
+	
+	private void processReferences(JsonSchemaMetricsDTO jsonSchemaMetricsDTO) {
+		GraphMetricDTO mainGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO();
+		Map<String, List<GraphMetricDTO>> referencers = jsonSchemaMetricsDTO.getReferencer();
+		Map<String, GraphMetricDTO> referables = jsonSchemaMetricsDTO.getReferable();
+		
+		for(Iterator<Entry<String, List<GraphMetricDTO>>> referencersIterator = referencers.entrySet().iterator(); referencersIterator.hasNext();) {
+			Entry<String, List<GraphMetricDTO>> referencersEntry = referencersIterator.next(); 
+			String ref = referencersEntry.getKey();
+			List<GraphMetricDTO> referencerGraphMetricDTOs = referencersEntry.getValue();
+			GraphMetricDTO referredGraphMetricDTO = referables.get(ref);
+			
+			if(referredGraphMetricDTO!=null) {
+				for (Iterator<GraphMetricDTO>  referencerGraphMetricDTOsIterator = referencerGraphMetricDTOs.iterator(); referencerGraphMetricDTOsIterator.hasNext();) {
+					
+					GraphMetricDTO referencerGraphMetricDTO = referencerGraphMetricDTOsIterator.next();
+					referredGraphMetricDTO.incrementFanIn();
+					/**
+					 * DEPTH_RESOLVED_TREE we sum +1 because of the  root of the referred node. The $ref key does not count 
+					 */
+					int depthResolvedTree =referredGraphMetricDTO.getDepthResolvedTree()+referencerGraphMetricDTO.getDepthSchema()+1;
+					if(mainGraphMetricDTO.getDepthResolvedTree()<depthResolvedTree) {
+						mainGraphMetricDTO.setDepthResolvedTree(depthResolvedTree);
+					}
+					
+					/**
+					 * Recursion management
+					 */
+					if(referencerGraphMetricDTO.getPointer().startsWith(referredGraphMetricDTO.getPointer())) {
+						mainGraphMetricDTO.incrementRecursions();
+						int cicleLength = referencerGraphMetricDTO.getDepthSchema()-referredGraphMetricDTO.getDepthSchema();
+						/**
+						 * MIN_CYCLE_LEN
+						 */
+						if(mainGraphMetricDTO.getMinCycleLen()==0) {
+							/**
+							 * It is the first cycle found. MinCycleLen is initialized
+							 */
+							mainGraphMetricDTO.setMinCycleLen(cicleLength);
+						}else if(cicleLength < mainGraphMetricDTO.getMinCycleLen()) {
+							mainGraphMetricDTO.setMinCycleLen(cicleLength);
+						}
+						/**
+						 * MAX_CYCLE_LEN
+						 */
+						if(cicleLength>mainGraphMetricDTO.getMaxCycleLen()) {
+							mainGraphMetricDTO.setMaxCycleLen(cicleLength);
+						}
+					}
+				}
+				referencersIterator.remove();
+			}
+		}
+		
+		/**
+		 * UNSOLVED_REFS: elements not removed from referencers does not reach any referable.
+		 */
+		mainGraphMetricDTO.setUnsolvedRefs(referencers.size());
+		
+		/**
+		 * Find distinct referables elements. There can be duplicated in case of id present in the referable GraphMetricDTO
+		 */
+		List<GraphMetricDTO> distinctReferables = referables.values().stream().distinct().collect(Collectors.toList());
+		
+		/**
+		 * FAN_IN: find max fanIn;
+		 */
+		Optional<GraphMetricDTO> maxFanInGraphMetricDTO = distinctReferables.stream().max(Comparator.comparing(GraphMetricDTO::getFanIn));
+		maxFanInGraphMetricDTO.ifPresent( max-> {mainGraphMetricDTO.setFanIn(max.getFanIn());});
+		
+		/**
+		 * UNREACHABLES:  referable elements with fanIn == 0 have not ben reached
+		 */
+		int unreachables = (int) distinctReferables.stream().filter(referable -> referable.getFanIn()==0).count();
+		mainGraphMetricDTO.setUnreachables(unreachables);
+		
+	}
+	
+	
 	
 	/**
 	 * This method accumulates the occurrences for each type if potentialTypeKeyword is "type"
@@ -127,7 +350,7 @@ public class SchemaMetricsApplicationService {
 	 * @param jsonObject
 	 * @param jsonSchemaMetricsDTO
 	 */
-	private void accumulateType(String potentialTypeKeyword, JSONObject jsonObject, JsonSchemaMetricsDTO jsonSchemaMetricsDTO) {
+	private void updateTypeCounters(String potentialTypeKeyword, JSONObject jsonObject, JsonSchemaMetricsDTO jsonSchemaMetricsDTO) {
 		if(CommonDraftsKeywords.TYPE.equals(potentialTypeKeyword)) {
 			if(jsonObject.isNull(potentialTypeKeyword)) {
 				int count = jsonSchemaMetricsDTO.getTypesCount(CommonDraftsKeywords.TYPE_NULL);
@@ -145,15 +368,12 @@ public class SchemaMetricsApplicationService {
 		}
 	}
 	
-	private void updateJsonSchemaGraphMetric(JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO localGraphMetricDTO) {
-		GraphMetricDTO jsonSchemaGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO();
-		if(jsonSchemaGraphMetricDTO.getDepthSchema()<localGraphMetricDTO.getDepthSchema()) {
-			jsonSchemaGraphMetricDTO.setDepthSchema(localGraphMetricDTO.getDepthSchema());
+	private String getIdKey(List<String> keywords) {
+		if(keywords.contains(Draft03Keywords.ID)) {
+			return Draft03Keywords.ID;
+		}else {
+			return Draft07Keywords.ID;
 		}
-		if(jsonSchemaGraphMetricDTO.getFanOut()<localGraphMetricDTO.getFanOut()) {
-			jsonSchemaGraphMetricDTO.setFanOut(localGraphMetricDTO.getFanOut());
-		}
-		
 	}
 	
 	

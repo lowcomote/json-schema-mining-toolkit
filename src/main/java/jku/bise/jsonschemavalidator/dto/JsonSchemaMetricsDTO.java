@@ -1,7 +1,9 @@
 package jku.bise.jsonschemavalidator.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JsonSchemaMetricsDTO implements Serializable {
@@ -24,6 +26,10 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	
 	private GraphMetricDTO graphMetricDTO = new GraphMetricDTO();
 	
+	
+	//private Map<String,GraphMetricDTO> referencer = new HashMap<String,GraphMetricDTO>();
+	private Map<String,List<GraphMetricDTO>> referencer = new HashMap<String,List<GraphMetricDTO>>();
+	private Map<String,GraphMetricDTO> referable = new HashMap<String,GraphMetricDTO>();
 	
 	public void putKeywordsCount(String keyword, Integer count) {
 		this.keywordsCount.put(keyword, count) ;
@@ -81,12 +87,31 @@ public class JsonSchemaMetricsDTO implements Serializable {
 		return graphMetricDTO;
 	}
 
+	public Map<String, List<GraphMetricDTO>> getReferencer() {
+		return referencer;
+	}
+
+	public Map<String, GraphMetricDTO> getReferable() {
+		return referable;
+	}
 	
-	
-	
+	public void putReferencer(String key,  GraphMetricDTO graphMetricDTO) {
+		if(!this.referencer.containsKey(key)) {
+			this.referencer.put(key, new ArrayList<GraphMetricDTO>());
+		}
+		referencer.get(key).add(graphMetricDTO);
+	}
 
 	
-	
-	
-	
+	@Override
+	public String toString() {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("name :" +this.name+"\n");
+		stringBuffer.append("schema :" +this.schema+"\n");
+		stringBuffer.append("keywordsCount :" +this.keywordsCount.toString()+"\n");
+		stringBuffer.append("typesCount :" +this.typesCount.toString()+"\n");
+		stringBuffer.append("graphMetricDTO :" +this.graphMetricDTO.toString()+"\n");
+		return stringBuffer.toString();
+	}
+
 }

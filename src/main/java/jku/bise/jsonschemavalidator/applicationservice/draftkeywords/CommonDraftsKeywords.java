@@ -7,7 +7,13 @@ import java.util.List;
 public class CommonDraftsKeywords {
 	
 	public final static String PROPERTIES = "properties";
+
 	public final static String PATTERN_PROPERTIES = "patternProperties";
+
+	public final static String REF = "$ref";
+	public final static String DEFINITIONS = "definitions";
+	
+
 	
 	public final static String TYPE = "type";
 	public final static String TYPE_ARRAY = "array";
