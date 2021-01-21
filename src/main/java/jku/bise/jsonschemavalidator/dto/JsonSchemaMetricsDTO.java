@@ -25,6 +25,9 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	private GraphMetricDTO graphMetricDTO = new GraphMetricDTO();
 	
 	
+	private Map<String,GraphMetricDTO> referencer = new HashMap<String,GraphMetricDTO>();
+	private Map<String,GraphMetricDTO> referable = new HashMap<String,GraphMetricDTO>();
+	
 	public void putKeywordsCount(String keyword, Integer count) {
 		this.keywordsCount.put(keyword, count) ;
 	}
@@ -80,6 +83,16 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	public GraphMetricDTO getGraphMetricDTO() {
 		return graphMetricDTO;
 	}
+
+	public Map<String, GraphMetricDTO> getReferencer() {
+		return referencer;
+	}
+
+	public Map<String, GraphMetricDTO> getReferable() {
+		return referable;
+	}
+
+	
 
 	
 	

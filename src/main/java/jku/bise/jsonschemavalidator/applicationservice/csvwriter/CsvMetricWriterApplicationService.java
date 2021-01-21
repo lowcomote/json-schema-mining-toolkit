@@ -114,10 +114,12 @@ public class CsvMetricWriterApplicationService {
 					GraphMetricDTO.DEPTH_RESOLVED_TREE,
 					GraphMetricDTO.FAN_IN,
 					GraphMetricDTO.FAN_OUT,
-					GraphMetricDTO.HAS_RECURSION,
+					GraphMetricDTO.RECURSIONS,
 					GraphMetricDTO.MIN_CYCLE_LEN,
+					GraphMetricDTO.MAX_CYCLE_LEN,
 					GraphMetricDTO.WIDTH,
-					GraphMetricDTO.REACHABILITY
+					GraphMetricDTO.UNREACHABLES,
+					GraphMetricDTO.UNSOLVED_REFS
 				);
 		} catch (Exception e) {
 			if(logger.isErrorEnabled()) {
@@ -212,11 +214,12 @@ public class CsvMetricWriterApplicationService {
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getDepthResolvedTree(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getFanIn(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getFanOut(),
-						jsonSchemaMetricsDTO.getGraphMetricDTO().isHasRecursion(),
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getRecursions(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getMinCycleLen(),
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getMaxCycleLen(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getWidth(),
-						jsonSchemaMetricsDTO.getGraphMetricDTO().isReachability()
-
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getUnreachables(),
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getUnsolvedRefs()
 					
 				);
 				

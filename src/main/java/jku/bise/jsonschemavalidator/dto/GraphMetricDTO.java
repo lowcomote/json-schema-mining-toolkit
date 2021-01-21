@@ -16,11 +16,18 @@ public class GraphMetricDTO implements Serializable{
 	public static final String DEPTH_RESOLVED_TREE ="Depth Resolved Tree"; 
 	public static final String FAN_IN ="Fan In"; 
 	public static final String FAN_OUT ="Fan Out";
-	public static final String HAS_RECURSION ="Has Recursion";
+	public static final String RECURSIONS ="Recursions";
 	public static final String MIN_CYCLE_LEN ="Min Cycle Len";
+	public static final String MAX_CYCLE_LEN = "Max Cycle Len";
 	public static final String WIDTH ="Width";
-	public static final String REACHABILITY ="Reachability";
+	public static final String UNREACHABLES ="Unreachables";
+	public static final String UNSOLVED_REFS ="Unsolved Refs";
 	
+	
+	/**
+	 * keep track of the location element in the json that created it
+	 */
+	private String pointer="#";
 	
 	/**
 	 * Depth of the tree that emerges from loading the raw JSON Schema into an schema_graph .
@@ -43,9 +50,9 @@ public class GraphMetricDTO implements Serializable{
 	private int fanOut = 0;
 	
 	/**
-	 * Boolean flag that indicates whether the JSON Schema document (i.e. the resolved graph) is recursive.
+	 * Number of recursions.
 	 */
-	private boolean hasRecursion = false;
+	private int recursions = 0;
 	
 	/**
 	 * Minimum cycle length of a recursive document. If has_recursion is false, this column will be 0.
@@ -53,14 +60,25 @@ public class GraphMetricDTO implements Serializable{
 	private int minCycleLen = 0;
 	
 	/**
+	 * MAximum cycle length of a recursive document. If has_recursion is false, this column will be 0.
+	 */
+	private int maxCycleLen = 0;
+	
+	/**
 	 * Number of leaf nodes in the schema_graph of the raw JSON Schema document.
 	 */
 	private int width = 0;
 	
 	/**
-	 * Boolean flag that indicates whether the schema contains unreachable (unused) definitons.
+	 * Number of  unreachable (unused) definitons.
 	 */
-	private boolean reachability = false;
+	private int unreachables = 0;
+	
+	/**
+	 * Number of references not matching a definition
+	 */
+	private int unsolvedRefs =0;
+	
 
 	public int getDepthSchema() {
 		return depthSchema;
@@ -94,12 +112,12 @@ public class GraphMetricDTO implements Serializable{
 		this.fanOut = fanOut;
 	}
 
-	public boolean isHasRecursion() {
-		return hasRecursion;
+	public int getRecursions() {
+		return recursions;
 	}
 
-	public void setHasRecursion(boolean hasRecursion) {
-		this.hasRecursion = hasRecursion;
+	public void setRecursions(int recursions) {
+		this.recursions = recursions;
 	}
 
 	public int getMinCycleLen() {
@@ -108,6 +126,16 @@ public class GraphMetricDTO implements Serializable{
 
 	public void setMinCycleLen(int minCycleLen) {
 		this.minCycleLen = minCycleLen;
+	}
+	
+	
+
+	public int getMaxCycleLen() {
+		return maxCycleLen;
+	}
+
+	public void setMaxCycleLen(int maxCycleLen) {
+		this.maxCycleLen = maxCycleLen;
 	}
 
 	public int getWidth() {
@@ -118,14 +146,39 @@ public class GraphMetricDTO implements Serializable{
 		this.width = width;
 	}
 
-	public boolean isReachability() {
-		return reachability;
+	public int getUnreachables() {
+		return unreachables;
 	}
 
-	public void setReachability(boolean reachability) {
-		this.reachability = reachability;
+	public void setUnreachables(int unreachables) {
+		this.unreachables = unreachables;
 	}
 	
+	
+	
+	public String getPointer() {
+		return pointer;
+	}
+
+	public void setPointer(String pointer) {
+		this.pointer = pointer;
+	}
+	
+	
+	
+	
+	public int getUnsolvedRefs() {
+		return unsolvedRefs;
+	}
+
+	public void setUnsolvedRefs(int unsolvedRefs) {
+		this.unsolvedRefs = unsolvedRefs;
+	}
+
+	public void appendToPointer(String key) {
+		this.pointer += "/"+ key;
+	}
+
 	public void incrementDepthSchema() {
 		this.depthSchema++;
 	}
@@ -134,18 +187,28 @@ public class GraphMetricDTO implements Serializable{
 		this.width++;
 	}
 	
+	public void incrementFanIn() {
+		this.fanIn++;
+	}
+	
+	public void incrementRecursions() {
+		this.recursions++;
+	}
+	
 	
 	
 
 	@Override
 	public GraphMetricDTO clone() {
 		GraphMetricDTO clone = new GraphMetricDTO();
+		clone.setPointer(this.pointer);
 		clone.setDepthSchema(this.depthSchema);
-		clone.setDepthResolvedTree(this.depthResolvedTree);
-		clone.setFanIn(this.fanIn);
-		clone.setFanOut(this.fanOut);
-		clone.setHasRecursion(this.hasRecursion);
+		//clone.setDepthResolvedTree(this.depthResolvedTree);
+		//clone.setFanIn(this.fanIn);
+		//clone.setFanOut(this.fanOut);
+		//clone.setRecursions(this.recursions);
 		clone.setMinCycleLen(this.minCycleLen);
+		clone.setMaxCycleLen(this.maxCycleLen);
 		clone.setWidth(this.width);
 		return clone;
 	}
