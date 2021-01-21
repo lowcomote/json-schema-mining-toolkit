@@ -75,6 +75,9 @@ public class SchemaMetricsApplicationService {
 				jsonSchemaMetricsDTO = findSchemaMetrics( jsonObject, keywordList);
 				jsonSchemaMetricsDTO.setName(file.getName());
 				jsonSchemaMetricsDTO.setSchema(schema);
+				if(logger.isDebugEnabled()) {
+					logger.debug("Metrics : {}", jsonSchemaMetricsDTO.toString());
+				}
 			}
 			return  jsonSchemaMetricsDTO;
 		} catch (Exception e) {
@@ -95,9 +98,7 @@ public class SchemaMetricsApplicationService {
 		GraphMetricDTO parentGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO().clone();
 		findMetrics(jsonObject, keywords, jsonSchemaMetricsDTO,parentGraphMetricDTO);
 		processReferences(jsonSchemaMetricsDTO);
-		if(logger.isDebugEnabled()) {
-			logger.debug("Metrics : {}", jsonSchemaMetricsDTO.toString());
-		}
+		
 		return jsonSchemaMetricsDTO;
 	}
 	
