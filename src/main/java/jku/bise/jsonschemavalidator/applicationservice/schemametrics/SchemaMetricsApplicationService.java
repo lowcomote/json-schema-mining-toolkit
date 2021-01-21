@@ -282,9 +282,9 @@ public class SchemaMetricsApplicationService {
 					GraphMetricDTO referencerGraphMetricDTO = referencerGraphMetricDTOsIterator.next();
 					referredGraphMetricDTO.incrementFanIn();
 					/**
-					 * DEPTH_RESOLVED_TREE we sum +2 because the $ref and the root of the referred
+					 * DEPTH_RESOLVED_TREE we sum +1 because of the  root of the referred node. The $ref key does not count 
 					 */
-					int depthResolvedTree =referredGraphMetricDTO.getDepthResolvedTree()+referencerGraphMetricDTO.getDepthSchema()+2;
+					int depthResolvedTree =referredGraphMetricDTO.getDepthResolvedTree()+referencerGraphMetricDTO.getDepthSchema()+1;
 					if(mainGraphMetricDTO.getDepthResolvedTree()<depthResolvedTree) {
 						mainGraphMetricDTO.setDepthResolvedTree(depthResolvedTree);
 					}
@@ -295,9 +295,20 @@ public class SchemaMetricsApplicationService {
 					if(referencerGraphMetricDTO.getPointer().startsWith(referredGraphMetricDTO.getPointer())) {
 						mainGraphMetricDTO.incrementRecursions();
 						int cicleLength = referencerGraphMetricDTO.getDepthSchema()-referredGraphMetricDTO.getDepthSchema();
-						if(cicleLength < mainGraphMetricDTO.getMinCycleLen()) {
+						/**
+						 * MIN_CYCLE_LEN
+						 */
+						if(mainGraphMetricDTO.getMinCycleLen()==0) {
+							/**
+							 * It is the first cycle found. MinCycleLen is initialized
+							 */
+							mainGraphMetricDTO.setMinCycleLen(cicleLength);
+						}else if(cicleLength < mainGraphMetricDTO.getMinCycleLen()) {
 							mainGraphMetricDTO.setMinCycleLen(cicleLength);
 						}
+						/**
+						 * MAX_CYCLE_LEN
+						 */
 						if(cicleLength>mainGraphMetricDTO.getMaxCycleLen()) {
 							mainGraphMetricDTO.setMaxCycleLen(cicleLength);
 						}
