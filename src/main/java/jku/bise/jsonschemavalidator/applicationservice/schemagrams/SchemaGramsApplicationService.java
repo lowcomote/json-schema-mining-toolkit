@@ -18,6 +18,7 @@ import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft07Keyw
 import jku.bise.jsonschemavalidator.applicationservice.draftkeywords.Draft201909Keywords;
 import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.SchemaGramsDTO;
+import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaGramsApplicationService {
@@ -52,9 +53,17 @@ public class SchemaGramsApplicationService {
 			//return createSchemaGramsDTO(file.getName(),  jsonObject);
 			return createSchemaGramsDTO(file.getName(),  jsonObject);
 		} catch (Exception e) {
-			if(logger.isDebugEnabled()) 
-				logger.error("{} with {}",file.toString(), e.getMessage());
-			e.printStackTrace();
+			JSONObject jsonObject;
+			String schema;
+			try {
+				jsonObject = Utils.buildJsonObjectFromFile(file);
+				schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
+				if(logger.isDebugEnabled()) 
+					logger.error("{}, {}",file.toString(), schema);
+			} catch (JsonParseException e1) {
+				if(logger.isDebugEnabled()) 
+					logger.error("{}, UNKNOW",file.toString(), e.getMessage());
+			}
 			return null;
 		}
 	}

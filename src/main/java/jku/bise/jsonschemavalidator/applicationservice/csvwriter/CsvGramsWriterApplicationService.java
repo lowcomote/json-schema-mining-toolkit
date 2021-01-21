@@ -20,13 +20,13 @@ public class CsvGramsWriterApplicationService {
 	private static Logger logger = LoggerFactory.getLogger(CsvGramsWriterApplicationService.class);
 	
 	
-	public void createCSVFile(List<SchemaGramsDTO> schemaGramsDTOs, String csvFileName) {
+	public void createFile(List<SchemaGramsDTO> schemaGramsDTOs, String csvFileName) {
 		for(SchemaGramsDTO schemaGramsDTO: schemaGramsDTOs) {
-			createCSVFile( schemaGramsDTO);
+			createFile( schemaGramsDTO);
 		}
 	}
 	
-	private void createCSVFile(SchemaGramsDTO schemaGramsDTO) {
+	private void createFile(SchemaGramsDTO schemaGramsDTO) {
 		//String csvFileName = Utils.stripDot(schemaGramsDTO.getName())+".csv";
 		//try {
 		try {

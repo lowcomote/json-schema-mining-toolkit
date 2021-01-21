@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jku.bise.jsonschemavalidator.applicationservice.csvwriter.CsvGramsWriterApplicationService;
+import jku.bise.jsonschemavalidator.applicationservice.csvwriter.FileGramsWriterApplicationService;
 import jku.bise.jsonschemavalidator.applicationservice.schemagrams.SchemaGramsApplicationService;
 import jku.bise.jsonschemavalidator.dto.SchemaGramsDTO;
 
@@ -16,10 +16,10 @@ public class SchemaGramsServiceFacade {
 	private SchemaGramsApplicationService schemaGramsApplicationService;
 	
 	@Autowired
-	private CsvGramsWriterApplicationService csvGramsWriterApplicationService;
+	private FileGramsWriterApplicationService fileGramsWriterApplicationService;
 	
-	public void findSchemaMetricsInFileOrDirectory(String pathToDir, String csvFileName){
+	public void findSchemaMetricsInFileOrDirectory(String pathToDir, String gramFolder){
 		List<SchemaGramsDTO> schemaGramsDTOs = schemaGramsApplicationService.buildGramsInFileOrDirectory(pathToDir);
-		csvGramsWriterApplicationService.createCSVFile(schemaGramsDTOs, csvFileName);
+		fileGramsWriterApplicationService.createFiles(schemaGramsDTOs, gramFolder);
 	}
 }

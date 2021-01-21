@@ -55,6 +55,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		String useConfig = "";
 		String outputCSV = "";
 		String inputFolderPath = "";
+		String gramFolder = "";
 		boolean duplicates = false;
 		
 		Scanner console = new Scanner(System.in);
@@ -80,7 +81,8 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		if (USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig)){
 			PropertiesConfiguration config = loadConfiguration();
 			inputFolderPath = config.getString("input.json.schema.path");
-			outputCSV = config.getString("output.csv.file");		
+			outputCSV = config.getString("output.csv.file");
+			gramFolder = config.getString("gram.output.folder");
 			duplicates = config.getBoolean("remove.dupicates");		
 
 		} else {
@@ -90,6 +92,10 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			outputCSV=console.nextLine().trim();
 			System.out.println("Please introcuce if duplicates should be removed: (Y remove duplicates, N maintain duplicates");
 			duplicates = console.nextLine().trim().equals(DELETE_DUPLICATES);
+			if (choice.equals(GRAMS_CHOICE)) {
+				System.out.println("Please introcuce the gram output folder");
+				gramFolder=console.nextLine().trim();
+			}
 		}
 		
 		System.out.println("Choice: "+choice);
@@ -106,7 +112,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			if(VALIDATION_CHOICE.equalsIgnoreCase(choice)) {
 				schemaValidatorServiceFacade.validateFileOrDirectory(inputFolderPath, outputCSV);
 			}else if(GRAMS_CHOICE.equalsIgnoreCase(choice)) {
-				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
+				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, gramFolder);
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
 				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			}
