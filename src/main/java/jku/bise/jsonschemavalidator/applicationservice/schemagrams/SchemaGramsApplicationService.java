@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,9 +108,19 @@ public class SchemaGramsApplicationService {
 			if(!keywords.contains(key)) {
 				schemaGramsDTO.addUnigram(key);
 			}
-			JSONObject childNode =  jsonObject.optJSONObject(key);
-			if(childNode!=null) {
-				addUnigrams(childNode,  schemaGramsDTO,  keywords);
+			JSONObject childNodeJSONObject =  jsonObject.optJSONObject(key);
+			if(childNodeJSONObject!=null) {
+				addUnigrams(childNodeJSONObject,  schemaGramsDTO,  keywords);
+			}else {
+				JSONArray childNodeJSONArray = jsonObject.optJSONArray(key);
+				if(childNodeJSONArray!=null) {
+					for (int i=0; i<childNodeJSONArray.length(); i++) {
+						JSONObject childNodeJSONArrayJSONObject = childNodeJSONArray.optJSONObject(i);
+						if(childNodeJSONArrayJSONObject!=null) {
+							addUnigrams(childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords);
+						}
+					}
+				}
 			}
 		});
 	}
@@ -121,17 +132,24 @@ public class SchemaGramsApplicationService {
 			String nextParent = parent;
 			if(!keywords.contains(key)) {
 				nextParent=key;
-				//if(!ROOT_PARENT.equals(parent)) {
-					String camelParent = toCamelCase(parent);
-					String antiCamelKey= toAntiCamelCase(key);
-					String bigram = camelParent+"."+antiCamelKey;
-					schemaGramsDTO.addBigram(bigram);
-					
-				//}
+				String camelParent = toCamelCase(parent);
+				String antiCamelKey= toAntiCamelCase(key);
+				String bigram = camelParent+"."+antiCamelKey;
+				schemaGramsDTO.addBigram(bigram);
 			}
 			JSONObject childNode =  jsonObject.optJSONObject(key);
 			if(childNode!=null) {
 				addBigrams(nextParent,childNode,  schemaGramsDTO,  keywords);
+			}else {
+				JSONArray childNodeJSONArray = jsonObject.optJSONArray(key);
+				if(childNodeJSONArray!=null) {
+					for (int i=0; i<childNodeJSONArray.length(); i++) {
+						JSONObject childNodeJSONArrayJSONObject = childNodeJSONArray.optJSONObject(i);
+						if(childNodeJSONArrayJSONObject!=null) {
+							addBigrams(nextParent, childNodeJSONArrayJSONObject,  schemaGramsDTO,  keywords);
+						}
+					}
+				}
 			}
 		});
 	}

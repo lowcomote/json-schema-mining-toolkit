@@ -1,5 +1,4 @@
 {
-	"$id":"path1/path2/supermarket",
 	"type":"object",
   	"$schema": "http://json-schema.org/draft-07/schema",
   	"definitions":{
@@ -39,6 +38,28 @@
     	}
   	},
   	"properties":{
+  		"offer":{
+  			"anyOf":[
+  				{
+  					"type":"object",
+  					"properties":{
+  						"const":"Percentage",
+  						"name":{ "type": "string" },
+  						"percentage" :{ "type": "number" }
+  					}
+  				},
+  				{
+  					"type":"object",
+  					"properties":{
+  						"const":"bonus",
+  						"name":{ "type": "string" },
+  						"value" :{ "type": "number" }
+  					}
+  				},
+  				{ "type": "number", "multipleOf": 3 }
+  			]
+  			
+  		},
   		"openDate":{
   			"type":"string",
   			"format":"date"
