@@ -48,6 +48,7 @@ public class SchemaGramsApplicationService {
 	public SchemaGramsDTO createSchemaGramsDTO(File file) {
 		try {
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
+			//return createSchemaGramsDTO(file.getName(),  jsonObject);
 			return createSchemaGramsDTO(file.getName(),  jsonObject);
 		} catch (Exception e) {
 			if(logger.isDebugEnabled()) 
@@ -64,34 +65,34 @@ public class SchemaGramsApplicationService {
 			List<String> keywordList=null;
 			String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
 			schemaGramsDTO.setSchema(schema);
-			String parent = "";
+			//String parent = "";
 			if(schema!=null) {
 				if(Utils.isDraft4(schema)) {
 					keywordList = Draft04Keywords.KEYWORDS_LIST;
-					String keyId= Draft04Keywords.ID;
-					parent = getParentName(jsonObject, keyId, name);
+					//String keyId= Draft04Keywords.ID;
+					//parent = getParentName(jsonObject, keyId, name);
 				}else if (Utils.isDraft6(schema)){
 					keywordList = Draft06Keywords.KEYWORDS_LIST;
-					String keyId= Draft06Keywords.ID;
-					parent = getParentName(jsonObject, keyId, name);
+					//String keyId= Draft06Keywords.ID;
+					//parent = getParentName(jsonObject, keyId, name);
 				}else if (Utils.isDraft7(schema)) {
 					keywordList = Draft07Keywords.KEYWORDS_LIST;
-					String keyId= Draft07Keywords.ID;
-					parent = getParentName(jsonObject, keyId, name);
+					//String keyId= Draft07Keywords.ID;
+					//parent = getParentName(jsonObject, keyId, name);
 				}else if (Utils.isDraft3(schema)) {
 					keywordList = Draft03Keywords.KEYWORDS_LIST;
-					String keyId= Draft03Keywords.ID;
-					parent = getParentName(jsonObject, keyId, name);
+					//String keyId= Draft03Keywords.ID;
+					//parent = getParentName(jsonObject, keyId, name);
 				} else if (Utils.isDraft201909(schema)) {
 					keywordList = Draft201909Keywords.KEYWORDS_LIST;
-					String keyId= Draft201909Keywords.ID;
-					parent = getParentName(jsonObject, keyId, name);
+					//String keyId= Draft201909Keywords.ID;
+					//parent = getParentName(jsonObject, keyId, name);
 				}
 			}
 			if(keywordList!=null) {
 				addUnigrams(jsonObject, schemaGramsDTO, keywordList);
 				//String parent = Utils.stripDot(name);
-				addBigrams(parent,jsonObject, schemaGramsDTO,keywordList);
+				addBigrams("",jsonObject, schemaGramsDTO,keywordList);
 			}
 			if(logger.isDebugEnabled()) {
 				logger.debug("GRAMS : {}", schemaGramsDTO.toString());
@@ -136,8 +137,11 @@ public class SchemaGramsApplicationService {
 	}
 	
 	private String toCamelCase(String s) {
-		String camelCase= s.substring(0, 1).toUpperCase() + s.substring(1);
-		return camelCase;
+		if(!s.isBlank()) {
+			return s.substring(0, 1).toUpperCase() + s.substring(1);
+		}else {
+			return s;
+		}
 	}
 	
 	private String toAntiCamelCase(String s) {
@@ -145,6 +149,7 @@ public class SchemaGramsApplicationService {
 		return antiCamelCase;
 	}
 	
+	@Deprecated
 	private String getParentName(JSONObject jsonObject, String keyId, String fileName) throws Exception {
 		//String parentName= fileName;
 		String id = jsonObject.optString(keyId);
