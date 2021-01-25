@@ -164,7 +164,8 @@ public class SchemaMetricsApplicationService {
 							/**
 							 * We can reference child with its id too. If it has one.
 							 */
-							String id = jsonObject.getString(idKey);
+							//String id = jsonObject.getString(idKey);
+							String id = child.getString(idKey);
 							jsonSchemaMetricsDTO.getReferable().put(id, localKeyGraphMetricDTO);
 						}
 						/**
