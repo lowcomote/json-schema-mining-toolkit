@@ -152,11 +152,13 @@ public class SchemaMetricsApplicationService {
 						 */
 						jsonSchemaMetricsDTO.getReferable().put(localKeyGraphMetricDTO.getPointer(), localKeyGraphMetricDTO);
 						String idKey = getIdKey(keywords);
-						if(child.has(idKey)) {
+						String id = child.optString(idKey);
+						//if(child.has(idKey)) {
+						if(id!=null) {
 							/**
 							 * We can reference child with its id too. If it has one.
 							 */
-							String id = child.getString(idKey);
+							//String id = child.getString(idKey);
 							jsonSchemaMetricsDTO.getReferable().put(id, localKeyGraphMetricDTO);
 						}
 						/**
