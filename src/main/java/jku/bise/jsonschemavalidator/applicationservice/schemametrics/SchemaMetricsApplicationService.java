@@ -27,7 +27,6 @@ import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.GraphMetricDTO;
 import jku.bise.jsonschemavalidator.dto.JsonSchemaMetricsDTO;
 import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
-import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaMetricsApplicationService {
@@ -127,30 +126,23 @@ public class SchemaMetricsApplicationService {
 				updateDepthSchema(jsonSchemaMetricsDTO, localKeyGraphMetricDTO );
 				
 				boolean isKeyword= updateKeywordsAndTypeCounter(jsonObject, keywords, jsonSchemaMetricsDTO,  key);
-//				boolean isKeyword=false;
-//				if(keywords.contains(key)) {
-//					isKeyword = true;
-//					int count = jsonSchemaMetricsDTO.getKeywordsCount(key);
-//					jsonSchemaMetricsDTO.putKeywordsCount(key, count+1);
-//					updateTypeCounters(key, jsonObject,  jsonSchemaMetricsDTO) ;
-//				}
+
 				
 				updateFanOut(jsonSchemaMetricsDTO, jsonObject, key);
 				
 				JSONObject child = jsonObject.optJSONObject(key);
 				if(child!=null) {
 					isLeaf=false;
-//					if(CommonDraftsKeywords.PROPERTIES.equals(key)) {
-//						localKeyGraphMetricDTO.setFanOut(child.keySet().size());
-//					}
 
-					//if(isParentKeyProperty && child.has(CommonDraftsKeywords.REF)) {
-					if(child.has(CommonDraftsKeywords.REF)) {
-						String ref = child.getString(CommonDraftsKeywords.REF);
-						
-						//jsonSchemaMetricsDTO.getReferencer().put(ref, localKeyGraphMetricDTO);
-						jsonSchemaMetricsDTO.putReferencer(ref, localKeyGraphMetricDTO);
+					String innerRef = child.optString(CommonDraftsKeywords.REF);
+					if(innerRef!=null) {
+						jsonSchemaMetricsDTO.putReferencer(innerRef, localKeyGraphMetricDTO);
 					}
+//					if(child.has(CommonDraftsKeywords.REF)) {
+//						String ref = child.getString(CommonDraftsKeywords.REF);
+//						
+//						jsonSchemaMetricsDTO.putReferencer(ref, localKeyGraphMetricDTO);
+//					}
 					/**
 					 * if key is not keyword and its value is a schema (JsonObject) it is a reachable object
 					 */
@@ -164,7 +156,6 @@ public class SchemaMetricsApplicationService {
 							/**
 							 * We can reference child with its id too. If it has one.
 							 */
-							//String id = jsonObject.getString(idKey);
 							String id = child.getString(idKey);
 							jsonSchemaMetricsDTO.getReferable().put(id, localKeyGraphMetricDTO);
 						}
@@ -178,9 +169,6 @@ public class SchemaMetricsApplicationService {
 					
 					findMetrics(child,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
 					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
-//					if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
-//						parentGraphMetricDTO.setDepthResolvedTree(localKeyGraphMetricDTO.getDepthResolvedTree()+1);
-//					}
 					
 				}else {
 					/**
@@ -188,7 +176,6 @@ public class SchemaMetricsApplicationService {
 					 */
 					JSONArray childArray = jsonObject.optJSONArray(key);
 					if(childArray!=null) {
-						//boolean isLeaf=true;
 						for (int i=0; i<childArray.length();i++) {
 							JSONObject childArrayJSONObject = childArray.optJSONObject(i);
 							if(childArrayJSONObject !=null) {
@@ -196,14 +183,7 @@ public class SchemaMetricsApplicationService {
 								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
 							}
 						}
-//						if(isLeaf) {
-//							jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
-//						}
-					}/*else {
-					
-						
-						jsonSchemaMetricsDTO.getGraphMetricDTO().incrementWidth();
-					}*/
+					}
 				}
 				if(isLeaf) {
 					/**
