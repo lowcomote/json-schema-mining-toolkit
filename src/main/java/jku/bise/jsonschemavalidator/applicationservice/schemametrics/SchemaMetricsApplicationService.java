@@ -27,6 +27,7 @@ import jku.bise.jsonschemavalidator.common.Utils;
 import jku.bise.jsonschemavalidator.dto.GraphMetricDTO;
 import jku.bise.jsonschemavalidator.dto.JsonSchemaMetricsDTO;
 import jku.bise.jsonschemavalidator.exception.ApplicationServiceException;
+import jku.bise.jsonschemavalidator.exception.JsonParseException;
 
 @Service
 public class SchemaMetricsApplicationService {
@@ -35,26 +36,37 @@ public class SchemaMetricsApplicationService {
 	public List<JsonSchemaMetricsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir, String csvFileName) throws ApplicationServiceException  {
 		List<JsonSchemaMetricsDTO> jsonSchemaMetricsDTOs = new ArrayList<JsonSchemaMetricsDTO>();
 		File fileOrdir = new File(pathToDir);
+		int countError = 0;
 		if (fileOrdir.isDirectory())
+			
 			for (File file : fileOrdir.listFiles()) {
-				JsonSchemaMetricsDTO jsonSchemaMetricsDTO =findSchemaMetrics(file, csvFileName);
-				if(jsonSchemaMetricsDTO!=null) {
+				JsonSchemaMetricsDTO jsonSchemaMetricsDTO;
+				try {
+					jsonSchemaMetricsDTO = findSchemaMetrics(file, csvFileName);
 					jsonSchemaMetricsDTOs.add(jsonSchemaMetricsDTO);
+				} catch (Exception e) {
+					logger.error("{} has the following error {}", file.toString(), e.getMessage());
+					e.printStackTrace();
+					countError ++;
 				}
 			}
 		else {
-			JsonSchemaMetricsDTO jsonSchemaMetricsDTO = findSchemaMetrics(fileOrdir, csvFileName);
-			if(jsonSchemaMetricsDTO!=null) {
+			JsonSchemaMetricsDTO jsonSchemaMetricsDTO;
+			try {
+				jsonSchemaMetricsDTO = findSchemaMetrics(fileOrdir, csvFileName);
 				jsonSchemaMetricsDTOs.add(jsonSchemaMetricsDTO);
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("{} has the following error {}", fileOrdir.toString(), e.getMessage());
 			}
 		}
+		logger.info("Error count:{}", countError);
 		return jsonSchemaMetricsDTOs;
 	}
 
-	public JsonSchemaMetricsDTO findSchemaMetrics(File file, String csvFileName)   {
+	public JsonSchemaMetricsDTO findSchemaMetrics(File file, String csvFileName) throws Exception   {
 		logger.debug("findSchemaMetrics");
 		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = null;
-		try {
 			List<String> keywordList=null;
 			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
 			String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
@@ -80,14 +92,11 @@ public class SchemaMetricsApplicationService {
 				}
 			}
 			return  jsonSchemaMetricsDTO;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		
 	}
 	
 	
-	public JsonSchemaMetricsDTO findSchemaMetrics(JSONObject jsonObject, List<String> keywords) {
+	public JsonSchemaMetricsDTO findSchemaMetrics(JSONObject jsonObject, List<String> keywords) throws Exception {
 		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = new JsonSchemaMetricsDTO();
 		keywords.stream().forEach(key->{
 			jsonSchemaMetricsDTO.putKeywordsCount(key, 0);
@@ -96,15 +105,16 @@ public class SchemaMetricsApplicationService {
 			jsonSchemaMetricsDTO.putTypesCount(type, 0);
 		});
 		GraphMetricDTO parentGraphMetricDTO = jsonSchemaMetricsDTO.getGraphMetricDTO().clone();
+		
 		findMetrics(jsonObject, keywords, jsonSchemaMetricsDTO,parentGraphMetricDTO);
+		
 		processReferences(jsonSchemaMetricsDTO);
 		
 		return jsonSchemaMetricsDTO;
 	}
 	
 	
-	private void findMetrics(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO parentGraphMetricDTO) {
-		try {
+	private void findMetrics(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO parentGraphMetricDTO) throws Exception {
 			String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
 			boolean isParentKeyProperty = CommonDraftsKeywords.PROPERTIES.equals(parentKey);
 			
@@ -202,10 +212,7 @@ public class SchemaMetricsApplicationService {
 					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
 				}
 			}
-			//updateJsonSchemaGraphMetric(jsonSchemaMetricsDTO, parentGraphMetricDTO);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 	

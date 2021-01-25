@@ -1,11 +1,15 @@
 package jku.bise.jsonschemavalidator.applicationservice.schemavalidator;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.common.io.Files;
 
 import jku.bise.jsonschemavalidator.applicationservice.csvwriter.CsvWriterApplicationService;
 import jku.bise.jsonschemavalidator.applicationservice.draftvalidator.Draft201909SchemaValidator;
@@ -84,8 +88,16 @@ public class SchemaValidatorApplicationService {
 						csvFileName);
 			else if (schemaViolationDetailDTOs.size() > 0)
 				csvWriterApplicationService.createCSVFile(schemaViolationDetailDTOs, csvFileName);
-			else if (schemaViolationDetailDTOs.size() == 0)
+			else if (schemaViolationDetailDTOs.size() == 0) {
 				csvWriterApplicationService.createCSVFile(file.toString(), VALID, schema, csvFileName);
+				try {
+					File dest = new File(Paths.get("VALID", file.getName()).toString());
+					Files.copy(file, dest);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		} catch (JsonParseException e) {
 			csvWriterApplicationService.createCSVFile(file.toString(), JSON_PARSE_EXCEPTION, schema, csvFileName);
 		} catch (SchemaValidatorException e) {
