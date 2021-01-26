@@ -1,8 +1,0 @@
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://localhost:9999/schemas/badgeList.json",
-  "type": "array",
-  "items": {
-      "$ref": "badge.json"
-  }
-}

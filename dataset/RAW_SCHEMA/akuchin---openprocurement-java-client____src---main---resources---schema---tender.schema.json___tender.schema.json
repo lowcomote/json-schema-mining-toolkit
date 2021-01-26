@@ -1,0 +1,773 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "javaType": "org.openprocurement.api.model.Tender",
+
+  "definitions": {
+    "identifier": {
+      "type": "object",
+      "properties": {
+        "scheme": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "legalName": {
+          "type": "string"
+        },
+        "legalName_ru": {
+          "type": "string"
+        },
+        "legalName_en": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "scheme",
+        "id"
+      ]
+    },
+    "contactPoint": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "name_en": {
+          "type": "string"
+        },
+        "name_ru": {
+          "type": "string"
+        },
+        "telephone": {
+          "type": "string"
+        },
+        "faxNumber": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "streetAddress": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "countryName": {
+          "type": "string"
+        },
+        "countryName_en": {
+          "type": "string"
+        },
+        "countryName_ru": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "countryName"
+      ]
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "documentOf": {
+            "type": "string"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": [
+              "tenderNotice", "awardNotice", "contractNotice",
+              "notice", "biddingDocuments", "technicalSpecifications",
+              "evaluationCriteria", "clarifications", "shortlistedFirms",
+              "riskProvisions", "billOfQuantity", "bidders", "conflictOfInterest",
+              "debarments", "evaluationReports", "winningBid", "complaints",
+              "contractSigned", "contractArrangements", "contractSchedule",
+              "contractAnnexe", "contractGuarantees", "subContract",
+              "eligibilityCriteria", "contractProforma", "commercialProposal",
+              "qualificationDocuments", "eligibilityDocuments" ]
+          },
+          "datePublished": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relatedItem": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "url",
+          "title",
+          "documentOf",
+          "datePublished",
+          "dateModified",
+          "id"
+        ]
+      }
+    },
+    "value": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "valueAddedTaxIncluded": {
+          "type": "boolean",
+          "default": "true"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "valueAddedTaxIncluded"
+      ]
+    },
+    "period": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "startDate"
+      ]
+    }
+
+
+  },
+  // end of definitions
+
+  "type": "object",
+  "properties": {
+    "data": {
+      "javaType": "org.openprocurement.api.model.TenderData",
+      "type": "object",
+      "properties": {
+        "procurementMethod": {
+          "type": "string",
+          "default": "open",
+          "enum": [
+            "open",
+            "selective",
+            "limited"
+          ]
+        },
+        "auctionID": {
+          "type": "string"
+        },
+        "awardPeriod": {
+          "$ref": "#/definitions/period"
+        },
+        "numberOfBids": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "description_ru": {
+          "type": "string"
+        },
+        "description_en": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "title_en": {
+          "type": "string"
+        },
+        "title_ru": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum" : ["test"]
+        },
+        "documents": {
+          "$ref": "#/definitions/documents"
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "documents": {
+                "$ref": "#/definitions/documents"
+              },
+              "awardID": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "documents",
+              "awardID",
+              "id"
+            ]
+          }
+        },
+        "auctionPeriod": {
+          "$ref": "#/definitions/period"
+        },
+        "next_check": {
+          "type": "string",
+          "format":"date-time"
+        },
+        "date": {
+          "type": "string",
+          "format":"date-time"
+        },
+        "submissionMethodDetails": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "classification": {
+                "type": "object",
+                "properties": {
+                  "scheme": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_en": {
+                    "type": "string"
+                  },
+                  "description_ru": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "scheme",
+                  "description",
+                  "id"
+                ]
+              },
+              "additionalClassifications": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "scheme": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "description_en": {
+                      "type": "string"
+                    },
+                    "description_ru": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scheme",
+                    "id",
+                    "description"
+                  ]
+                }
+              },
+              "deliveryDate": {
+                "$ref": "#/definitions/period"
+              },
+              "deliveryLocation": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              },
+              "deliveryAddress" : {"$ref": "#/definitions/address"},
+              "id": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "name_en": {
+                    "type": "string"
+                  },
+                  "name_ru": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "quantity": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "description",
+              "classification",
+              "additionalClassifications",
+              "id"
+            ]
+          }
+        },
+        "cancellations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format":"date-time"
+              },
+              "status": {
+                "type": "string",
+                "default":"pending",
+                "enum":["pending", "active"]
+              },
+              "reason": {
+                "type": "string"
+              },
+              "cancellationOf": {
+                "type": "string",
+                "default":"tender",
+                "enum":["tender", "lot"]
+              },
+              "documents": {
+                "$ref": "#/definitions/documents"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "date",
+              "status",
+              "reason",
+              "cancellationOf",
+              "id"
+            ]
+          }
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        },
+        "procurementMethodType": {
+          "type": "string",
+          "default":"belowThreshold"
+        },
+        "submissionMethod": {
+          "type": "string",
+          "default": "electronicAuction",
+          "enum": [
+            "electronicAuction",
+            "electronicSubmission",
+            "written",
+            "inPerson"
+          ]
+        },
+        "procuringEntity": {
+          "type": "object",
+          "properties": {
+            "contactPoint": {
+              "$ref": "#/definitions/contactPoint"
+            },
+            "identifier": {
+              "$ref": "#/definitions/identifier"
+            },
+            "name": {
+              "type": "string"
+            },
+            "name_ru": {
+              "type": "string"
+            },
+            "name_en": {
+              "type": "string"
+            },
+            "address": {
+              "$ref": "#/definitions/address"
+            },
+            "kind": {
+              "type" : "string",
+              "enum" : ["general","special","defense"]
+            }
+          },
+          "required": [
+            "contactPoint",
+            "identifier",
+            "name",
+            "address"
+          ]
+        },
+        "minimalStep": {
+          "$ref": "#/definitions/value"
+        },
+        "status": {
+          "type": "string",
+          "default": "active.enquiries",
+          "enum": [
+            "draft",
+            "active.enquiries",
+            "active.tendering",
+            "active.auction",
+            "active.qualification",
+            "active.awarded",
+            "complete",
+            "cancelled",
+            "unsuccessful"
+          ]
+        },
+        "awardCriteria": {
+          "type": "string",
+          "default": "lowestCost",
+          "enum": [
+            "lowestCost",
+            "bestProposal",
+            "bestValueToGovernment",
+            "singleBidOnly"
+          ]
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "author": {
+                "type": "object",
+                "properties": {
+                  "contactPoint": {"$ref": "#/definitions/contactPoint"},
+                  "identifier": {"$ref": "#/definitions/identifier"},
+                  "name": {
+                    "type": "string"
+                  },
+                  "address": {"$ref": "#/definitions/address"}
+                },
+                "required": [
+                  "contactPoint",
+                  "identifier",
+                  "name",
+                  "address"
+                ]
+              },
+              "date": {
+                "type": "string",
+                "format":"date-time"
+              },
+              "id": {
+                "type": "string"
+              },
+              "questionOf": {
+                "type": "string"
+              },
+              "relatedItem": {
+                "type": "string"
+              },
+              "answer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "description",
+              "title",
+              "author",
+              "date",
+              "id",
+              "questionOf"
+            ]
+          }
+        },
+
+        "enquiryPeriod": {
+          "$ref": "#/definitions/period"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "featureOf": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "enum": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "value",
+                    "title"
+                  ]
+                }
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "featureOf",
+              "description",
+              "enum",
+              "title"
+            ]
+          }
+        },
+        "awards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "documents": {
+                "$ref": "#/definitions/documents"
+              },
+              "complaintPeriod": {
+                "$ref": "#/definitions/period"
+              },
+              "suppliers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "contactPoint": {"$ref": "#/definitions/contactPoint"},
+                    "identifier": {"$ref": "#/definitions/identifier"},
+                    "name": {
+                      "type": "string"
+                    },
+                    "address": {"$ref": "#/definitions/address"}
+                  },
+                  "required": [
+                    "contactPoint",
+                    "identifier",
+                    "name",
+                    "address"
+                  ]
+                }
+              },
+              "bid_id": {
+                "type": "string"
+              },
+              "value": {
+                "$ref": "#/definitions/value"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "documents",
+              "complaintPeriod",
+              "suppliers",
+              "bid_id",
+              "value",
+              "date",
+              "id"
+            ]
+          }
+        },
+        "bids": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "default":"active",
+                "enum": ["active", "draft"]
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "participationUrl": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "documents": {
+                "$ref": "#/definitions/documents"
+              },
+              "value": {
+                "$ref": "#/definitions/value"
+              },
+              "tenderers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "contactPoint": {"$ref": "#/definitions/contactPoint"},
+                    "identifier": {"$ref": "#/definitions/identifier"},
+                    "name": {
+                      "type": "string"
+                    },
+                    "address": {"$ref": "#/definitions/address"}
+                  },
+                  "required": [
+                    "contactPoint",
+                    "identifier",
+                    "name",
+                    "address"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "date",
+              "participationUrl",
+              "id",
+              "value",
+              "tenderers"
+            ]
+          }
+        },
+        "auctionUrl": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "dateModified": {
+          "type": "string"
+        },
+        "tenderPeriod": {
+          "$ref": "#/definitions/period"
+        }
+      },
+      "required": [
+        "auctionID",
+        "numberOfBids",
+        "title",
+        "items",
+        "value",
+        "submissionMethod",
+        "procuringEntity",
+        "minimalStep",
+        "status",
+        "enquiryPeriod",
+        "id",
+        "dateModified",
+        "tenderPeriod"
+      ]
+    }
+  },
+  "required": [
+    "data"
+  ]
+}

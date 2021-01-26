@@ -1,0 +1,85 @@
+{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "title" : "Common schema components",
+  "description" : "Components that are reused using JSON References",
+  "obj_id" : {
+    "type" : "string",
+    "title" : "Object ID",
+    "description" : "ID of an object",
+    "pattern" : "^[a-zA-Z0-9_-]*$"
+  },
+  "step_id" : {
+    "type" : "string",
+    "title" : "Step ID",
+    "description" : "ID of a step",
+    "pattern" : "^[a-zA-Z0-9_-]*$"
+  },
+  "blob_id" : {
+    "type" : "string",
+    "title" : "Blob ID",
+    "description" : "ID of a blob",
+    "pattern" : "^[a-zA-Z0-9_-]*$"
+  },
+  "graph_id" : {
+    "type" : "string",
+    "title" : "Graph ID",
+    "description" : "ID of a graph",
+    "pattern" : "^[a-zA-Z0-9_-]*$"
+  },
+  "schedule_id" : {
+    "type" : "string",
+    "title" : "Schedule ID",
+    "description" : "ID of a schedule",
+    "pattern" : "^[a-zA-Z0-9_-]*$"
+  },
+  "timedelta" : {
+    "type" : "object",
+    "title" : "Timedelta",
+    "description" : "Data representing a timespan.",
+    "properties" : {
+      "seconds" : {"type" : "integer"},
+      "minutes" : {"type" : "integer"},
+      "hours" : {"type" : "integer"},
+      "days" : {"type" : "integer"}
+    },
+    "default" : {},
+    "additionalProperties" : false
+  },
+  "object_namespace" : {
+    "type" : "object",
+    "title" : "Object Namespace",
+    "description" : "A mapping of local names to Object References",
+    "patternProperties" : {
+      "^([a-zA-Z][0-9a-zA-Z_]*)$" : {
+        "$ref" : "references.json#/obj_ref"
+      }
+    },
+    "default" : {},
+    "additionalProperties" : false
+  },
+  "file_namespace" : {
+    "type" : "object",
+    "title" : "File Namespace",
+    "description" : "A mapping of local names to File References",
+    "patternProperties" : {
+      "^([a-zA-Z][0-9a-zA-Z_]*)$" : {
+        "$ref" : "references.json#/file_ref"
+      }
+    },
+    "default" : {},
+    "additionalProperties" : false
+  },
+  "image_namespace" : {
+    "type" : "object",
+    "title" : "Image Namespace",
+    "description" : "A mapping of local names to Image References",
+    "patternProperties" : {
+      "^([a-zA-Z][0-9a-zA-Z_]*)$" : {
+        "$ref" : "references.json#/img_ref"
+      }
+    },
+    "default" : {},
+    "additionalProperties" : false
+  }
+}
+

@@ -1,9 +1,0 @@
-{
-  "$schema": "http://json-schema.org/schema#",
-  "title": "A Transport",
-  "type": "object",
-  "properties": {
-    "id": { "$ref": "definitions-schema.json#/definitions/id" },
-    "name": { "type": "string" }
-  }
-}

@@ -1,8 +1,0 @@
-{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "array",
-    "items": {"$ref": "../definitions/job.json#/definitions/job-log-statement"},
-    "example": [
-    	{ "fd": 1, "msg": "Hello World!" }
-    ]
-}

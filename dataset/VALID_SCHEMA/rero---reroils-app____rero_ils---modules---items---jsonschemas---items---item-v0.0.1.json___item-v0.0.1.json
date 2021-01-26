@@ -1,0 +1,453 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Item",
+  "description": "JSON schema for an item.",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "pid",
+    "location",
+    "barcode",
+    "item_type",
+    "type",
+    "document",
+    "status"
+  ],
+  "propertiesOrder": [
+    "barcode",
+    "call_number",
+    "second_call_number",
+    "enumerationAndChronology",
+    "item_type",
+    "location",
+    "type",
+    "status",
+    "issue",
+    "notes",
+    "acquisition_date"
+  ],
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema to validate item records against.",
+      "type": "string",
+      "minLength": 9,
+      "default": "https://ils.rero.ch/schemas/items/item-v0.0.1.json"
+    },
+    "pid": {
+      "title": "Item ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "barcode": {
+      "title": "Barcode",
+      "type": "string",
+      "minLength": 1,
+      "form": {
+        "focus": true,
+        "validation": {
+          "validators": {
+            "valueAlreadyExists": {}
+          },
+          "messages": {
+            "alreadyTakenMessage": "The barcode is already taken."
+          }
+        },
+        "expressionProperties": {
+          "templateOptions.required": "false"
+        }
+      }
+    },
+    "call_number": {
+      "title": "Call number",
+      "type": "string"
+    },
+    "second_call_number": {
+      "title": "Second call number",
+      "type": "string"
+    },
+    "enumerationAndChronology": {
+      "title": "Enumeration and chronology",
+      "type": "string",
+      "minLength": 1,
+      "description": "Numbering, enumeration, or other indication associated with the item.",
+      "form": {
+        "placeholder": "Example: Volume 1",
+        "expressionProperties": {
+          "templateOptions.required": "model.type === 'issue'"
+        }
+      }
+    },
+    "location": {
+      "title": "Location",
+      "type": "object",
+      "required": [
+        "$ref"
+      ],
+      "properties": {
+        "$ref": {
+          "title": "Location URI",
+          "type": "string",
+          "pattern": "^https://ils.rero.ch/api/locations/.+?$",
+          "form": {
+            "fieldMap": "location"
+          }
+        }
+      },
+      "form": {
+        "hideExpression": "field.parent.model.type === 'issue'"
+      }
+    },
+    "document": {
+      "title": "Document",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "Document URI",
+          "type": "string",
+          "pattern": "^https://ils.rero.ch/api/documents/.+?$",
+          "default": "https://ils.rero.ch/api/documents/"
+        }
+      }
+    },
+    "item_type": {
+      "title": "Circulation category of the item",
+      "type": "object",
+      "required": [
+        "$ref"
+      ],
+      "properties": {
+        "$ref": {
+          "title": "Item Type URI",
+          "type": "string",
+          "pattern": "^https://ils.rero.ch/api/item_types/.+?$",
+          "form": {
+            "remoteOptions": {
+              "type": "item_types"
+            }
+          }
+        }
+      },
+      "form": {
+        "hideExpression": "field.parent.model.type === 'issue'"
+      }
+    },
+    "type": {
+      "title": "Item type",
+      "type": "string",
+      "enum": [
+        "standard",
+        "issue"
+      ],
+      "default": "standard",
+      "form": {
+        "wrappers": [
+          "hide"
+        ]
+      }
+    },
+    "issue": {
+      "title": "Issue",
+      "type": "object",
+      "required": [
+        "received_date",
+        "expected_date",
+        "regular",
+        "status"
+      ],
+      "propertiesOrder": [
+        "received_date",
+        "expected_date",
+        "regular",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "title": "Issue status",
+          "type": "string",
+          "default": "received",
+          "enum": [
+            "received",
+            "late",
+            "claimed",
+            "deleted"
+          ],
+          "form": {
+            "type": "selectWithSort",
+            "options": [
+              {
+                "label": "received",
+                "value": "received"
+              },
+              {
+                "label": "late",
+                "value": "late"
+              },
+              {
+                "label": "claimed",
+                "value": "claimed"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        },
+        "status_date": {
+          "format": "date-time",
+          "title": "Status date",
+          "type": "string"
+        },
+        "received_date": {
+          "format": "date",
+          "title": "Date of reception",
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
+          "validationMessage": "Should be in the following format: 2022-12-31 (YYYY-MM-DD).",
+          "form": {
+            "type": "datepicker",
+            "wrappers": [
+              "form-field"
+            ],
+            "validation": {
+              "messages": {
+                "pattern": "Should be in the ISO 8601, YYYY-MM-DD."
+              }
+            }
+          }
+        },
+        "expected_date": {
+          "format": "date",
+          "title": "Expected date",
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
+          "validationMessage": "Should be in the following format: 2022-12-31 (YYYY-MM-DD).",
+          "form": {
+            "hideExpression": "field.parent.model.regular",
+            "type": "datepicker",
+            "validation": {
+              "messages": {
+                "pattern": "Should be in the ISO 8601, YYYY-MM-DD."
+              }
+            }
+          }
+        },
+        "regular": {
+          "title": "Regularity",
+          "type": "boolean",
+          "default": true,
+          "form": {
+            "wrappers": [
+              "hide"
+            ]
+          }
+        },
+        "claims_count": {
+          "title": "Issue claims count",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "form": {
+        "hideExpression": "field.parent.model.type !== 'issue'"
+      }
+    },
+    "status": {
+      "type": "string",
+      "title": "circulation status",
+      "default": "on_shelf",
+      "readOnly": true,
+      "enum": [
+        "on_shelf",
+        "on_loan",
+        "missing",
+        "in_transit",
+        "at_desk",
+        "excluded"
+      ],
+      "form": {
+        "type": "selectWithSort",
+        "options": [
+          {
+            "label": "on_shelf",
+            "value": "on_shelf"
+          },
+          {
+            "label": "on_loan",
+            "value": "on_loan"
+          },
+          {
+            "label": "missing",
+            "value": "missing"
+          },
+          {
+            "label": "in_transit",
+            "value": "in_transit"
+          },
+          {
+            "label": "at_desk",
+            "value": "at_desk"
+          },
+          {
+            "label": "excluded",
+            "value": "excluded"
+          }
+        ],
+        "wrappers": [
+          "hide"
+        ]
+      }
+    },
+    "holding": {
+      "title": "Holding",
+      "description": "Holding record for the item.",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "Holding URI",
+          "type": "string",
+          "pattern": "^https://ils.rero.ch/api/holdings/.+?$"
+        }
+      }
+    },
+    "organisation": {
+      "title": "Organisation",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "Organisation URI",
+          "type": "string",
+          "pattern": "^https://ils.rero.ch/api/organisations/.*?$"
+        }
+      }
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "Note",
+        "propertiesOrder": [
+          "type",
+          "content"
+        ],
+        "required": [
+          "type",
+          "content"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "enum": [
+              "acquisition_note",
+              "binding_note",
+              "checkin_note",
+              "checkout_note",
+              "condition_note",
+              "general_note",
+              "patrimonial_note",
+              "provenance_note",
+              "staff_note"
+            ],
+            "form": {
+              "type": "selectWithSort",
+              "options": [
+                {
+                  "label": "acquisition_note",
+                  "value": "acquisition_note"
+                },
+                {
+                  "label": "binding_note",
+                  "value": "binding_note"
+                },
+                {
+                  "label": "checkin_note",
+                  "value": "checkin_note"
+                },
+                {
+                  "label": "checkout_note",
+                  "value": "checkout_note"
+                },
+                {
+                  "label": "condition_note",
+                  "value": "condition_note"
+                },
+                {
+                  "label": "general_note",
+                  "value": "general_note"
+                },
+                {
+                  "label": "patrimonial_note",
+                  "value": "patrimonial_note"
+                },
+                {
+                  "label": "provenance_note",
+                  "value": "provenance_note"
+                },
+                {
+                  "label": "staff_note",
+                  "value": "staff_note"
+                }
+              ]
+            }
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "maxLength": 2000,
+            "minLength": 1,
+            "form": {
+              "type": "textarea",
+              "templateOptions": {
+                "rows": 3
+              }
+            }
+          }
+        }
+      },
+      "form": {
+        "validation": {
+          "validators": {
+            "uniqueValueKeysInObject": {
+              "keys": [
+                "type"
+              ]
+            }
+          },
+          "messages": {
+            "uniqueValueKeysInObjectMessage": "Only one note per type is allowed"
+          }
+        }
+      }
+    },
+    "acquisition_date": {
+      "format": "date",
+      "title": "Acquisition date",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
+      "validationMessage": "Should be in the following format: 2022-12-31 (YYYY-MM-DD).",
+      "form": {
+        "type": "datepicker",
+        "wrappers": [
+          "toggle-switch",
+          "form-field"
+        ],
+        "templateOptions": {
+          "label": "",
+          "wrappers": [
+            "toggle-switch"
+          ],
+          "toggle-switch": {
+            "label": "New acquisition",
+            "description": "If this option is enabled, this item is going to appear in the new acquisition list of the library."
+          }
+        }
+      }
+    }
+  }
+}

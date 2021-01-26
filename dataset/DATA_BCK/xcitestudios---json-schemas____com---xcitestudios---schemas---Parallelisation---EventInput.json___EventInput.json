@@ -1,9 +1,0 @@
-{
-    "$schema": "http://json-schema.org/schema#",
-    "title": "com.xcitestudios.schema.Parallelisation.EventInput",
-    "description": "Minimum required output for EventInput",
-    "type": "object",
-    "properties": {
-    },
-    "required": []
-}

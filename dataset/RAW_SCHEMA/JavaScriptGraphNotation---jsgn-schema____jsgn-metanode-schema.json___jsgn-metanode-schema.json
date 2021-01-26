@@ -1,0 +1,68 @@
+{
+    "id": "https://github.com/JavaScriptGraphNotation/jsgn-schema/blob/master/jsgn-metanode-schema.json",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "oneOf": [
+	{ 
+	      "type": {
+	          "$ref": "#/definitions/metanode"
+	      }
+	},
+	{
+	     "type": "object",
+	     "properties": {
+                 "metanode": {
+		     "type": {
+                         "$ref": "#/definitions/metanode"
+		     }
+	         }	
+	     },
+	     "additionalProperties": false
+	}
+    ],
+    "definitions": { 
+    "definitions": {
+    	"metanode": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                     "type": [
+		         "string",
+			 "integer"
+		     ]
+                 },
+                 "label": {
+                     "type": "string"
+                 },
+                 "attributes": {
+                     "type": [
+                          "object",
+                          "null"
+                      ]
+                 },
+		 "nodes": {
+		     "type": "array",
+		     "items": {
+		          "type": [
+			      "integer",
+			      "string"
+			   ]
+	             }
+	     	 },
+		 "ports": {
+		     "type": [
+		         "array",
+			 "null"
+		     ],
+		     "items": {
+		         "type": "string"	
+		     }
+	         }
+             },
+             "required": [
+                 "id",
+		 "nodes"
+             ]
+         }
+    }
+}

@@ -1,8 +1,0 @@
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Note Collection",
-  "type": "array",
-  "items": {
-    "$ref": "./note-schema.json#"
-  }
-}

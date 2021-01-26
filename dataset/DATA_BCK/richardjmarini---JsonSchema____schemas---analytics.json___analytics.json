@@ -1,9 +1,0 @@
-{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "analytics",
-    "description": "Tracking and Analytics structure for the data marshalling system",
-    "type": "object",
-    "properties": {
-    }
-}
-

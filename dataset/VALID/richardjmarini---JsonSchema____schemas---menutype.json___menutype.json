@@ -1,8 +1,0 @@
-{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "menutype",
-    "description": "Menu Type",
-    "type": "string",
-    "enum": ["Menu", "Listing"]
-}
-

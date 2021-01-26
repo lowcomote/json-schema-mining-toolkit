@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "OTA_SimpleTypes",
+  "x-otm-library": {
+    "LibraryName": "OTA_SimpleTypes",
+    "LibraryVersion": "0.0.0",
+    "LibraryStatus": "FINAL",
+    "SourceFile": "/OTA_SimpleTypes_0_0_0.otm",
+    "CompilerVersion": "4.0-SNAPSHOT",
+    "CompileDate": "2016-05-18T15:17:40.870-0400"
+  },
+  "definitions": {
+    "String_AlphaNumeric": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_AlphaNumeric"
+      },
+      "description": "Alpha Numeric string with no whitespace\nMinimum length of 0 and a maximum length of 4096",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "Abc123"
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 4096,
+      "pattern": "([0-9a-zA-Z]+)?"
+    },
+    "String_Long": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_Long"
+      },
+      "description": "A long string  \nMinimum length of 0 and a maximum length of 4096",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "I am a long string."
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 4096
+    },
+    "String": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String"
+      },
+      "description": "A string with a minimum length of 0 and a maximum length of 512.",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "I am a medium string."
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 512
+    },
+    "String_Short": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_Short"
+      },
+      "description": "A short string  \nMinimum length of 0 and a maximum length of 128",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "I am a short string."
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 128
+    },
+    "String_Tiny": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_Tiny"
+      },
+      "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "I am a tiny string."
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 32
+    },
+    "String_Character_One": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_Character_One"
+      },
+      "description": "Single  character string\nMinimum length of 0 and a maximum length of 1",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "A"
+          }
+        ]
+      },
+      "type": "string",
+      "maxLength": 1
+    },
+    "String_Text": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "String_Text"
+      },
+      "description": "A string intended for free text \nMinimum length of 0 and maximum length of 4096",
+      "type": "string",
+      "maxLength": 4096
+    },
+    "Code_Country": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "Code_Country"
+      },
+      "description": "ISO 2 char country code  - Preferred country code is the 2 character country code as defined in ISO 3166-1",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "US"
+          }
+        ]
+      },
+      "type": "string",
+      "pattern": "([a-zA-Z]{2})?"
+    },
+    "DateTime": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "DateTime"
+      },
+      "description": "XSD DateTime allows either a time-zone specification or allows the time-zone to be omitted. \nWhen omitted, times are \"local\". XSD DateTime with either a \"Z\" or a \"+/-hh:mm\" value are UTC. Time is the time \"in the indicated time zone\". When a element or attribute has xsd:dateTime type, the data in a message can be either local or UTC and software can easily determine which it is.",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "2010-12-31T11:55:00Z"
+          }
+        ]
+      },
+      "type": "string",
+      "format": "date-time"
+    },
+    "Code_Language_ISO_3": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "Code_Language_ISO_3"
+      },
+      "description": "ISO 3 char  language code defined in  ISO639-2",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "eng"
+          }
+        ]
+      },
+      "type": "string"
+    },
+    "DateTime_Local": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "DateTime_Local"
+      },
+      "description": "ISO date time type without UTC offset or Z for Zulu restriction indicating it is representing Local Time\nExample: 2010-12-31T11:55:00",
+      "x-otm-annotations": {
+        "documentation": {
+          "implementers": [
+            "Assigned XSD Type:\n\t\t\t\t{http://www.w3.org/2001/XMLSchema}dateTime"
+          ]
+        },
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "2010-12-31T11:55:00"
+          }
+        ]
+      },
+      "type": "string",
+      "format": "date-time",
+      "pattern": ".+T[^Z+\\-]+"
+    },
+    "Code_Currency": {
+      "x-otm-entity": {
+        "EntityType": "Simple",
+        "EntityName": "Code_Currency"
+      },
+      "description": "Currency code - Preferred currencty code is a 3 char currency code as defined in ISO 4127",
+      "x-otm-annotations": {
+        "examples": [
+          {
+            "context": "OTA2",
+            "value": "USD"
+          }
+        ]
+      },
+      "type": "string",
+      "pattern": "([a-zA-Z]{3})?"
+    }
+  }
+}

@@ -1,5 +1,0 @@
-{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://paperhive.org/api/v0/schemas/author_post.json#",
-  "type": "string"
-}
