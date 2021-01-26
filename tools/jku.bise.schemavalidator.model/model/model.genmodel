@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jku.bise.schemavalidator.model/src" modelPluginID="jku.bise.schemavalidator.model"
+    modelName="Model" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>jsconschema.ecore</foreignModel>
+  <genPackages prefix="jsonschema" disposableProviderFactory="true" ecorePackage="jsconschema.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="jsconschema.ecore#//MetricType">
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//MetricType/GRAPH_BASED"/>
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//MetricType/KEYWORD_USAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//MetricType/TYPE_USAGE"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="jsconschema.ecore#//BaseSyntaxErrorType">
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//BaseSyntaxErrorType/SCHEMA_NOT_SUPPORTED"/>
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//BaseSyntaxErrorType/SCHEMA_NOT_FOUND"/>
+      <genEnumLiterals ecoreEnumLiteral="jsconschema.ecore#//BaseSyntaxErrorType/UNPARSABLE_JSON"/>
+    </genEnums>
+    <genClasses ecoreClass="jsconschema.ecore#//Model">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/jsonFiles"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/metrics"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/versions"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//JSONSchemaFile">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/duplicates"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaFile/fileName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/errors"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/measures"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//JSONSchemaVersion">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaVersion/draftName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaVersion/draftURL"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//Error"/>
+    <genClasses ecoreClass="jsconschema.ecore#//BaseSyntaxError">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//BaseSyntaxError/type"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//ValidationError">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//ValidationError/keyword"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//ValidationError/pointer"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//ValidationError/level"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//ValidationError/message"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//ValidationError/extendedMessage"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//Measure">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//Measure/value"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Measure/metric"/>
+    </genClasses>
+    <genClasses ecoreClass="jsconschema.ecore#//Metric">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//Metric/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//Metric/name"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

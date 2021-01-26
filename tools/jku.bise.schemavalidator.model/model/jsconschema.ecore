@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="jsonschema" nsURI="http://jku.bise.scemavalidator/jsonschema"
+    nsPrefix="jsonschema">
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="jsonFiles" upperBound="-1"
+        eType="#//JSONSchemaFile" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metrics" upperBound="-1"
+        eType="#//Metric" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="versions" upperBound="-1"
+        eType="#//JSONSchemaVersion" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JSONSchemaFile">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="duplicates" upperBound="-1"
+        eType="#//JSONSchemaFile"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="version" eType="#//JSONSchemaVersion"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="errors" upperBound="-1"
+        eType="#//Error" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measures" upperBound="-1"
+        eType="#//Measure" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JSONSchemaVersion">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="draftName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="draftURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Error"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BaseSyntaxError" eSuperTypes="#//Error">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BaseSyntaxErrorType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ValidationError" eSuperTypes="#//Error">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pointer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="extendedMessage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Measure">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metric" lowerBound="1"
+        eType="#//Metric"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Metric">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//MetricType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MetricType">
+    <eLiterals name="GRAPH_BASED"/>
+    <eLiterals name="KEYWORD_USAGE" value="1"/>
+    <eLiterals name="TYPE_USAGE" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BaseSyntaxErrorType">
+    <eLiterals name="SCHEMA_NOT_SUPPORTED"/>
+    <eLiterals name="SCHEMA_NOT_FOUND" value="1"/>
+    <eLiterals name="UNPARSABLE_JSON" value="2"/>
+  </eClassifiers>
+</ecore:EPackage>

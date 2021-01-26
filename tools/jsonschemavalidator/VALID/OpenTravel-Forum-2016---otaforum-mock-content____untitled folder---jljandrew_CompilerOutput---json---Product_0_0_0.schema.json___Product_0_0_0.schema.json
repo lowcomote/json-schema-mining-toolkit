@@ -1,0 +1,2389 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Product",
+  "x-otm-library": {
+    "ProjectName": "jljandrew.otp",
+    "LibraryName": "Product",
+    "LibraryVersion": "0.0.0",
+    "LibraryStatus": "FINAL",
+    "SourceFile": "/Product_0_0_0.otm",
+    "CompilerVersion": "4.0-SNAPSHOT",
+    "CompileDate": "2016-05-18T15:17:32.916-0400"
+  },
+  "definitions": {
+    "AncillaryProductID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "AncillaryProduct"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        },
+        "code": {
+          "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        }
+      },
+      "required": [
+        "@type",
+        "code"
+      ],
+      "discriminator": "@type"
+    },
+    "AncillaryProduct": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "AncillaryProduct"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/AncillaryProductID"
+        },
+        {
+          "properties": {
+            "name": {
+              "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          }
+        }
+      ]
+    },
+    "AncillaryProductDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "AncillaryProduct"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/AncillaryProduct"
+        },
+        {
+          "properties": {
+            "description": {
+              "description": "A long string  \nMinimum length of 0 and a maximum length of 4096",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Long"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          }
+        }
+      ]
+    },
+    "BasicPropertyInfo_Simple": {
+      "description": "A short string  \nMinimum length of 0 and a maximum length of 128",
+      "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+    },
+    "BasicPropertyInfo_Simple_List": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BasicPropertyInfo_Simple"
+      }
+    },
+    "BasicPropertyInfo": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "BasicPropertyInfo"
+      },
+      "description": "Identifies a property.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "code": {
+          "description": "Uniquely identifies a single property for a reservation.",
+          "x-otm-annotations": {
+            "examples": [
+              {
+                "context": "product",
+                "value": "CHIDT"
+              }
+            ]
+          },
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "ExtensionPoint_Summary": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Site": {
+      "$ref": "#/definitions/BasicPropertyInfo"
+    },
+    "BasicPropertyInfoDetail": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "BasicPropertyInfo"
+      },
+      "description": "Identifies a property.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/BasicPropertyInfo"
+        },
+        {
+          "properties": {
+            "name": {
+              "description": "Specifies the proper name of the property.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "ABC Hotel"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+            },
+            "cityCode": {
+              "description": "Specifies the three character IATA city code.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "CHI"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "chainCode": {
+              "description": "Identifies the chain.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "AA"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "chainName": {
+              "description": "Specifies the proper name of the chain.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "XYZ Chain"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+            },
+            "brandCode": {
+              "description": "Identifies a brand with in a chain (e.g. Courtyard, Hampton Inn).  This code is optional if the hotel is an independent property that can be identified by a propert code alone.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "BB"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "brandName": {
+              "description": "Identifies the proper name of the brand.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "BB Brand"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          }
+        }
+      ]
+    },
+    "SiteDetail": {
+      "$ref": "#/definitions/BasicPropertyInfoDetail"
+    },
+    "ClassOfServiceID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ClassOfService"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "code": {
+          "description": "Used to identify this product programmatically.  EG \"F\" for First Class",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        }
+      },
+      "required": [
+        "@type",
+        "code"
+      ],
+      "discriminator": "@type"
+    },
+    "ClassOfService": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ClassOfService"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ClassOfServiceID"
+        },
+        {
+          "properties": {
+            "count": {
+              "description": "Number available for sale or that have been sold",
+              "type": "integer",
+              "format": "int32"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "count"
+          ]
+        }
+      ]
+    },
+    "ClassOfServiceDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ClassOfService"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ClassOfService"
+        },
+        {
+          "properties": {
+            "name": {
+              "description": "Display name for this product.  EG \"First Class\"",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "GuestCount": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "GuestCount"
+      },
+      "description": "Identifies the number of guests for the reservation.",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ageQualifyingCode": {
+          "description": "Specifies the age type of the guest.  (e.g. Adult, Child, Infant).",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "age": {
+          "description": "Specifies the specific age of the guest.",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "JourneyID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Journey"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Journey": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Journey"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/JourneyID"
+        },
+        {
+          "properties": {
+            "duration": {
+              "type": "string"
+            },
+            "Segment": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SegmentID"
+              },
+              "maxItems": 6,
+              "minItems": 1
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "duration",
+            "Segment"
+          ]
+        }
+      ]
+    },
+    "JourneyQueryProduct": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Journey"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "departureDateTime": {
+          "type": "string"
+        },
+        "DeparturePointIdentifier": {
+          "$ref": "#/definitions/DeparturePointID"
+        },
+        "ArrivalPointIdentifier": {
+          "$ref": "#/definitions/ArrivalPointID"
+        },
+        "TransportNumberSummary": {
+          "$ref": "#/definitions/TransportNumber"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "departureDateTime",
+        "DeparturePointIdentifier",
+        "ArrivalPointIdentifier"
+      ],
+      "discriminator": "@type"
+    },
+    "LocationPointID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "LocationPoint"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "code": {
+          "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        }
+      },
+      "required": [
+        "@type",
+        "code"
+      ],
+      "discriminator": "@type"
+    },
+    "ArrivalPointID": {
+      "$ref": "#/definitions/LocationPointID"
+    },
+    "DeparturePointID": {
+      "$ref": "#/definitions/LocationPointID"
+    },
+    "LocationPoint": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "LocationPoint"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/LocationPointID"
+        },
+        {
+          "properties": {
+            "kioskInd": {
+              "type": "boolean"
+            },
+            "curbSideBaggageCheckInd": {
+              "type": "boolean"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          }
+        }
+      ]
+    },
+    "ArrivalPoint": {
+      "$ref": "#/definitions/LocationPoint"
+    },
+    "DeparturePoint": {
+      "$ref": "#/definitions/LocationPoint"
+    },
+    "LocationPointDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "LocationPoint"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/LocationPoint"
+        },
+        {
+          "properties": {
+            "openingTime": {
+              "type": "string"
+            },
+            "closingTime": {
+              "type": "string"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          },
+          "required": [
+            "openingTime",
+            "closingTime"
+          ]
+        }
+      ]
+    },
+    "ArrivalPointDetail": {
+      "$ref": "#/definitions/LocationPointDetail"
+    },
+    "DeparturePointDetail": {
+      "$ref": "#/definitions/LocationPointDetail"
+    },
+    "Meal_Simple": {
+      "description": "A short string  \nMinimum length of 0 and a maximum length of 128",
+      "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+    },
+    "Meal_Simple_List": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Meal_Simple"
+      }
+    },
+    "Meal": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "Meal"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "ClassOfService": {
+          "description": "Product that includes these meals",
+          "$ref": "#/definitions/ClassOfServiceID"
+        },
+        "MealCode": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Enum_Meal"
+          },
+          "maxItems": 3,
+          "minItems": 1
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "ClassOfService",
+        "MealCode"
+      ],
+      "discriminator": "@type"
+    },
+    "MealsIncluded": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "MealsIncluded"
+      },
+      "description": "Specifies which meals are included with this rate plan.",
+      "properties": {
+        "value": {
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+        },
+        "mealPlanCodes": {
+          "description": "Identifies the type of meal plans included with this rate plan.",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "breakfastInd": {
+          "description": "When true, indicates that breakfast is included with this rate plan.",
+          "type": "boolean"
+        },
+        "lunchInd": {
+          "description": "When true, indicates that lunch is included with this rate plan.",
+          "type": "boolean"
+        },
+        "dinnerInd": {
+          "description": "When true, indicates dinner is included with this rate plan.",
+          "type": "boolean"
+        }
+      }
+    },
+    "PricedProductID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "PricedProduct"
+      },
+      "description": "A product with a from price point.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "PricedProduct": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "PricedProduct"
+      },
+      "description": "A product with a from price point.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/PricedProductID"
+        },
+        {
+          "properties": {
+            "fromPrice": {
+              "description": "The starting price for this product.",
+              "type": "number",
+              "format": "float"
+            },
+            "vendor": {
+              "description": "Specifies the vendor for this priced product.",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "Product": {
+              "description": "The product that this pricing refers to.",
+              "$ref": "#/definitions/ProductID"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    },
+    "ProductID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Product"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "Identifier": {
+          "description": "Identifier provides the ability to create a globally unique identifier. For the identifier to be globally unique it must have a system provided identifier and the system must be identified using a global naming authority. System identification uses the domain naming system (DNS) to assure they are globally unique and should be an URL. The system provided ID will typically be a primary or surrogate key in a database.\n\nThe URL, system and company attributes can be omitted only when the system context can be implied by a parent or ancestor element.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Identifier"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "ProductTransportation": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Product"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProductID"
+        },
+        {
+          "properties": {
+            "Journey": {
+              "$ref": "#/definitions/JourneyID"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "Journey"
+          ]
+        }
+      ]
+    },
+    "ProductHospitality": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Product"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProductID"
+        },
+        {
+          "properties": {
+            "RoomStay": {
+              "$ref": "#/definitions/RoomStayID"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "RoomStay"
+          ]
+        }
+      ]
+    },
+    "ProductQueryAvailability": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Product"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "ProductQueries": {
+          "$ref": "#/definitions/ProductQueriesID"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "ProductQueries"
+      ],
+      "discriminator": "@type"
+    },
+    "ProductQueriesID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ProductQueries"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "ProductQueriesTransportation": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ProductQueries"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProductQueriesID"
+        },
+        {
+          "properties": {
+            "JourneyQueryProduct": {
+              "$ref": "#/definitions/JourneyQueryProduct"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    },
+    "ProductQueriesHospitality": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "ProductQueries"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProductQueriesID"
+        },
+        {
+          "properties": {
+            "RoomStayQueryProduct": {
+              "$ref": "#/definitions/RoomStayQueryProduct"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    },
+    "RatePlanID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RatePlan"
+      },
+      "description": "Specifies information regarding a rate plan.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "ratePlanId": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RatePlan": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RatePlan"
+      },
+      "description": "Specifies information regarding a rate plan.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RatePlanID"
+        },
+        {
+          "properties": {
+            "ratePlanCode": {
+              "description": "Specifies the code that identifies this rate plan.",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "ratePlanCode"
+          ]
+        }
+      ]
+    },
+    "RatePlanDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RatePlan"
+      },
+      "description": "Specifies information regarding a rate plan.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RatePlan"
+        },
+        {
+          "properties": {
+            "Comments": {
+              "description": "Specifies information regarding this rate plan.",
+              "$ref": "Common_0_0_0.schema.json#/definitions/Comments"
+            },
+            "MealsIncluded": {
+              "description": "Specifies the meals that are included with this rate plan.",
+              "$ref": "#/definitions/MealsIncluded"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          }
+        }
+      ]
+    },
+    "RestStopID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RestStop"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "code": {
+          "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        }
+      },
+      "required": [
+        "@type",
+        "code"
+      ],
+      "discriminator": "@type"
+    },
+    "RestStop": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RestStop"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RestStopID"
+        },
+        {
+          "properties": {
+            "name": {
+              "description": "A short string  \nMinimum length of 0 and a maximum length of 128",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "RestStopDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RestStop"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RestStop"
+        },
+        {
+          "properties": {
+            "description": {
+              "description": "A long string  \nMinimum length of 0 and a maximum length of 4096",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Long"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          },
+          "required": [
+            "description"
+          ]
+        }
+      ]
+    },
+    "RoomRateID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomRate"
+      },
+      "description": "Specifies the details of a room rate.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "roomRateId": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomRate": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomRate"
+      },
+      "description": "Specifies the details of a room rate.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoomRateID"
+        },
+        {
+          "properties": {
+            "effectiveDate": {
+              "description": "Specifies the starting date for this room rate.",
+              "type": "string",
+              "format": "date"
+            },
+            "expireDate": {
+              "description": "Specifies the end date for this room rate.",
+              "type": "string",
+              "format": "date"
+            },
+            "Rate2": {
+              "description": "Specifies the rate for the room.",
+              "$ref": "Common_0_0_0.schema.json#/definitions/Price"
+            },
+            "BasicPropertyInfo": {
+              "description": "Specifies the property for the reservation.",
+              "$ref": "#/definitions/BasicPropertyInfo"
+            },
+            "expireDateExclusiveInd": {
+              "description": "When true, the ExpireDate is the first day after the applicable period (e.g. when expire date is Oct 15  the last date of the period is Oct 14).",
+              "type": "boolean"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "effectiveDate"
+          ]
+        }
+      ]
+    },
+    "RoomRateDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomRate"
+      },
+      "description": "Specifies the details of a room rate.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoomRate"
+        },
+        {
+          "properties": {
+            "promotionCode": {
+              "description": "Identifyies host to link directly with a specific named advertising campaign. By including the code, the client is able to gain access to special offers which MAY have been created for a specifically targeted group via a CRM system or for a wider advertising campaign using Television or press adverts.",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "ratePlanCode": {
+              "description": "Specifies the rate plan code for the product.",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "roomTypeCode": {
+              "description": "Specifies the system room type code (ex: A1K, A1Q).",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          }
+        }
+      ]
+    },
+    "RoomRateQueryRange": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomRate"
+      },
+      "description": "Specifies the details of a room rate.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "StartRate": {
+          "description": "Starting price for the rate range query.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Price"
+        },
+        "EndRate": {
+          "description": "Ending price for the rate range query.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Price"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomStayID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomStay"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "description": "The ID for a room stay product.",
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomStay": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomStay"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoomStayID"
+        },
+        {
+          "properties": {
+            "RoomType": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoomTypeID"
+              },
+              "maxItems": 30
+            },
+            "RatePlan": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RatePlanID"
+              },
+              "maxItems": 30
+            },
+            "RoomRate": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoomRateID"
+              },
+              "maxItems": 30
+            },
+            "GuestCount": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GuestCount"
+              },
+              "maxItems": 10
+            },
+            "BasicPropertyInfo": {
+              "description": "Identifies the property for the room stay.",
+              "$ref": "#/definitions/BasicPropertyInfo"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    },
+    "RoomStayQueryProduct": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomStay"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "arrivalDate": {
+          "description": "Specifies the arrival date for the query.",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/DateTime"
+        },
+        "departureDate": {
+          "description": "Specifies the departure date for the query.",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/DateTime"
+        },
+        "BasicPropertyInfo": {
+          "description": "Specifies property information for the query.",
+          "$ref": "#/definitions/BasicPropertyInfo"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomStayQueryCandidate": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomStay"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "ArrivalDepartureDates": {
+          "description": "Identifies the start and/or end dates.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Date_EffectiveExpire"
+        },
+        "BasicPropertyInfo": {
+          "description": "Identifies a specific hotel or city for which the availability search applies.",
+          "$ref": "#/definitions/BasicPropertyInfo"
+        },
+        "RoomType": {
+          "description": "Identifies a type of room.",
+          "$ref": "#/definitions/RoomTypeID"
+        },
+        "GuestCount": {
+          "description": "Identifies the number of guests and the ages of the guests.",
+          "$ref": "#/definitions/GuestCount"
+        },
+        "RoomRateQueryRange": {
+          "description": "The rate range for the query.",
+          "$ref": "#/definitions/RoomRateQueryRange"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "RoomType"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomTypeID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomType"
+      },
+      "description": "Specifies the details of the room type.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "roomTypeId": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RoomType": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RoomType"
+      },
+      "description": "Specifies the details of the room type.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RoomTypeID"
+        },
+        {
+          "properties": {
+            "roomTypeCode": {
+              "description": "Identifies the specific system room type code for this room type (e.g. A1K, A1Q).",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "STD"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "bedTypeCode": {
+              "description": "Indicates the type of bed(s) found in the room. Typical values would be Double, Twin, Queen, or King.",
+              "x-otm-annotations": {
+                "examples": [
+                  {
+                    "context": "product",
+                    "value": "K1"
+                  }
+                ]
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "Comments": {
+              "description": "Specifies information regarding the room type.",
+              "$ref": "Common_0_0_0.schema.json#/definitions/Comments"
+            },
+            "nonSmokingInd": {
+              "description": "When true indicates that the room type is non-smoking.",
+              "type": "boolean"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "roomTypeCode"
+          ]
+        }
+      ]
+    },
+    "SegmentID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Segment"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        },
+        "departureDateTime": {
+          "description": "ISO date time type without UTC offset or Z for Zulu restriction indicating it is representing Local Time\nExample: 2010-12-31T11:55:00",
+          "x-otm-annotations": {
+            "documentation": {
+              "implementers": [
+                "Assigned XSD Type:\n\t\t\t\t{http://www.w3.org/2001/XMLSchema}dateTime"
+              ]
+            }
+          },
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/DateTime_Local"
+        },
+        "DeparturePoint": {
+          "$ref": "#/definitions/DeparturePointID"
+        },
+        "TransportNumber": {
+          "$ref": "#/definitions/TransportNumber"
+        }
+      },
+      "required": [
+        "@type",
+        "departureDateTime",
+        "DeparturePoint",
+        "TransportNumber"
+      ],
+      "discriminator": "@type"
+    },
+    "Segment": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Segment"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/SegmentID"
+        },
+        {
+          "properties": {
+            "arrivalDateTime": {
+              "description": "ISO date time type without UTC offset or Z for Zulu restriction indicating it is representing Local Time\nExample: 2010-12-31T11:55:00",
+              "x-otm-annotations": {
+                "documentation": {
+                  "implementers": [
+                    "Assigned XSD Type:\n\t\t\t\t{http://www.w3.org/2001/XMLSchema}dateTime"
+                  ]
+                }
+              },
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/DateTime_Local"
+            },
+            "numberOfStops": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "duration": {
+              "type": "string"
+            },
+            "ArrivalPoint": {
+              "$ref": "#/definitions/ArrivalPointID"
+            },
+            "ClassOfService": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClassOfServiceID"
+              },
+              "maxItems": 26,
+              "minItems": 1
+            },
+            "AncillaryProduct": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AncillaryProductID"
+              },
+              "maxItems": 25
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "arrivalDateTime",
+            "numberOfStops",
+            "duration",
+            "ArrivalPoint",
+            "ClassOfService"
+          ]
+        }
+      ]
+    },
+    "SegmentAir": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Segment"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Segment"
+        },
+        {
+          "properties": {
+            "Meal": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Meal"
+              },
+              "maxItems": 10
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          }
+        }
+      ]
+    },
+    "SegmentRail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Segment"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Segment"
+        },
+        {
+          "properties": {
+            "Service": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Enum_Service"
+              },
+              "maxItems": 10
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          }
+        }
+      ]
+    },
+    "SegmentGround": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Segment"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Segment"
+        },
+        {
+          "properties": {
+            "RestStop": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RestStopID"
+              },
+              "maxItems": 5
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          }
+        }
+      ]
+    },
+    "TransportNumber_Simple": {
+      "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+      "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+    },
+    "TransportNumber_Simple_List": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TransportNumber_Simple"
+      }
+    },
+    "TransportNumber": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "TransportNumber"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "carrier": {
+          "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "number": {
+          "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "ExtensionPoint_Summary": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+        }
+      },
+      "required": [
+        "@type",
+        "carrier",
+        "number"
+      ],
+      "discriminator": "@type"
+    },
+    "TransportNumberDetail": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "TransportNumber"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/TransportNumber"
+        },
+        {
+          "properties": {
+            "operatingCarrier": {
+              "description": "A tiny string  \nMinimum length of 0 and a maximum length of 32",
+              "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+            },
+            "ExtensionPoint_Detail": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Detail"
+            }
+          }
+        }
+      ]
+    },
+    "Enum_Meal": {
+      "x-otm-entity": {
+        "EntityType": "EnumerationClosed",
+        "EntityName": "Enum_Meal"
+      },
+      "type": "string",
+      "enum": [
+        "B",
+        "L",
+        "D"
+      ]
+    },
+    "Enum_Service": {
+      "x-otm-entity": {
+        "EntityType": "EnumerationClosed",
+        "EntityName": "Enum_Service"
+      },
+      "type": "string",
+      "enum": [
+        "M",
+        "D",
+        "B",
+        "C"
+      ]
+    },
+    "OtherServiceInfo": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "OtherServiceInfo"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "code": {
+          "description": "A proprietary code used between systems to identify an Other Service Information (OSI) item.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Code_OSI"
+        },
+        "text": {
+          "description": "The OSI text. (1-64)",
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Short"
+        },
+        "Operator": {
+          "description": "The operator to which the OSI applies.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/CompanyName"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "OSI_Pref": {
+      "$ref": "#/definitions/OtherServiceInfo"
+    },
+    "AirEquipment": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "AirEquipment"
+      },
+      "description": "Specifies the aircraft equipment type.",
+      "properties": {
+        "value": {
+          "$ref": "OTA_SimpleTypes_0_0_0.schema.json#/definitions/String_Tiny"
+        },
+        "airEquipType": {
+          "description": "This is the 3 character IATA code.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/Code_AirEquip_IATA"
+        },
+        "AircraftTailNumber": {
+          "description": "The aircraft number assigned for the flight.",
+          "type": "string"
+        },
+        "changeofGaugeInd": {
+          "description": "Indicates there is an equipment change",
+          "type": "boolean"
+        }
+      }
+    },
+    "BerthDetail": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "BerthDetail"
+      },
+      "description": "Defines information about a berth sleeper.",
+      "properties": {
+        "number": {
+          "description": "The berth number.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "position": {
+          "description": "The berth position, such as Lower and Middle.",
+          "$ref": "CodeList_0_0_0.schema.json#/definitions/BerthPosition_Enum"
+        }
+      }
+    },
+    "RailAccommDetailID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RailAccommDetail"
+      },
+      "description": "Specific traveler requested accommodation information, including class and type, and associated accommodation attributes such as seat,  berth and compartment number, position, direction and adjacent seating preferences.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "RailAccommDetail": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RailAccommDetail"
+      },
+      "description": "Specific traveler requested accommodation information, including class and type, and associated accommodation attributes such as seat,  berth and compartment number, position, direction and adjacent seating preferences.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RailAccommDetailID"
+        },
+        {
+          "properties": {
+            "deck": {
+              "description": "The deck level of the accommodation, such as Regular One Level and Lower.",
+              "$ref": "CodeList_0_0_0.schema.json#/definitions/Deck_Enum"
+            },
+            "carNumber": {
+              "description": "Car information, such as car number.",
+              "type": "integer",
+              "format": "int32"
+            },
+            "AccommodationClassEnum": {
+              "description": "A commonly offered accommodation class, such as first class and second class.",
+              "$ref": "CodeList_0_0_0.schema.json#/definitions/AccommodationClass_Enum"
+            },
+            "Compartment": {
+              "description": "Compartment accommodation information, including type and associated compartment attributes such as number and position.",
+              "$ref": "#/definitions/Compartment"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          }
+        }
+      ]
+    },
+    "RailAccommDetailSeat": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RailAccommDetail"
+      },
+      "description": "Specific traveler requested accommodation information, including class and type, and associated accommodation attributes such as seat,  berth and compartment number, position, direction and adjacent seating preferences.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RailAccommDetail"
+        },
+        {
+          "properties": {
+            "Seat": {
+              "description": "Seat accommodation information, including the seat type and associated seat attributes, such as seat number, position and direction.",
+              "$ref": "#/definitions/SeatDetail"
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          },
+          "required": [
+            "Seat"
+          ]
+        }
+      ]
+    },
+    "RailAccommDetailBerth": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "RailAccommDetail"
+      },
+      "description": "Specific traveler requested accommodation information, including class and type, and associated accommodation attributes such as seat,  berth and compartment number, position, direction and adjacent seating preferences.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RailAccommDetail"
+        },
+        {
+          "properties": {
+            "Berth": {
+              "description": "Berth accommodation information, including berth type and associated berth attributes, such as  berth number and position.",
+              "$ref": "#/definitions/BerthDetail"
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          },
+          "required": [
+            "Berth"
+          ]
+        }
+      ]
+    },
+    "Compartment": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "Compartment"
+      },
+      "properties": {
+        "number": {
+          "description": "The compartment number.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "position": {
+          "description": "The compartment position, such as Close to restaurant car.",
+          "$ref": "CodeList_0_0_0.schema.json#/definitions/CompartmentPosition_Enum"
+        }
+      }
+    },
+    "SeatDetail": {
+      "x-otm-entity": {
+        "EntityType": "ValueWithAttributes",
+        "EntityName": "SeatDetail"
+      },
+      "description": "Defines information about a seat on a train.",
+      "properties": {
+        "number": {
+          "description": "The seat number.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "position": {
+          "description": "The seat position, such as Window, Aisle and Table.",
+          "$ref": "CodeList_0_0_0.schema.json#/definitions/SeatPosition_Enum"
+        },
+        "direction": {
+          "description": "The seat direction, such as Facing and Back.",
+          "$ref": "Common_0_0_0.schema.json#/definitions/SeatDirection"
+        }
+      }
+    },
+    "AvailabilityRQ": {
+      "x-otm-entity": {
+        "EntityType": "Operation",
+        "EntityName": "Product_Availability"
+      },
+      "allOf": [
+        {
+          "$ref": "built-ins/OTA2_Message_v2.0.0.schema.json#/definitions/OTA2_Request_Payload"
+        },
+        {
+          "properties": {
+            "ProductQueryAvailability": {
+              "$ref": "#/definitions/ProductQueryAvailability"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    },
+    "AvailabilityRS": {
+      "x-otm-entity": {
+        "EntityType": "Operation",
+        "EntityName": "Product_Availability"
+      },
+      "allOf": [
+        {
+          "$ref": "built-ins/OTA2_Message_v2.0.0.schema.json#/definitions/OTA2_Response_Payload"
+        },
+        {
+          "properties": {
+            "Result": {
+              "description": "When present indicates that errors or warnings occurred during processing.",
+              "$ref": "Common_0_0_0.schema.json#/definitions/Result"
+            },
+            "ArrivalPoint": {
+              "$ref": "#/definitions/ArrivalPointID"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "AncillaryProductIdentifier": {
+          "$ref": "#/definitions/AncillaryProductID"
+        }
+      },
+      "required": [
+        "AncillaryProductIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "AncillaryProductSummary": {
+          "$ref": "#/definitions/AncillaryProduct"
+        }
+      },
+      "required": [
+        "AncillaryProductSummary"
+      ]
+    },
+    {
+      "properties": {
+        "AncillaryProductDetail": {
+          "$ref": "#/definitions/AncillaryProductDetail"
+        }
+      },
+      "required": [
+        "AncillaryProductDetail"
+      ]
+    },
+    {
+      "properties": {
+        "BasicPropertyInfoSummary": {
+          "$ref": "#/definitions/BasicPropertyInfo"
+        }
+      },
+      "required": [
+        "BasicPropertyInfoSummary"
+      ]
+    },
+    {
+      "properties": {
+        "SiteSummary": {
+          "$ref": "#/definitions/Site"
+        }
+      },
+      "required": [
+        "SiteSummary"
+      ]
+    },
+    {
+      "properties": {
+        "BasicPropertyInfoDetail": {
+          "$ref": "#/definitions/BasicPropertyInfoDetail"
+        }
+      },
+      "required": [
+        "BasicPropertyInfoDetail"
+      ]
+    },
+    {
+      "properties": {
+        "SiteDetail": {
+          "$ref": "#/definitions/SiteDetail"
+        }
+      },
+      "required": [
+        "SiteDetail"
+      ]
+    },
+    {
+      "properties": {
+        "ClassOfServiceIdentifier": {
+          "$ref": "#/definitions/ClassOfServiceID"
+        }
+      },
+      "required": [
+        "ClassOfServiceIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "ClassOfServiceSummary": {
+          "$ref": "#/definitions/ClassOfService"
+        }
+      },
+      "required": [
+        "ClassOfServiceSummary"
+      ]
+    },
+    {
+      "properties": {
+        "ClassOfServiceDetail": {
+          "$ref": "#/definitions/ClassOfServiceDetail"
+        }
+      },
+      "required": [
+        "ClassOfServiceDetail"
+      ]
+    },
+    {
+      "properties": {
+        "JourneyIdentifier": {
+          "$ref": "#/definitions/JourneyID"
+        }
+      },
+      "required": [
+        "JourneyIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "JourneySummary": {
+          "$ref": "#/definitions/Journey"
+        }
+      },
+      "required": [
+        "JourneySummary"
+      ]
+    },
+    {
+      "properties": {
+        "JourneyQueryProduct": {
+          "$ref": "#/definitions/JourneyQueryProduct"
+        }
+      },
+      "required": [
+        "JourneyQueryProduct"
+      ]
+    },
+    {
+      "properties": {
+        "LocationPointIdentifier": {
+          "$ref": "#/definitions/LocationPointID"
+        }
+      },
+      "required": [
+        "LocationPointIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "ArrivalPointIdentifier": {
+          "$ref": "#/definitions/ArrivalPointID"
+        }
+      },
+      "required": [
+        "ArrivalPointIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "DeparturePointIdentifier": {
+          "$ref": "#/definitions/DeparturePointID"
+        }
+      },
+      "required": [
+        "DeparturePointIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "LocationPointSummary": {
+          "$ref": "#/definitions/LocationPoint"
+        }
+      },
+      "required": [
+        "LocationPointSummary"
+      ]
+    },
+    {
+      "properties": {
+        "ArrivalPointSummary": {
+          "$ref": "#/definitions/ArrivalPoint"
+        }
+      },
+      "required": [
+        "ArrivalPointSummary"
+      ]
+    },
+    {
+      "properties": {
+        "DeparturePointSummary": {
+          "$ref": "#/definitions/DeparturePoint"
+        }
+      },
+      "required": [
+        "DeparturePointSummary"
+      ]
+    },
+    {
+      "properties": {
+        "LocationPointDetail": {
+          "$ref": "#/definitions/LocationPointDetail"
+        }
+      },
+      "required": [
+        "LocationPointDetail"
+      ]
+    },
+    {
+      "properties": {
+        "ArrivalPointDetail": {
+          "$ref": "#/definitions/ArrivalPointDetail"
+        }
+      },
+      "required": [
+        "ArrivalPointDetail"
+      ]
+    },
+    {
+      "properties": {
+        "DeparturePointDetail": {
+          "$ref": "#/definitions/DeparturePointDetail"
+        }
+      },
+      "required": [
+        "DeparturePointDetail"
+      ]
+    },
+    {
+      "properties": {
+        "Meal": {
+          "$ref": "#/definitions/Meal"
+        }
+      },
+      "required": [
+        "Meal"
+      ]
+    },
+    {
+      "properties": {
+        "PricedProductIdentifier": {
+          "$ref": "#/definitions/PricedProductID"
+        }
+      },
+      "required": [
+        "PricedProductIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "PricedProductSummary": {
+          "$ref": "#/definitions/PricedProduct"
+        }
+      },
+      "required": [
+        "PricedProductSummary"
+      ]
+    },
+    {
+      "properties": {
+        "ProductIdentifier": {
+          "$ref": "#/definitions/ProductID"
+        }
+      },
+      "required": [
+        "ProductIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "ProductTransportation": {
+          "$ref": "#/definitions/ProductTransportation"
+        }
+      },
+      "required": [
+        "ProductTransportation"
+      ]
+    },
+    {
+      "properties": {
+        "ProductHospitality": {
+          "$ref": "#/definitions/ProductHospitality"
+        }
+      },
+      "required": [
+        "ProductHospitality"
+      ]
+    },
+    {
+      "properties": {
+        "ProductQueryAvailability": {
+          "$ref": "#/definitions/ProductQueryAvailability"
+        }
+      },
+      "required": [
+        "ProductQueryAvailability"
+      ]
+    },
+    {
+      "properties": {
+        "ProductQueriesIdentifier": {
+          "$ref": "#/definitions/ProductQueriesID"
+        }
+      },
+      "required": [
+        "ProductQueriesIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "ProductQueriesTransportation": {
+          "$ref": "#/definitions/ProductQueriesTransportation"
+        }
+      },
+      "required": [
+        "ProductQueriesTransportation"
+      ]
+    },
+    {
+      "properties": {
+        "ProductQueriesHospitality": {
+          "$ref": "#/definitions/ProductQueriesHospitality"
+        }
+      },
+      "required": [
+        "ProductQueriesHospitality"
+      ]
+    },
+    {
+      "properties": {
+        "RatePlanIdentifier": {
+          "$ref": "#/definitions/RatePlanID"
+        }
+      },
+      "required": [
+        "RatePlanIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RatePlanSummary": {
+          "$ref": "#/definitions/RatePlan"
+        }
+      },
+      "required": [
+        "RatePlanSummary"
+      ]
+    },
+    {
+      "properties": {
+        "RatePlanDetail": {
+          "$ref": "#/definitions/RatePlanDetail"
+        }
+      },
+      "required": [
+        "RatePlanDetail"
+      ]
+    },
+    {
+      "properties": {
+        "RestStopIdentifier": {
+          "$ref": "#/definitions/RestStopID"
+        }
+      },
+      "required": [
+        "RestStopIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RestStopSummary": {
+          "$ref": "#/definitions/RestStop"
+        }
+      },
+      "required": [
+        "RestStopSummary"
+      ]
+    },
+    {
+      "properties": {
+        "RestStopDetail": {
+          "$ref": "#/definitions/RestStopDetail"
+        }
+      },
+      "required": [
+        "RestStopDetail"
+      ]
+    },
+    {
+      "properties": {
+        "RoomRateIdentifier": {
+          "$ref": "#/definitions/RoomRateID"
+        }
+      },
+      "required": [
+        "RoomRateIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RoomRateSummary": {
+          "$ref": "#/definitions/RoomRate"
+        }
+      },
+      "required": [
+        "RoomRateSummary"
+      ]
+    },
+    {
+      "properties": {
+        "RoomRateDetail": {
+          "$ref": "#/definitions/RoomRateDetail"
+        }
+      },
+      "required": [
+        "RoomRateDetail"
+      ]
+    },
+    {
+      "properties": {
+        "RoomRateQueryRange": {
+          "$ref": "#/definitions/RoomRateQueryRange"
+        }
+      },
+      "required": [
+        "RoomRateQueryRange"
+      ]
+    },
+    {
+      "properties": {
+        "RoomStayIdentifier": {
+          "$ref": "#/definitions/RoomStayID"
+        }
+      },
+      "required": [
+        "RoomStayIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RoomStaySummary": {
+          "$ref": "#/definitions/RoomStay"
+        }
+      },
+      "required": [
+        "RoomStaySummary"
+      ]
+    },
+    {
+      "properties": {
+        "RoomStayQueryProduct": {
+          "$ref": "#/definitions/RoomStayQueryProduct"
+        }
+      },
+      "required": [
+        "RoomStayQueryProduct"
+      ]
+    },
+    {
+      "properties": {
+        "RoomStayQueryCandidate": {
+          "$ref": "#/definitions/RoomStayQueryCandidate"
+        }
+      },
+      "required": [
+        "RoomStayQueryCandidate"
+      ]
+    },
+    {
+      "properties": {
+        "RoomTypeIdentifier": {
+          "$ref": "#/definitions/RoomTypeID"
+        }
+      },
+      "required": [
+        "RoomTypeIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RoomTypeSummary": {
+          "$ref": "#/definitions/RoomType"
+        }
+      },
+      "required": [
+        "RoomTypeSummary"
+      ]
+    },
+    {
+      "properties": {
+        "SegmentIdentifier": {
+          "$ref": "#/definitions/SegmentID"
+        }
+      },
+      "required": [
+        "SegmentIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "SegmentSummary": {
+          "$ref": "#/definitions/Segment"
+        }
+      },
+      "required": [
+        "SegmentSummary"
+      ]
+    },
+    {
+      "properties": {
+        "SegmentAir": {
+          "$ref": "#/definitions/SegmentAir"
+        }
+      },
+      "required": [
+        "SegmentAir"
+      ]
+    },
+    {
+      "properties": {
+        "SegmentRail": {
+          "$ref": "#/definitions/SegmentRail"
+        }
+      },
+      "required": [
+        "SegmentRail"
+      ]
+    },
+    {
+      "properties": {
+        "SegmentGround": {
+          "$ref": "#/definitions/SegmentGround"
+        }
+      },
+      "required": [
+        "SegmentGround"
+      ]
+    },
+    {
+      "properties": {
+        "TransportNumberSummary": {
+          "$ref": "#/definitions/TransportNumber"
+        }
+      },
+      "required": [
+        "TransportNumberSummary"
+      ]
+    },
+    {
+      "properties": {
+        "TransportNumberDetail": {
+          "$ref": "#/definitions/TransportNumberDetail"
+        }
+      },
+      "required": [
+        "TransportNumberDetail"
+      ]
+    },
+    {
+      "properties": {
+        "OtherServiceInfo": {
+          "$ref": "#/definitions/OtherServiceInfo"
+        }
+      },
+      "required": [
+        "OtherServiceInfo"
+      ]
+    },
+    {
+      "properties": {
+        "OSI_Pref": {
+          "$ref": "#/definitions/OSI_Pref"
+        }
+      },
+      "required": [
+        "OSI_Pref"
+      ]
+    },
+    {
+      "properties": {
+        "RailAccommDetailIdentifier": {
+          "$ref": "#/definitions/RailAccommDetailID"
+        }
+      },
+      "required": [
+        "RailAccommDetailIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "RailAccommDetailSummary": {
+          "$ref": "#/definitions/RailAccommDetail"
+        }
+      },
+      "required": [
+        "RailAccommDetailSummary"
+      ]
+    },
+    {
+      "properties": {
+        "RailAccommDetailSeat": {
+          "$ref": "#/definitions/RailAccommDetailSeat"
+        }
+      },
+      "required": [
+        "RailAccommDetailSeat"
+      ]
+    },
+    {
+      "properties": {
+        "RailAccommDetailBerth": {
+          "$ref": "#/definitions/RailAccommDetailBerth"
+        }
+      },
+      "required": [
+        "RailAccommDetailBerth"
+      ]
+    },
+    {
+      "properties": {
+        "AvailabilityRQ": {
+          "$ref": "#/definitions/AvailabilityRQ"
+        }
+      },
+      "required": [
+        "AvailabilityRQ"
+      ]
+    },
+    {
+      "properties": {
+        "AvailabilityRS": {
+          "$ref": "#/definitions/AvailabilityRS"
+        }
+      },
+      "required": [
+        "AvailabilityRS"
+      ]
+    }
+  ]
+}

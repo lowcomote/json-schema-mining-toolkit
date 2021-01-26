@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Webcert Save Draft Rest api response model",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status"
+  ]
+}
