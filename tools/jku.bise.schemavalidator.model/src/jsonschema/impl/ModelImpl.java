@@ -5,7 +5,6 @@ package jsonschema.impl;
 import java.util.Collection;
 
 import jsonschema.JSONSchemaFile;
-import jsonschema.JSONSchemaVersion;
 import jsonschema.Metric;
 import jsonschema.Model;
 import jsonschema.jsonschemaPackage;
@@ -32,7 +31,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link jsonschema.impl.ModelImpl#getJsonFiles <em>Json Files</em>}</li>
  *   <li>{@link jsonschema.impl.ModelImpl#getMetrics <em>Metrics</em>}</li>
- *   <li>{@link jsonschema.impl.ModelImpl#getVersions <em>Versions</em>}</li>
  * </ul>
  *
  * @generated
@@ -57,16 +55,6 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 	 * @ordered
 	 */
 	protected EList<Metric> metrics;
-
-	/**
-	 * The cached value of the '{@link #getVersions() <em>Versions</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getVersions()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<JSONSchemaVersion> versions;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -119,27 +107,12 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 	 * @generated
 	 */
 	@Override
-	public EList<JSONSchemaVersion> getVersions() {
-		if (versions == null) {
-			versions = new EObjectContainmentEList<JSONSchemaVersion>(JSONSchemaVersion.class, this, jsonschemaPackage.MODEL__VERSIONS);
-		}
-		return versions;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case jsonschemaPackage.MODEL__JSON_FILES:
 				return ((InternalEList<?>)getJsonFiles()).basicRemove(otherEnd, msgs);
 			case jsonschemaPackage.MODEL__METRICS:
 				return ((InternalEList<?>)getMetrics()).basicRemove(otherEnd, msgs);
-			case jsonschemaPackage.MODEL__VERSIONS:
-				return ((InternalEList<?>)getVersions()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -156,8 +129,6 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 				return getJsonFiles();
 			case jsonschemaPackage.MODEL__METRICS:
 				return getMetrics();
-			case jsonschemaPackage.MODEL__VERSIONS:
-				return getVersions();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -179,10 +150,6 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 				getMetrics().clear();
 				getMetrics().addAll((Collection<? extends Metric>)newValue);
 				return;
-			case jsonschemaPackage.MODEL__VERSIONS:
-				getVersions().clear();
-				getVersions().addAll((Collection<? extends JSONSchemaVersion>)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -201,9 +168,6 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 			case jsonschemaPackage.MODEL__METRICS:
 				getMetrics().clear();
 				return;
-			case jsonschemaPackage.MODEL__VERSIONS:
-				getVersions().clear();
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -220,8 +184,6 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model {
 				return jsonFiles != null && !jsonFiles.isEmpty();
 			case jsonschemaPackage.MODEL__METRICS:
 				return metrics != null && !metrics.isEmpty();
-			case jsonschemaPackage.MODEL__VERSIONS:
-				return versions != null && !versions.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

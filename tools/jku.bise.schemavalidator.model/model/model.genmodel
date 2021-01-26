@@ -19,12 +19,11 @@
     <genClasses ecoreClass="jsconschema.ecore#//Model">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/jsonFiles"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/metrics"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//Model/versions"/>
     </genClasses>
     <genClasses ecoreClass="jsconschema.ecore#//JSONSchemaFile">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/duplicates"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaFile/fileName"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/version"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/errors"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/measures"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaFile/githubRepoFullname"/>

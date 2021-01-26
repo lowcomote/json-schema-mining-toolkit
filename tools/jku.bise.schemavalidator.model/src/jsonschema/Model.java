@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link jsonschema.Model#getJsonFiles <em>Json Files</em>}</li>
  *   <li>{@link jsonschema.Model#getMetrics <em>Metrics</em>}</li>
- *   <li>{@link jsonschema.Model#getVersions <em>Versions</em>}</li>
  * </ul>
  *
  * @see jsonschema.jsonschemaPackage#getModel()
@@ -48,17 +47,5 @@ public interface Model extends EObject {
 	 * @generated
 	 */
 	EList<Metric> getMetrics();
-
-	/**
-	 * Returns the value of the '<em><b>Versions</b></em>' containment reference list.
-	 * The list contents are of type {@link jsonschema.JSONSchemaVersion}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Versions</em>' containment reference list.
-	 * @see jsonschema.jsonschemaPackage#getModel_Versions()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<JSONSchemaVersion> getVersions();
 
 } // Model

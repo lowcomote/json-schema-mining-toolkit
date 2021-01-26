@@ -125,7 +125,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
 				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			} else if (GENERATE_MODEL.equals(choice))
-				modelGeneratorServiceFacade.generateModel(inputFolderPath);
+				modelGeneratorServiceFacade.generateModelAndSerialize(inputFolderPath,"model.xmi");
 		}
 		
 		console.close();

@@ -196,16 +196,6 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 	 * @generated
 	 */
 	@Override
-	public EReference getModel_Versions() {
-		return (EReference)modelEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EClass getJSONSchemaFile() {
 		return jsonSchemaFileEClass;
 	}
@@ -512,7 +502,6 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 		modelEClass = createEClass(MODEL);
 		createEReference(modelEClass, MODEL__JSON_FILES);
 		createEReference(modelEClass, MODEL__METRICS);
-		createEReference(modelEClass, MODEL__VERSIONS);
 
 		jsonSchemaFileEClass = createEClass(JSON_SCHEMA_FILE);
 		createEReference(jsonSchemaFileEClass, JSON_SCHEMA_FILE__DUPLICATES);
@@ -587,12 +576,11 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 		initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getModel_JsonFiles(), this.getJSONSchemaFile(), null, "jsonFiles", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_Metrics(), this.getMetric(), null, "metrics", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getModel_Versions(), this.getJSONSchemaVersion(), null, "versions", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jsonSchemaFileEClass, JSONSchemaFile.class, "JSONSchemaFile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getJSONSchemaFile_Duplicates(), this.getJSONSchemaFile(), null, "duplicates", null, 0, -1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJSONSchemaFile_FileName(), ecorePackage.getEString(), "fileName", null, 1, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getJSONSchemaFile_Version(), this.getJSONSchemaVersion(), null, "version", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getJSONSchemaFile_Version(), this.getJSONSchemaVersion(), null, "version", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJSONSchemaFile_Errors(), this.getError(), null, "errors", null, 0, -1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJSONSchemaFile_Measures(), this.getMeasure(), null, "measures", null, 0, -1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getJSONSchemaFile_GithubRepoFullname(), ecorePackage.getEString(), "githubRepoFullname", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

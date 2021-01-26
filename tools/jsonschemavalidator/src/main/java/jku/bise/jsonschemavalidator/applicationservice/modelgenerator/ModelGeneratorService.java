@@ -80,16 +80,19 @@ public class ModelGeneratorService {
 			try {
 				File fileIO = new File(file.getFileName());
 				List<Error> errors = schemaValidatorApplicationService.validate(fileIO);
-				
+			
 				if (errors.size() == 0) {
 					JSONObject jsonObject = Utils.buildJsonObjectFromFile(fileIO);
 					String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
-					try {
-						JSONSchemaVersion schemaObj = getSchemaVersion(model, schema);
-						file.setVersion(schemaObj);
-					} catch (Exception e) {
-						logger.error("First - {} {}", file.getFileName(), e.getMessage());
-					}
+					if(schema!=null)
+						try {
+							JSONSchemaVersion jsv = jsonschemaFactory.eINSTANCE.createJSONSchemaVersion();
+							jsv.setDraftName(schema);
+							jsv.setDraftURL(schema);
+							file.setVersion(jsv);
+						} catch (Exception e) {
+							logger.error("First - {} {}", file.getFileName(), e.getMessage());
+						}
 					try {
 						JsonSchemaMetricsDTO metrics = schemaMetricsApplicationService.findSchemaMetrics(fileIO);
 						if (metrics != null) {
@@ -170,37 +173,23 @@ public class ModelGeneratorService {
 					}
 				}
 				file.getErrors().addAll(errors);
-			} catch (JsonParseException e) {
+			} catch (Exception e) {
 				BaseSyntaxError basic = jsonschemaFactory.eINSTANCE.createBaseSyntaxError();
 				basic.setType(BaseSyntaxErrorType.UNPARSABLE_JSON);
 				file.getErrors().add(basic);
 			}
 		}
-		model.getVersions().forEach(z -> logger.info(z.getDraftName()));
 		model.getMetrics().forEach(z -> logger.info(z.getName()));
-		logger.info("Model has been generated");
+		logger.info("Model has been instanciated");
 		return model;
 	}
 
-	private JSONSchemaVersion getSchemaVersion(Model model, String schema) throws Exception {
-		if (schema == null)
-			throw new Exception("schema value is null");
-		String newSchema = "jui";// schema.substring(29, 31);
-		Optional<JSONSchemaVersion> value = model.getVersions().stream().filter(z -> z.getDraftName().equals(newSchema))
-				.findFirst();
-		if (value.isPresent())
-			return value.get();
-		else {
-			JSONSchemaVersion jsv = jsonschemaFactory.eINSTANCE.createJSONSchemaVersion();
-			jsv.setDraftName(newSchema);
-			jsv.setDraftURL(newSchema);
-			model.getVersions().add(jsv);
-			return jsv;
-		}
 
-	}
+	
 
-	private Metric getMetric(Model model, String metricName, MetricType mt) {
+	private Metric getMetric(Model model, String metricName, MetricType mt) throws Exception {
+		if(metricName == null)
+			throw new Exception();
 		String newMN = metricName.replace("$", "");
 		Optional<Metric> value = model.getMetrics().stream()
 				.filter(z -> z.getType().equals(mt) && z.getName().equals(newMN)).findFirst();

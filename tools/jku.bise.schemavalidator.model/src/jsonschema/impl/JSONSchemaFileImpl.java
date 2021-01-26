@@ -75,7 +75,7 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	protected String fileName = FILE_NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getVersion() <em>Version</em>}' reference.
+	 * The cached value of the '{@link #getVersion() <em>Version</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getVersion()
@@ -206,14 +206,6 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	 */
 	@Override
 	public JSONSchemaVersion getVersion() {
-		if (version != null && version.eIsProxy()) {
-			InternalEObject oldVersion = (InternalEObject)version;
-			version = (JSONSchemaVersion)eResolveProxy(oldVersion);
-			if (version != oldVersion) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, oldVersion, version));
-			}
-		}
 		return version;
 	}
 
@@ -222,8 +214,14 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public JSONSchemaVersion basicGetVersion() {
-		return version;
+	public NotificationChain basicSetVersion(JSONSchemaVersion newVersion, NotificationChain msgs) {
+		JSONSchemaVersion oldVersion = version;
+		version = newVersion;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, oldVersion, newVersion);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -233,10 +231,17 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	 */
 	@Override
 	public void setVersion(JSONSchemaVersion newVersion) {
-		JSONSchemaVersion oldVersion = version;
-		version = newVersion;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, oldVersion, version));
+		if (newVersion != version) {
+			NotificationChain msgs = null;
+			if (version != null)
+				msgs = ((InternalEObject)version).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, null, msgs);
+			if (newVersion != null)
+				msgs = ((InternalEObject)newVersion).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, null, msgs);
+			msgs = basicSetVersion(newVersion, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, jsonschemaPackage.JSON_SCHEMA_FILE__VERSION, newVersion, newVersion));
 	}
 
 	/**
@@ -319,6 +324,8 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case jsonschemaPackage.JSON_SCHEMA_FILE__VERSION:
+				return basicSetVersion(null, msgs);
 			case jsonschemaPackage.JSON_SCHEMA_FILE__ERRORS:
 				return ((InternalEList<?>)getErrors()).basicRemove(otherEnd, msgs);
 			case jsonschemaPackage.JSON_SCHEMA_FILE__MEASURES:
@@ -340,8 +347,7 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 			case jsonschemaPackage.JSON_SCHEMA_FILE__FILE_NAME:
 				return getFileName();
 			case jsonschemaPackage.JSON_SCHEMA_FILE__VERSION:
-				if (resolve) return getVersion();
-				return basicGetVersion();
+				return getVersion();
 			case jsonschemaPackage.JSON_SCHEMA_FILE__ERRORS:
 				return getErrors();
 			case jsonschemaPackage.JSON_SCHEMA_FILE__MEASURES:

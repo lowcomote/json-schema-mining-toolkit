@@ -64,22 +64,22 @@ public interface JSONSchemaFile extends EObject {
 	void setFileName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Version</b></em>' reference.
+	 * Returns the value of the '<em><b>Version</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Version</em>' reference.
+	 * @return the value of the '<em>Version</em>' containment reference.
 	 * @see #setVersion(JSONSchemaVersion)
 	 * @see jsonschema.jsonschemaPackage#getJSONSchemaFile_Version()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
 	JSONSchemaVersion getVersion();
 
 	/**
-	 * Sets the value of the '{@link jsonschema.JSONSchemaFile#getVersion <em>Version</em>}' reference.
+	 * Sets the value of the '{@link jsonschema.JSONSchemaFile#getVersion <em>Version</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Version</em>' reference.
+	 * @param value the new value of the '<em>Version</em>' containment reference.
 	 * @see #getVersion()
 	 * @generated
 	 */

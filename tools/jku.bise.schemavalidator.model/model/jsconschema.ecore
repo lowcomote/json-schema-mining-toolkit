@@ -7,15 +7,14 @@
         eType="#//JSONSchemaFile" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metrics" upperBound="-1"
         eType="#//Metric" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="versions" upperBound="-1"
-        eType="#//JSONSchemaVersion" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="JSONSchemaFile">
     <eStructuralFeatures xsi:type="ecore:EReference" name="duplicates" upperBound="-1"
         eType="#//JSONSchemaFile"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="version" eType="#//JSONSchemaVersion"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="version" eType="#//JSONSchemaVersion"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="errors" upperBound="-1"
         eType="#//Error" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="measures" upperBound="-1"
