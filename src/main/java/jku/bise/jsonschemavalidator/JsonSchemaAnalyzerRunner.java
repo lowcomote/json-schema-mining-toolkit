@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import jku.bise.jsonschemavalidator.servicefacade.modelgenerator.ModelGeneratorServiceFacade;
 import jku.bise.jsonschemavalidator.servicefacade.schemagrams.SchemaGramsServiceFacade;
 import jku.bise.jsonschemavalidator.servicefacade.schemametrics.SchemaMetricsServiceFacade;
 import jku.bise.jsonschemavalidator.servicefacade.schemavalidator.SchemaValidatorServiceFacade;
@@ -28,6 +29,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 	private static final String NOT_USE_CONFIG_PROPERTIES = "N";
 	private static final String DELETE_DUPLICATES = "Y";
 	private static final String ABORT ="A";
+	private static final String GENERATE_MODEL = "EMF";
 	
 	@Autowired
 	private SchemaValidatorServiceFacade schemaValidatorServiceFacade;
@@ -40,6 +42,9 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 
 	@Autowired
 	private SchemaGramsServiceFacade  schemaGramsServiceFacade;
+	
+	@Autowired
+	private ModelGeneratorServiceFacade modelGeneratorServiceFacade;
 
 	
 	@Override
@@ -48,7 +53,6 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		 * Choose among [V]alidation, [M]etrics,....
 		 */
 		String choice ="";
-		
 		/**
 		 * use Config.properties [Y/N]
 		 */
@@ -67,11 +71,13 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		System.out.println("Hello! Welcome to Json Schema Analyzer. Ready to analyze? We are!");
 		while (!VALIDATION_CHOICE.equalsIgnoreCase(choice) 
 				&& !METRICS_CHOICE.equalsIgnoreCase(choice)
-				&& !GRAMS_CHOICE.equalsIgnoreCase(choice)) {
+				&& !GRAMS_CHOICE.equalsIgnoreCase(choice)
+				&& !GENERATE_MODEL.equalsIgnoreCase(choice)) {
 			System.out.println("Please choose an option");
 			System.out.println("["+VALIDATION_CHOICE+"] Validate a json file or a directory of json files");
 			System.out.println("["+METRICS_CHOICE+"] Calculate the metrics of a json file or a directory of json files");
 			System.out.println("["+GRAMS_CHOICE+"] Calculate unigrams and bigrams");
+			System.out.println("["+GENERATE_MODEL+"] Generate EMF model");
 			choice = console.nextLine().trim();
 		}
 		while(!USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig) && ! NOT_USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig)) {
@@ -103,6 +109,9 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		System.out.println("Output CSV: "+outputCSV);
 		System.out.println("Remove duplicates: " + duplicates);
 		
+		
+		
+		
 		System.out.println("Press A to abort, any other key to continue");
 		String abort =console.nextLine().trim();
 		if(duplicates)
@@ -115,8 +124,10 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 				schemaGramsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, gramFolder);
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
 				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
-			}
+			} else if (GENERATE_MODEL.equals(choice))
+				modelGeneratorServiceFacade.generateModel(inputFolderPath);
 		}
+		
 		console.close();
 		System.out.println("The task is done");
 		

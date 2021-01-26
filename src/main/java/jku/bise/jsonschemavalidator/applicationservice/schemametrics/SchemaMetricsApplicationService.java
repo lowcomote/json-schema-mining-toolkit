@@ -62,7 +62,69 @@ public class SchemaMetricsApplicationService {
 		logger.info("Error count:{}", countError);
 		return jsonSchemaMetricsDTOs;
 	}
+	
+	public List<JsonSchemaMetricsDTO> findSchemaMetricsInFileOrDirectory(String pathToDir) throws ApplicationServiceException  {
+		List<JsonSchemaMetricsDTO> jsonSchemaMetricsDTOs = new ArrayList<JsonSchemaMetricsDTO>();
+		File fileOrdir = new File(pathToDir);
+		int countError = 0;
+		if (fileOrdir.isDirectory())
+			
+			for (File file : fileOrdir.listFiles()) {
+				JsonSchemaMetricsDTO jsonSchemaMetricsDTO;
+				try {
+					jsonSchemaMetricsDTO = findSchemaMetrics(file);
+					jsonSchemaMetricsDTOs.add(jsonSchemaMetricsDTO);
+				} catch (Exception e) {
+					logger.error("{} has the following error {}", file.toString(), e.getMessage());
+					e.printStackTrace();
+					countError ++;
+				}
+			}
+		else {
+			JsonSchemaMetricsDTO jsonSchemaMetricsDTO;
+			try {
+				jsonSchemaMetricsDTO = findSchemaMetrics(fileOrdir);
+				jsonSchemaMetricsDTOs.add(jsonSchemaMetricsDTO);
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("{} has the following error {}", fileOrdir.toString(), e.getMessage());
+			}
+		}
+		logger.info("Error count:{}", countError);
+		return jsonSchemaMetricsDTOs;
+	}
 
+	public JsonSchemaMetricsDTO findSchemaMetrics(File file) throws Exception   {
+		logger.debug("findSchemaMetrics");
+		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = null;
+			List<String> keywordList=null;
+			JSONObject jsonObject = Utils.buildJsonObjectFromFile(file);
+			String schema = Utils.getSchemaDraftWithoutHashtag(jsonObject);
+			if(schema!=null) {
+				if(Utils.isDraft4(schema)) {
+					keywordList = Draft04Keywords.KEYWORDS_LIST;
+				}else if (Utils.isDraft6(schema)){
+					keywordList = Draft06Keywords.KEYWORDS_LIST;
+				}else if (Utils.isDraft7(schema)) {
+					keywordList = Draft07Keywords.KEYWORDS_LIST;
+				}else if (Utils.isDraft3(schema)) {
+					keywordList = Draft03Keywords.KEYWORDS_LIST;
+				} else if (Utils.isDraft201909(schema)) {
+					keywordList = Draft201909Keywords.KEYWORDS_LIST;
+				}
+			}
+			if(keywordList!=null) {
+				jsonSchemaMetricsDTO = findSchemaMetrics( jsonObject, keywordList);
+				jsonSchemaMetricsDTO.setName(file.getName());
+				jsonSchemaMetricsDTO.setSchema(schema);
+				if(logger.isDebugEnabled()) {
+					logger.debug("Metrics : {}", jsonSchemaMetricsDTO.toString());
+				}
+			}
+			return  jsonSchemaMetricsDTO;
+		
+	}
+	
 	public JsonSchemaMetricsDTO findSchemaMetrics(File file, String csvFileName) throws Exception   {
 		logger.debug("findSchemaMetrics");
 		JsonSchemaMetricsDTO jsonSchemaMetricsDTO = null;

@@ -22,8 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 @Service
 public class DuplicateService {
 
@@ -31,7 +33,6 @@ public class DuplicateService {
 	private static final String CSV_FILE_NAME = "duplicates.csv";
 	private String getFileChecksum(MessageDigest digest, File file) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
-
 		byte[] byteArray = new byte[1024];
 		int bytesCount = 0;
 
@@ -102,4 +103,40 @@ public class DuplicateService {
 		return duplicates;
 	}
 
+	public Multimap<String, String>  getDuplicates(String inputFoler) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+		MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
+		if(logger.isInfoEnabled()) logger.info("IDENTIFIYNG DUPICATES");
+		Map<String, File> checksum_fileMap = Maps.newHashMap();
+		Multimap<String, String> checksum_listSchema_map = ArrayListMultimap.create();
+		File dir = new File(inputFoler);
+		boolean append;
+		if (Files.exists(Paths.get(CSV_FILE_NAME)))
+			append = true;
+		else
+			append = false;
+
+		try (CSVPrinter printer = new CSVPrinter(new FileWriter(CSV_FILE_NAME, append), CSVFormat.DEFAULT)) {
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				int i = 0;
+				for (File file : files) {
+					String shaChecksum1 = getFileChecksum(shaDigest, file);
+					if (checksum_fileMap.containsKey(shaChecksum1)) {
+						checksum_listSchema_map.put(shaChecksum1, file.toString());
+						printer.printRecord(checksum_fileMap.get(shaChecksum1).toString(), file.toString());
+					} else {
+						checksum_fileMap.put(shaChecksum1, file);
+						checksum_listSchema_map.put(shaChecksum1, file.toString());
+					}
+					if (i % 100 == 0)
+						logger.debug("{}", i);
+					i++;
+				}
+			}
+		} catch (IOException e) {
+			if(logger.isInfoEnabled()) logger.error("CREATECSV {} CSV IO Error", CSV_FILE_NAME);
+		}
+		if(logger.isInfoEnabled()) logger.info("DUPICATES HAVE BEEN IDENTIFIED");
+		return checksum_listSchema_map;
+	}
 }

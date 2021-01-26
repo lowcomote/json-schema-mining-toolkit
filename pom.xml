@@ -12,12 +12,12 @@
 		<log4j.version>2.14.0</log4j.version>
 		<spring-boot-version>2.4.1</spring-boot-version>
 		<java.version>13</java.version>
-
+		<eclipse.emf.ecore.version>2.10.0</eclipse.emf.ecore.version>
 	</properties>
 	<build>
 
 		<plugins>
-			
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
@@ -25,8 +25,8 @@
 					<release>13</release>
 				</configuration>
 			</plugin>
-			
-			
+
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -34,8 +34,9 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -53,25 +54,12 @@
 			<artifactId>json-schema-validator</artifactId>
 			<version>2.2.14</version>
 		</dependency>
-		
-		<!-- 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		 -->
+
+		<!-- <dependency> <groupId>org.apache.logging.log4j</groupId> <artifactId>log4j-api</artifactId> 
+			<version>${log4j.version}</version> </dependency> <dependency> <groupId>org.apache.logging.log4j</groupId> 
+			<artifactId>log4j-core</artifactId> <version>${log4j.version}</version> </dependency> 
+			<dependency> <groupId>org.apache.logging.log4j</groupId> <artifactId>log4j-slf4j-impl</artifactId> 
+			<version>${log4j.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
@@ -98,7 +86,21 @@
 			<artifactId>org.eclipse.egit.github.core</artifactId>
 			<version>2.1.5</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>ecore</artifactId>
+			<version>${eclipse.emf.ecore.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>ecore.xmi</artifactId>
+			<version>${eclipse.emf.ecore.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>common</artifactId>
+			<version>${eclipse.emf.ecore.version}</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -106,6 +108,16 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-
+		<repository>
+			<id>public</id>
+			<name>Archiva Managed Public Repository</name>
+			<url>http://archiva.disim.univaq.it/repository/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 </project>
