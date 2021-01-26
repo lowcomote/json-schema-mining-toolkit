@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for /appconfig/api/app",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "buildNumber": {
+      "type": "string"
+    },
+    "useMinifiedJavascript": {
+      "type": "boolean"
+    },
+    "mvkMainUrl": {
+      "type": "string"
+    },
+    "knownRecipients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "id": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    "miUserSurveyUrl": {
+      "type": "string"
+    },
+    "miUserSurveyVersion": {
+      "type": "string"
+    },
+    "miUserSurveyDateTo": {
+      "type": "string"
+    },
+    "miUserSurveyDateFrom": {
+      "type": "string"
+    },
+    "banners": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "displayFrom": {
+            "type": "string"
+          },
+          "displayTo": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "application": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "displayFrom",
+          "displayTo",
+          "message",
+          "application",
+          "priority"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "buildNumber",
+    "useMinifiedJavascript",
+    "elva77MainUrl",
+    "elva77LoginUrl",
+    "knownRecipients",
+    "banners"
+  ]
+}
+

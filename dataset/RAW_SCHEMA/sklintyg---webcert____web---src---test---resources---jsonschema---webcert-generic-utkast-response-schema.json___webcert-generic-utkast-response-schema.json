@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Webcert certificate draft transport model",
+  "description": "Defines the transport model of an draft model of an intygstype, e.g returned by /api/utkast/intygstyp. It doesn't specify the internal intygstyp structure as this is a encoded json within the 'model' property of this json.",
+  "properties": {
+    "intygsId": {
+      "type": "string"
+    },
+    "intygsTyp": {
+      "type": "string"
+    },
+    "intygTypeVersion": {
+      "type": "string"
+    },
+    "enhetsId": {
+      "type": "string"
+    },
+    "enhetsNamn": {
+      "type": "string"
+    },
+    "vardgivarId": {
+      "type": "string"
+    },
+    "vardgivarNamn": {
+      "type": "string"
+    },
+    "patientPersonnummer": {
+      "type": "string"
+    },
+    "patientFornamn": {
+      "type": "string"
+    },
+    "patientEfternamn": {
+      "type": "string"
+    },
+    "version": {
+      "type": "integer"
+    },
+    "skapadAv": {
+      "type": "object",
+      "properties": {
+        "hsaId": {
+          "type": "string"
+        },
+        "namn": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "senastSparadAv": {
+      "type": "object",
+      "properties": {
+        "hsaId": {
+          "type": "string"
+        },
+        "namn": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "hsaId",
+        "namn"
+      ]
+    },
+    "senastSparadDatum": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "vidarebefordrad": {
+      "type": "boolean"
+    },
+    "skapad": {
+      "type": "string"
+    },
+    "testIntyg": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "intygsId",
+    "intygsTyp",
+    "enhetsId",
+    "enhetsNamn",
+    "vardgivarId",
+    "vardgivarNamn",
+    "patientPersonnummer",
+    "patientFornamn",
+    "patientEfternamn",
+    "version",
+    "skapadAv",
+    "senastSparadAv",
+    "senastSparadDatum",
+    "model",
+    "status",
+    "vidarebefordrad"
+  ]
+}

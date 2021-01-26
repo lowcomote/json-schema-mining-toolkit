@@ -1,0 +1,74 @@
+{
+  "title": "CC98 JSON Schema", 
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "JSON schema for cc98.org",
+  "id": "http://www.cc98.org/schema/basic/UserObject#",
+  "type": "object",
+  "required": ["user_id", "nick_name", "face_icon_id", "money"],
+  "properties":{
+    "user_id":
+    {
+      "title": "the reference id for user",
+      "type": "string"
+    },
+    "nick_name":{
+      "type": "string"
+    },
+    "face_icon_id":{
+      "type": "string"
+    },
+    "money":{
+      "type": "interger",
+      "minimum": 0
+    }
+  },
+  "links":[
+    { "rel": "self",
+      "href": "/basic/UserObject/{user_id}",
+      "description": "GET http://www.cc98.org/basic/UserObject/{user_id}",
+      "method": "GET"
+    },
+    { "rel": "describedBy",
+      "href": "{id}"
+    },
+    { "rel": "search",
+      "href": "/basic/UserObject",
+      "description": "GET http://www.cc98.org/basic/UserObject?search_for=",
+      "method": "GET",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "search_for":{
+            "title": "search term of user name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    { "rel": "info",
+      "href": "/basic/UserObject/{user_id}/info",
+      "title": "More information at user's personal page",
+      "description": "GET http://www.cc98.org/basic/UserObject/{user_id}/info",
+      "method": "GET",
+      "targetSchema": { "$ref": "#/definitions/info" }
+    }],
+    "definitions": {
+      "title": "all the sub schema of UserObject",
+      "info":{
+        "type": "object",
+        "title": "User's information for personal page",
+        "properties": {
+          "user_id":{
+            "type": "string"
+          }
+          /* TODO */
+        },
+        "links":[
+          { "rel": "self",
+            "href": "/basic/UserObject/{user_id}/info",
+            "description": "GET http://www.cc98.org/basic/UserObject/{user_id}/info",
+            "method": "GET"
+          }]
+      }
+    }
+}

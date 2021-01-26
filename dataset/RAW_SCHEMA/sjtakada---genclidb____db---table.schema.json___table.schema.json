@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "TABLE JSON schema",
+  "description": "Define Database Table structure",
+  "type": "object",
+  "properties": {
+    "table": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9\-]+$": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["parent", "dependent", "association"]
+            },
+            "has-one": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z_A-Z0-9\-]+$": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "enum": ["table", "association", "interface"]
+                    },
+                    "as": {
+                      "type": "string"
+                    },
+                    "through": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "has-many": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z_A-Z0-9\-]+$": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "enum": ["table", "association", "interface"]
+                    },
+                    "as": {
+                      "type": "string"
+                    },
+                    "through": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "belongs-to": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z_A-Z0-9\-]+$": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "enum": ["table", "interface"]
+                    },
+                    "destroy-upon": {
+                      "type": "boolean"
+                    },
+                    "tables": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "alias": {
+              "type": "string"
+            },
+            "order": {
+              "type": "string"
+            },
+            "keys": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z_A-Z0-9\-]+$": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "enum": [
+                        "string", "integer", "boolean", "ipv4", "ipv6", "enum"
+                      ]
+                    },
+                    "auto": {
+                      "type": "object",
+                      "properties": {
+                        "step": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "range": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "null": {
+                      "type": "boolean"
+                    },
+                    "default": {
+                    },
+                    "values": {
+                      "type": "array"
+                    },
+                    "desc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "attributes": {
+              "type": "object",
+              "patternProperties" : {
+                "^[a-z_A-Z0-9\-]+$": {
+                  "type": "object",
+                  "properties": {
+                    "as-key": {
+                      "type": "boolean"
+                    },
+                    "type": {
+                      "enum": [
+                        "string", "integer", "boolean", "ipv4", "ipv6", "enum"
+                      ]
+                    },
+                    "range": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "null": {
+                      "type": "boolean"
+                    },
+                    "default": {
+                    },
+                    "values": {
+                      "type": "array"
+                    },
+                    "desc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "totalCount": {
+      "type": "integer"
+    },
+    "results": {
+      "type": "array",
+      "minItems": 0,
+      "uniqueItems": true,
+      "additionalItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "meddelandeId": {
+            "type": "string"
+          },
+          "fragestallare": {
+            "type": "string"
+          },
+          "amne": {
+            "type": "string",
+            "enum": [
+              "KOMPLT",
+              "MAKULERING_AV_LAKARINTYG",
+              "AVSTMN",
+              "KONTKT",
+              "ARBETSTIDSFORLAGGNING",
+              "PAMINN",
+              "OVRIGT"
+            ]
+          },
+          "intygId": {
+            "type": "string"
+          },
+          "intygTyp": {
+            "type": "string"
+          },
+          "patientId": {
+            "type": "string"
+          },
+          "signeratAvNamn": {
+            "type": "string"
+          },
+          "paminnelse": {
+            "type": "boolean"
+          },
+          "enhetsnamn": {
+            "type": "string"
+          },
+          "vardgivarnamn": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_INTERNAL_ACTION",
+              "PENDING_EXTERNAL_ACTION",
+              "ANSWERED",
+              "CLOSED"
+            ]
+          },
+          "vidarebefordrad": {
+            "type": "boolean"
+          },
+          "receivedDate": {
+            "type": "string"
+          },
+          "avliden": {
+            "type": "boolean"
+          },
+          "sekretessmarkering": {
+            "type": "boolean"
+          },
+          "links": {
+            "type": "array"
+          },
+          "testIntyg": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "meddelandeId",
+          "intygId",
+          "intygTyp",
+          "avliden",
+          "sekretessmarkering"
+        ]
+      }
+    }
+  },
+  "required": [
+    "totalCount",
+    "results"
+  ]
+}

@@ -1,0 +1,574 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Order",
+  "x-otm-library": {
+    "LibraryName": "Order",
+    "LibraryVersion": "0.0.0",
+    "LibraryStatus": "DRAFT",
+    "SourceFile": "/Order_0_0_0.otm",
+    "CompilerVersion": "4.0-SNAPSHOT",
+    "CompileDate": "2016-05-18T15:17:40.850-0400"
+  },
+  "definitions": {
+    "OfferID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Offer"
+      },
+      "description": "A product or products available at the given price and terms",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "offerId": {
+          "description": "Identifier for the offer.",
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Offer": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Offer"
+      },
+      "description": "A product or products available at the given price and terms",
+      "allOf": [
+        {
+          "$ref": "#/definitions/OfferID"
+        },
+        {
+          "properties": {
+            "vendor": {
+              "description": "Specifies the vendor for this offer.",
+              "$ref": "OTA_SimpleTypes_0_0_0_Trim.schema.json#/definitions/String_Tiny"
+            },
+            "Price": {
+              "description": "Total price for all the products. Price may include itemized price information",
+              "$ref": "Common_0_0_0_Trim.schema.json#/definitions/Currency_Amount"
+            },
+            "TermsAndConditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TermsAndConditionsID"
+              },
+              "maxItems": 25
+            },
+            "Product": {
+              "type": "array",
+              "items": {
+                "$ref": "Product_0_0_0_Trim.schema.json#/definitions/ProductID"
+              },
+              "maxItems": 30
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          },
+          "required": [
+            "Price"
+          ]
+        }
+      ]
+    },
+    "OfferConfirmed": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Offer"
+      },
+      "description": "A product or products available at the given price and terms",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Offer"
+        },
+        {
+          "properties": {
+            "confirmationId": {
+              "description": "An identifier for the confirmed offer.",
+              "$ref": "OTA_SimpleTypes_0_0_0_Trim.schema.json#/definitions/String_Tiny"
+            },
+            "Description": {
+              "description": "A description of the confirmed offer.",
+              "$ref": "OTA_SimpleTypes_0_0_0_Trim.schema.json#/definitions/String_Long"
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          }
+        }
+      ]
+    },
+    "OfferQuery": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Offer"
+      },
+      "description": "A product or products available at the given price and terms",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "ProductQueries": {
+          "type": "array",
+          "items": {
+            "$ref": "Product_0_0_0_Trim.schema.json#/definitions/ProductQueriesID"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type",
+        "ProductQueries"
+      ],
+      "discriminator": "@type"
+    },
+    "OrderID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Order"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "description": "Identifier for the order.",
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Order": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Order"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/OrderID"
+        },
+        {
+          "properties": {
+            "Offer": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OfferID"
+              },
+              "maxItems": 99,
+              "minItems": 1
+            },
+            "PersonCustomer": {
+              "type": "array",
+              "items": {
+                "$ref": "Profile_0_0_0_Trim.schema.json#/definitions/PersonCustomer"
+              },
+              "maxItems": 99,
+              "minItems": 1
+            },
+            "Payment": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PaymentID"
+              },
+              "maxItems": 5
+            },
+            "TotalPrice": {
+              "description": "Total price for the order.",
+              "$ref": "Common_0_0_0_Trim.schema.json#/definitions/Currency_Amount"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "Offer",
+            "PersonCustomer"
+          ]
+        }
+      ]
+    },
+    "TermsAndConditionsID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "TermsAndConditions"
+      },
+      "description": "The terms and conditions related to an offer.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "built-ins/XMLSchema.schema.json#/definitions/ID"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "TermsAndConditions": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "TermsAndConditions"
+      },
+      "description": "The terms and conditions related to an offer.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/TermsAndConditionsID"
+        },
+        {
+          "properties": {
+            "duration": {
+              "description": "Specifies the duration of the trip.",
+              "type": "integer",
+              "format": "int32"
+            },
+            "ExtensionPoint_Summary": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Summary"
+            }
+          }
+        }
+      ]
+    },
+    "TermsAndConditionsHospitality": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "TermsAndConditions"
+      },
+      "description": "The terms and conditions related to an offer.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/TermsAndConditions"
+        },
+        {
+          "properties": {
+            "Guarantee": {
+              "description": "Guarantee information.",
+              "$ref": "#/definitions/Guarantee"
+            },
+            "CancelPenalty": {
+              "description": "Specifies the cancellation penalty.",
+              "$ref": "#/definitions/CancelPenalty"
+            },
+            "ExtensionPoint_Custom": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint_Custom"
+            }
+          }
+        }
+      ]
+    },
+    "CancelPenalty": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "CancelPenalty"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "Deadline": {
+          "description": "Specifies the date/time for when a reservation must be canceled by to avoid a penalty.",
+          "$ref": "#/definitions/Deadline"
+        },
+        "AmountPercent": {
+          "description": "Specifes the cancel penalty by amount or percent.",
+          "$ref": "Common_0_0_0_Trim.schema.json#/definitions/AmountPercent"
+        },
+        "Comments": {
+          "type": "array",
+          "items": {
+            "$ref": "Common_0_0_0_Trim.schema.json#/definitions/Comments"
+          },
+          "maxItems": 100
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Guarantee": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "Guarantee"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "FormOfPayment": {
+          "description": "Specifies payment information for the reservation guarantee.",
+          "$ref": "Finance_0_0_0_Trim.schema.json#/definitions/FormOfPaymentID"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Deadline": {
+      "x-otm-entity": {
+        "EntityType": "CoreObject",
+        "EntityName": "Deadline"
+      },
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "absoluteDeadline": {
+          "description": "Defines the absolute deadline. Either this or the offset attributes may be used.",
+          "$ref": "OTA_SimpleTypes_0_0_0_Trim.schema.json#/definitions/DateTime"
+        },
+        "offsetUnitMultiplier": {
+          "description": "The number of units of DeadlineTimeUnit.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "offsetDropTime": {
+          "description": "An enumerated type indicating when the deadline drop time goes into effect.",
+          "$ref": "CodeList_0_0_0_Trim.schema.json#/definitions/OffsetDropTime_Enum"
+        },
+        "offSetTimeUnit": {
+          "description": "The units of time, e.g.: days, hours, etc., that apply to the deadline.",
+          "$ref": "CodeList_0_0_0_Trim.schema.json#/definitions/TimeUnit_Enum"
+        },
+        "ExtensionPoint": {
+          "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "PaymentID": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Payment"
+      },
+      "description": "Payment information which may be related to one or more offers.",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "Identifier": {
+          "description": "Identifier for the payment.  Leave the identifier blank when making a new payment.",
+          "$ref": "Common_0_0_0_Trim.schema.json#/definitions/Identifier"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "discriminator": "@type"
+    },
+    "Payment": {
+      "x-otm-entity": {
+        "EntityType": "BusinessObject",
+        "EntityName": "Payment"
+      },
+      "description": "Payment information which may be related to one or more offers.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/PaymentID"
+        },
+        {
+          "properties": {
+            "FormOfPayment": {
+              "type": "array",
+              "items": {
+                "$ref": "Finance_0_0_0_Trim.schema.json#/definitions/FormOfPaymentID"
+              },
+              "maxItems": 5,
+              "minItems": 1
+            },
+            "Person": {
+              "type": "array",
+              "items": {
+                "$ref": "Common_0_0_0_Trim.schema.json#/definitions/PersonID"
+              },
+              "maxItems": 99,
+              "minItems": 1
+            },
+            "OfferRef": {
+              "description": "The offer that the payment is for.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "Amount": {
+              "description": "Total payment amount",
+              "$ref": "Common_0_0_0_Trim.schema.json#/definitions/Currency_Amount"
+            },
+            "ExtensionPoint": {
+              "$ref": "built-ins/OTM_BuiltIns.schema.json#/definitions/ExtensionPoint"
+            }
+          },
+          "required": [
+            "FormOfPayment",
+            "Person",
+            "Amount"
+          ]
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "OfferIdentifier": {
+          "$ref": "#/definitions/OfferID"
+        }
+      },
+      "required": [
+        "OfferIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "OfferSummary": {
+          "$ref": "#/definitions/Offer"
+        }
+      },
+      "required": [
+        "OfferSummary"
+      ]
+    },
+    {
+      "properties": {
+        "OfferConfirmed": {
+          "$ref": "#/definitions/OfferConfirmed"
+        }
+      },
+      "required": [
+        "OfferConfirmed"
+      ]
+    },
+    {
+      "properties": {
+        "OfferQuery": {
+          "$ref": "#/definitions/OfferQuery"
+        }
+      },
+      "required": [
+        "OfferQuery"
+      ]
+    },
+    {
+      "properties": {
+        "OrderIdentifier": {
+          "$ref": "#/definitions/OrderID"
+        }
+      },
+      "required": [
+        "OrderIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "OrderSummary": {
+          "$ref": "#/definitions/Order"
+        }
+      },
+      "required": [
+        "OrderSummary"
+      ]
+    },
+    {
+      "properties": {
+        "TermsAndConditionsIdentifier": {
+          "$ref": "#/definitions/TermsAndConditionsID"
+        }
+      },
+      "required": [
+        "TermsAndConditionsIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "TermsAndConditionsSummary": {
+          "$ref": "#/definitions/TermsAndConditions"
+        }
+      },
+      "required": [
+        "TermsAndConditionsSummary"
+      ]
+    },
+    {
+      "properties": {
+        "TermsAndConditionsHospitality": {
+          "$ref": "#/definitions/TermsAndConditionsHospitality"
+        }
+      },
+      "required": [
+        "TermsAndConditionsHospitality"
+      ]
+    },
+    {
+      "properties": {
+        "CancelPenalty": {
+          "$ref": "#/definitions/CancelPenalty"
+        }
+      },
+      "required": [
+        "CancelPenalty"
+      ]
+    },
+    {
+      "properties": {
+        "Guarantee": {
+          "$ref": "#/definitions/Guarantee"
+        }
+      },
+      "required": [
+        "Guarantee"
+      ]
+    },
+    {
+      "properties": {
+        "Deadline": {
+          "$ref": "#/definitions/Deadline"
+        }
+      },
+      "required": [
+        "Deadline"
+      ]
+    },
+    {
+      "properties": {
+        "PaymentIdentifier": {
+          "$ref": "#/definitions/PaymentID"
+        }
+      },
+      "required": [
+        "PaymentIdentifier"
+      ]
+    },
+    {
+      "properties": {
+        "PaymentSummary": {
+          "$ref": "#/definitions/Payment"
+        }
+      },
+      "required": [
+        "PaymentSummary"
+      ]
+    }
+  ]
+}

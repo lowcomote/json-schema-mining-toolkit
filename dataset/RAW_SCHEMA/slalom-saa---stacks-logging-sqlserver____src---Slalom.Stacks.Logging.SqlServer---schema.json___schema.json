@@ -1,0 +1,106 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "sqlServer": {
+      "description": "Options for SQL Server Logging.",
+      "properties": {
+        "batchSize": {
+          "default": 100,
+          "description": "The upper size of the batch to write.  When this number is reached, all items will be written for the given type.",
+          "title": "Batch Size",
+          "type": "integer"
+        },
+        "createDatabase": {
+          "default": false,
+          "description": "Indicates whether or not a database should be created if not found.",
+          "title": "Create Database",
+          "type": "boolean"
+        },
+        "selectLimit": {
+          "default": 1000,
+          "description": "The top number of items to select when querying tables.",
+          "title": "Select Limit",
+          "type": "integer"
+        },
+        "connectionString": {
+          "default": "Data Source=.;Initial Catalog=Stacks.Logs;Integrated Security=True;MultipleActiveResultSets=True",
+          "description": "The SQL connection string.",
+          "title": "Connection String",
+          "type": "string"
+        },
+        "period": {
+          "default": "00:00:05",
+          "description": "The time in between batches.",
+          "title": "Batch Time",
+          "type": "string"
+        },
+        "requestsTableName": {
+          "default": "Requests",
+          "description": "The name of the table that is used for requests.",
+          "title": "Requests Table Name",
+          "type": "string"
+        },
+        "responsesTableName": {
+          "default": "Responses",
+          "description": "The name of the table that is used for responses.",
+          "title": "Response Table Name",
+          "type": "string"
+        },
+        "traceLogLevel": {
+          "default": "Warning",
+          "description": "The trace log level: Verbose, Debug, Information, Warning, Error, Fatal.",
+          "title": "Trace Log Level",
+          "type": "string",
+          "enum": [ "Verbose", "Debug", "Information", "Warning", "Error", "Fatal" ]
+        },
+        "traceTableName": {
+          "default": "Traces",
+          "description": "The name of the table that is used for traces.",
+          "title": "Trace Table Name",
+          "type": "string"
+        },
+        "locations": {
+          "description": "Settings for locations using MaxMind.",
+          "properties": {
+            "key": {
+              "description": "The MaxMind account key.",
+              "title": "Key",
+              "type": "string"
+            },
+            "on": {
+              "default": false,
+              "description": "Indicates whether locations should be used in logging.",
+              "title": "On",
+              "type": "boolean"
+            },
+            "userId": {
+              "description": "The MaxMind user ID.",
+              "title": "User ID",
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "properties": {
+    "stacks": {
+      "description": "The stacks root configuration object.",
+      "properties": {
+        "logging": {
+          "description": "Shared logging configuration.",
+          "properties": {
+            "sqlServer": {
+              "$ref": "#/definitions/sqlServer"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

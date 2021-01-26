@@ -1,0 +1,58 @@
+
+            {
+              "$schema": "http://json-schema.org/draft-04/schema#4",
+              "title": "Maintenance",
+              "description": "Describes a maintenance record",
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "description": "scope of the revenue result",
+                  "enum": ["station", "pump", "tank"]
+                },
+                "id": {
+                  "description": "unique identifier for the scope of the revenue result",
+                  "type": "string"
+                },
+                "maintenance": {
+                  "description": "fuel type for the revenue result",
+                  "type": "array",
+                  "items": {
+                    "description": "maintenance action record",
+                    "type": "object",
+                    "properties": {
+                      "type": 
+                        "description": "type of the maintenance record",
+                        "type": "string"
+                      },
+                      "id": 
+                        "description": "unique identifier for the item that was maintained",
+                        "type": "string"
+                      },
+                      "detected": 
+                        "description": "timestamp of when a failure was detected",
+                        "type": "string"
+                      },
+                      "repaired": 
+                        "description": "timestamp of when an item was returned to service",
+                        "type": "string"
+                      },
+                      "description": 
+                        "description": "description of the maintenance action",
+                        "type": "string"
+                      },
+                      "action": {
+                        "description": "the maintenance action",
+                        "type": "string"
+                      },
+                      "notes": {
+                        "description": "any additional notes regarding the action",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["type","id","repaired","action"]
+                  }
+                }
+              },
+              "required": ["scope","id","maintenance"]
+            }
+

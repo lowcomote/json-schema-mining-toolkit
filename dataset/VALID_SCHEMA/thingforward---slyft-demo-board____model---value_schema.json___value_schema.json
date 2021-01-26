@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "value",
+    "title": "Single value schema",
+    "description": "Transport the value of an input",
+    "type": "object",
+    "properties" : {
+    	"v" : {
+          "type": "string",
+          "maxLength": 8,
+          "description": "value as string"
+        }
+    },
+    "additionalProperties": false,
+    "required": ["v"],
+    "minProperties": 1
+}

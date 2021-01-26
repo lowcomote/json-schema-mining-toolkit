@@ -1,0 +1,75 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Recipe",
+    "description": "A Terraria Recipe",
+    "type": "object",
+	"properties": {
+        "createItem": {
+            "description": "The result of this recipe",
+			"$ref": "#/definitions/item"
+        },
+		"requiredItems": {
+            "description": "The items required for this recipe",
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 15,
+			"items": { "ref": "#/definitions/item" }
+        },
+		"requiredTiles": {
+            "description": "The tiles required to craft this recipe",
+			"type": "array",
+			"minItems": 0,
+			"maxItems": 15,
+			"items": { "type": "integer" }
+        },
+		"needHoney": {
+			"description": "This item requires honey to craft.",
+			"type": "boolean"
+		},
+		"needWater": {
+			"description": "This item requires water to craft.",
+			"type": "boolean"
+		},
+		"needLava": {
+			"description": "This item requires lava to craft.",
+			"type": "boolean"
+		},
+		"anyWood": {
+			"description": "This item can use any type of wood to craft.",
+			"type": "boolean"
+		},
+		"anyIronBar": {
+			"description": "This item can use any type of iron bar to craft.",
+			"type": "boolean"
+		},
+		"anyPressurePlate": {
+			"description": "This item can use any type of pressure plate to craft.",
+			"type": "boolean"
+		},
+		"anySand": {
+			"description": "This item can use any type of sand to craft.",
+			"type": "boolean"
+		}
+    },
+	"required": ["createItem", "requiredItems", "requiredTiles"],
+	"definitions": {
+		"item": {
+			"properties": {
+				"stack": {
+					"description": "The number of items created.",
+					"type": "integer",
+					"minimum": 1
+				},
+				"netId": {
+					"description": "The item type created.",
+					"type": "integer"
+				},
+				"prefix": {
+					"description": "The prefix given to the items created.",
+					"type": "integer"
+				}
+			},
+			"required": ["stack", "netId"]
+		}
+	}
+}

@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "coordinate",
+    "description": "A Coordinate",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "unique id",
+        },
+        "system": {         
+        	"description": "Coordinate System",
+        	"type": "string",
+            "enum": ["WGS84", "NAD83", "NAD27"]
+        },
+        "format": {
+            "type": "string",
+            "enum": ["DMS", "DD", "DDM"]
+        },
+        "latitude": {
+            "type":"number"
+        },
+        "longitude": {
+            "type":"number"
+        },
+        "recorded": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "recorded_by": {
+            "type": "string",
+            "description": "Person who took coordinates"
+        },
+        "accuracy": {
+            "type": "int",
+            "description": "accuracy (+/-)",
+        }
+    },
+    "required": ["id","system", "latitude", "longitude"]
+}

@@ -1,0 +1,123 @@
+﻿{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+		"colorNames": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"name": { "type": "string" },
+					"synonym": { "type": "string" },
+					"variants": {
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"agreement": { "type": "boolean" },
+					"feminine": { "type": "string" },
+					"definition": { "type": "string" },
+					"etymology": { "type": "string" },
+					"note": { "type": "string" },
+					"example": { "type": "string" },
+					"colors": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"rgb": {
+									"type": "string",
+									"description": "Red, green, blue hexadecimal color code as used on the web, without the leading '#'.",
+									"minLength": 6,
+									"maxLength": 6
+								},
+								"fidelity": {
+									"type": "string",
+									"enum": [ "*", "**", "***" ]
+								},
+								"hue": {
+									"type": [ "integer", "null" ],
+									"description": "Hue as defined https://en.wikipedia.org/wiki/Hue",
+									"minimum": 0,
+									"maximum": 359
+								},
+								"saturation": {
+									"type": "integer",
+									"description": "Color saturation percentage as defined https://en.wikipedia.org/wiki/Colorfulness",
+									"minimum": 0,
+									"maximum": 100
+								},
+								"lightness": {
+									"type": "integer",
+									"description": "Light percentage in a color as defined https://en.wikipedia.org/wiki/Lightness",
+									"minimum": 0,
+									"maximum": 100
+								}
+							},
+							"required": [
+								"rgb"
+							]
+						}
+					},
+					"field": {
+						"type": "string",
+						"enum": [ "orange", "vert", "brun", "bleu", "gris", "noir", "blanc", "rouge", "jaune", "violet", "rose" ]
+					},
+					"domain": {
+						"type": "string",
+						"enum": [ "cheveux", "chevaux", "pigment", "héraldique", "minéraux", "peau", "médical", "bovins", "peinture", "cigare", "céramique", "reliure", "mode", "tissu", "aquarelle" ]
+					},
+					"style": {
+						"type": "string",
+						"enum": [ "vieilli", "péjoratif", "rare", "littéraire", "familier" ]
+					}
+				},
+				"required": [
+					"name",
+					"agreement"
+				]
+			}
+		},
+		"qualifiers": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"name": { "type": "string" },
+					"definition": { "type": "string" },
+					"agreement": { "type": "boolean" },
+					"feminine": { "type": "string" },
+					"etymology": { "type": "string" },
+					"note": { "type": "string" },
+					"domain": {
+						"$ref": "#/properties/colorNames/items/properties/domain"
+					},
+					"synonym": { "type": "string" },
+					"field": {
+						"$ref": "#/properties/colorNames/items/properties/field"
+					},
+					"style": {
+						"$ref": "#/properties/colorNames/items/properties/style"
+					},
+					"example": { "type": "string" },
+					"applied": {
+						"type": "object",
+						"properties": {
+							"plain": { "type": "string" },
+							"plainColor": { "$ref": "#/properties/colorNames/items/properties/colors/items/properties/rgb" },
+							"qualified": { "type": "string" },
+							"qualifiedColor": { "$ref": "#/properties/colorNames/items/properties/colors/items/properties/rgb" }
+						}
+					}
+				},
+				"required": [
+					"name",
+					"agreement"
+				]
+			}
+		}
+	},
+	"required": [
+		"colorNames",
+		"qualifiers"
+	]
+}
