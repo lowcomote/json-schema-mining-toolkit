@@ -1,0 +1,61 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://json-schema.org/geojson/geojson.json#",
+    "title": "Geo JSON object",
+    "description": "Schema for a Geo JSON object",
+    "type": "object",
+    "required": [ "type" ],
+    "properties": {
+        "bbox": { "$ref": "http://json-schema.org/geojson/bbox.json#" },
+        "featureCollection": { "$ref": "#/definitions/featureCollection" }
+    },
+
+
+
+
+
+    "definitions": {
+        "geometryCollection": {
+            "title": "GeometryCollection",
+            "description": "A collection of geometry objects",
+            "required": [ "geometries" ],
+            "properties": {
+                "type": { "enum": [ "GeometryCollection" ] },
+                "geometries": {
+                    "type": "array",
+                    "items": { "$ref": "http://json-schema.org/geojson/geometry.json#" }
+                }
+            }
+        },
+        "feature": {
+            "title": "Feature",
+            "description": "A GeoJSON object with the type `Feature` is a feature object.\n\n* A feature object must have a member with the name `geometry`. The value of the geometry member is a geometry object as defined above or a JSON null value.\n\n* A feature object must have a member with the name `properties`. The value of the properties member is an object (any JSON object or a JSON null value).\n\n* If a feature has a commonly used identifier, that identifier should be included as a member of the feature object with the name `id`.",
+            "required": [ "geometry", "properties" ],
+            "properties": {
+                "type": { "enum": [ "Feature" ] },
+                "geometry": {
+                    "oneOf": [
+                        { "type": "null" },
+                        { "$ref": "http://json-schema.org/geojson/geometry.json#" }
+                    ]
+                },
+                "properties": { "type": [ "object", "null" ] },
+                "id": { "FIXME": "may be there, type not known (string? number?)" }
+            }
+        },
+        "featureCollection": {
+            "title": "FeatureCollection",
+            "description": "A GeoJSON object with the type `FeatureCollection` is a feature collection object.\n\nAn object of type `FeatureCollection` must have a member with the name `features`. The value corresponding to `features` is an array. Each element in the array is a feature object as defined above.",
+            "required": [ "features" ],
+            "properties": {
+                "type": { "enum": [ "FeatureCollection" ] },
+                "features": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/feature" }
+                }
+            }
+        }
+    }
+}
+
+

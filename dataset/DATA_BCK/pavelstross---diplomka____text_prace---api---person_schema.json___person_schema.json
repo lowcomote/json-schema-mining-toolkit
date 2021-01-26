@@ -1,0 +1,148 @@
+chema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "person": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "id": "id"
+        },
+        "name": {
+          "type": "string",
+          "id": "name"
+        },
+        "type": {
+          "type": "string",
+          "id": "type"
+        },
+        "status": {
+          "type": "string",
+          "id": "status"
+        },
+        "person_status": {
+          "type": "string",
+          "id": "person_status"
+        },
+        "member_status": {
+          "type": "string",
+          "id": "member_status"
+        },
+        "supporter_status": {
+          "type": "null",
+          "id": "supporter_status"
+        },
+        "first_name": {
+          "type": "string",
+          "id": "first_name"
+        },
+        "last_name": {
+          "type": "string",
+          "id": "last_name"
+        },
+        "email": {
+          "type": "string",
+          "id": "email"
+        },
+        "photo_url": {
+          "type": "string",
+          "id": "photo_url"
+        },
+        "cv_url": {
+          "type": "string",
+          "id": "cv_url"
+        },
+        "contacts": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {},
+          "id": "contacts"
+        },
+        "domestic_region": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "id": "name"
+            },
+            "id": {
+              "type": "integer",
+              "id": "id"
+            }
+          },
+          "id": "domestic_region",
+          "required": [
+            "name",
+            "id"
+          ]
+        },
+        "guest_region": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "id": "name"
+            },
+            "id": {
+              "type": "integer",
+              "id": "id"
+            }
+          },
+          "id": "guest_region",
+          "required": [
+            "name",
+            "id"
+          ]
+        },
+        "domestic_branch": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "id": "name"
+            },
+            "id": {
+              "type": "integer",
+              "id": "id"
+            }
+          },
+          "id": "domestic_branch",
+          "required": [
+            "name",
+            "id"
+          ]
+        },
+        "roles": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {},
+          "id": "roles"
+        }
+      },
+      "id": "person",
+      "required": [
+        "id",
+        "name",
+        "type",
+        "status",
+        "person_status",
+        "member_status",
+        "supporter_status",
+        "first_name",
+        "last_name",
+        "email",
+        "photo_url",
+        "cv_url",
+        "contacts",
+        "domestic_region",
+        "guest_region",
+        "domestic_branch",
+        "roles"
+      ]
+    }
+  },
+  "id": "/",
+  "required": [
+    "person"
+  ]
+}

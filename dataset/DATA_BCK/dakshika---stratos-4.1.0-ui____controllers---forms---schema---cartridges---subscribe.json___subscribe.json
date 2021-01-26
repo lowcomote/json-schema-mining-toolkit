@@ -1,0 +1,83 @@
+{
+    "type":"object",
+    "$schema": "http://json-schema.org/draft-03/schema",
+    "id": "root",
+    "title":"Cartridge Subscribe",
+    "required":["cartridgeType","alias"],
+    "options": {
+        "disable_collapse": true,
+        "disable_properties":true
+    },
+    "properties":{
+        "cartridgeType": {
+            "type":"string",
+            "id": "root/cartridgeType",
+            "default": "php",
+            "options": {"hidden": true},
+        },
+        "alias": {
+            "type":"string",
+            "id": "root/alias",
+            "title": "Alias",
+            "name": "Alias",
+            "default": "<ALIAS>"
+        },
+        "repoURL": {
+            "type":"string",
+            "id": "root/repoURL",
+            "title": "Repository URL",
+            "name": "Repository URL",
+            "default": "<GIT_REPO_URL>"
+        },
+        "privateRepo": {
+            "type":"boolean",
+            "id": "root/privateRepo",
+            "title": "Is private Repository",
+            "name": "Is private Repository",
+            "default": false,
+            "required":false
+        },
+        "repoUsername": {
+            "type":"string",
+            "id": "root/repoUsername",
+            "title": "Repository Username",
+            "name": "Repository Username",
+            "default": "my_username",
+            "required":false
+        },
+        "repoPassword": {
+            "type":"string",
+            "id": "root/repoPassword",
+            "title": "Repository Password",
+            "name": "Repository Password",
+            "default": "my_password",
+            "required":false
+        },
+        "commitsEnabled": {
+            "type":"boolean",
+            "id": "root/commitsEnabled",
+            "title": "Enable Commits",
+            "name": "Enable Commits",
+            "default": false,
+            "required":false
+        },
+        "autoscalePolicy": {
+            "type":"string",
+            "id": "root/autoscalePolicy",
+            "default": "<POLICY_NAME>",
+            "title": "Autoscale Policy",
+            "name": "Autoscale Policy",
+            "enum": ["auto-scale"],
+            "options": {"hidden": false},
+        },
+        "deploymentPolicy": {
+            "type":"string",
+            "id": "root/deploymentPolicy",
+            "title": "Deployment Policy",
+            "name": "Deployment Policy",
+            "default": "<POLICY_NAME>",
+            "enum": ["deployment"],
+            "options": {"hidden": false},
+        }
+    }
+}
