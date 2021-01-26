@@ -37,6 +37,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link jsonschema.impl.JSONSchemaFileImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link jsonschema.impl.JSONSchemaFileImpl#getErrors <em>Errors</em>}</li>
  *   <li>{@link jsonschema.impl.JSONSchemaFileImpl#getMeasures <em>Measures</em>}</li>
+ *   <li>{@link jsonschema.impl.JSONSchemaFileImpl#getGithubRepoFullname <em>Github Repo Fullname</em>}</li>
+ *   <li>{@link jsonschema.impl.JSONSchemaFileImpl#getGithubFilePath <em>Github File Path</em>}</li>
  * </ul>
  *
  * @generated
@@ -101,6 +103,46 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	 * @ordered
 	 */
 	protected EList<Measure> measures;
+
+	/**
+	 * The default value of the '{@link #getGithubRepoFullname() <em>Github Repo Fullname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGithubRepoFullname()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String GITHUB_REPO_FULLNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getGithubRepoFullname() <em>Github Repo Fullname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGithubRepoFullname()
+	 * @generated
+	 * @ordered
+	 */
+	protected String githubRepoFullname = GITHUB_REPO_FULLNAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getGithubFilePath() <em>Github File Path</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGithubFilePath()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String GITHUB_FILE_PATH_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getGithubFilePath() <em>Github File Path</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGithubFilePath()
+	 * @generated
+	 * @ordered
+	 */
+	protected String githubFilePath = GITHUB_FILE_PATH_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -229,6 +271,52 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
+	public String getGithubRepoFullname() {
+		return githubRepoFullname;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setGithubRepoFullname(String newGithubRepoFullname) {
+		String oldGithubRepoFullname = githubRepoFullname;
+		githubRepoFullname = newGithubRepoFullname;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME, oldGithubRepoFullname, githubRepoFullname));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String getGithubFilePath() {
+		return githubFilePath;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setGithubFilePath(String newGithubFilePath) {
+		String oldGithubFilePath = githubFilePath;
+		githubFilePath = newGithubFilePath;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_FILE_PATH, oldGithubFilePath, githubFilePath));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case jsonschemaPackage.JSON_SCHEMA_FILE__ERRORS:
@@ -258,6 +346,10 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 				return getErrors();
 			case jsonschemaPackage.JSON_SCHEMA_FILE__MEASURES:
 				return getMeasures();
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME:
+				return getGithubRepoFullname();
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_FILE_PATH:
+				return getGithubFilePath();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -289,6 +381,12 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 				getMeasures().clear();
 				getMeasures().addAll((Collection<? extends Measure>)newValue);
 				return;
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME:
+				setGithubRepoFullname((String)newValue);
+				return;
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_FILE_PATH:
+				setGithubFilePath((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -316,6 +414,12 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 			case jsonschemaPackage.JSON_SCHEMA_FILE__MEASURES:
 				getMeasures().clear();
 				return;
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME:
+				setGithubRepoFullname(GITHUB_REPO_FULLNAME_EDEFAULT);
+				return;
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_FILE_PATH:
+				setGithubFilePath(GITHUB_FILE_PATH_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -338,6 +442,10 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 				return errors != null && !errors.isEmpty();
 			case jsonschemaPackage.JSON_SCHEMA_FILE__MEASURES:
 				return measures != null && !measures.isEmpty();
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME:
+				return GITHUB_REPO_FULLNAME_EDEFAULT == null ? githubRepoFullname != null : !GITHUB_REPO_FULLNAME_EDEFAULT.equals(githubRepoFullname);
+			case jsonschemaPackage.JSON_SCHEMA_FILE__GITHUB_FILE_PATH:
+				return GITHUB_FILE_PATH_EDEFAULT == null ? githubFilePath != null : !GITHUB_FILE_PATH_EDEFAULT.equals(githubFilePath);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -354,6 +462,10 @@ public class JSONSchemaFileImpl extends MinimalEObjectImpl.Container implements 
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (fileName: ");
 		result.append(fileName);
+		result.append(", githubRepoFullname: ");
+		result.append(githubRepoFullname);
+		result.append(", githubFilePath: ");
+		result.append(githubFilePath);
 		result.append(')');
 		return result.toString();
 	}

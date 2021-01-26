@@ -168,13 +168,31 @@ public interface jsonschemaPackage extends EPackage {
 	int JSON_SCHEMA_FILE__MEASURES = 4;
 
 	/**
+	 * The feature id for the '<em><b>Github Repo Fullname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME = 5;
+
+	/**
+	 * The feature id for the '<em><b>Github File Path</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JSON_SCHEMA_FILE__GITHUB_FILE_PATH = 6;
+
+	/**
 	 * The number of structural features of the '<em>JSON Schema File</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JSON_SCHEMA_FILE_FEATURE_COUNT = 5;
+	int JSON_SCHEMA_FILE_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>JSON Schema File</em>' class.
@@ -591,6 +609,28 @@ public interface jsonschemaPackage extends EPackage {
 	EReference getJSONSchemaFile_Measures();
 
 	/**
+	 * Returns the meta object for the attribute '{@link jsonschema.JSONSchemaFile#getGithubRepoFullname <em>Github Repo Fullname</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Github Repo Fullname</em>'.
+	 * @see jsonschema.JSONSchemaFile#getGithubRepoFullname()
+	 * @see #getJSONSchemaFile()
+	 * @generated
+	 */
+	EAttribute getJSONSchemaFile_GithubRepoFullname();
+
+	/**
+	 * Returns the meta object for the attribute '{@link jsonschema.JSONSchemaFile#getGithubFilePath <em>Github File Path</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Github File Path</em>'.
+	 * @see jsonschema.JSONSchemaFile#getGithubFilePath()
+	 * @see #getJSONSchemaFile()
+	 * @generated
+	 */
+	EAttribute getJSONSchemaFile_GithubFilePath();
+
+	/**
 	 * Returns the meta object for class '{@link jsonschema.JSONSchemaVersion <em>JSON Schema Version</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -908,6 +948,22 @@ public interface jsonschemaPackage extends EPackage {
 		 * @generated
 		 */
 		EReference JSON_SCHEMA_FILE__MEASURES = eINSTANCE.getJSONSchemaFile_Measures();
+
+		/**
+		 * The meta object literal for the '<em><b>Github Repo Fullname</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME = eINSTANCE.getJSONSchemaFile_GithubRepoFullname();
+
+		/**
+		 * The meta object literal for the '<em><b>Github File Path</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute JSON_SCHEMA_FILE__GITHUB_FILE_PATH = eINSTANCE.getJSONSchemaFile_GithubFilePath();
 
 		/**
 		 * The meta object literal for the '{@link jsonschema.impl.JSONSchemaVersionImpl <em>JSON Schema Version</em>}' class.

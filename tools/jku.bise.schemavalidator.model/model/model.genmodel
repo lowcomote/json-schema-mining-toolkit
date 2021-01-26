@@ -27,6 +27,8 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/errors"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference jsconschema.ecore#//JSONSchemaFile/measures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaFile/githubRepoFullname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaFile/githubFilePath"/>
     </genClasses>
     <genClasses ecoreClass="jsconschema.ecore#//JSONSchemaVersion">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jsconschema.ecore#//JSONSchemaVersion/draftName"/>

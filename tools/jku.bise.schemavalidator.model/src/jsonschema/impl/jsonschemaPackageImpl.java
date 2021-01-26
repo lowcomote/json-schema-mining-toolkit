@@ -266,6 +266,26 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 	 * @generated
 	 */
 	@Override
+	public EAttribute getJSONSchemaFile_GithubRepoFullname() {
+		return (EAttribute)jsonSchemaFileEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getJSONSchemaFile_GithubFilePath() {
+		return (EAttribute)jsonSchemaFileEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getJSONSchemaVersion() {
 		return jsonSchemaVersionEClass;
 	}
@@ -500,6 +520,8 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 		createEReference(jsonSchemaFileEClass, JSON_SCHEMA_FILE__VERSION);
 		createEReference(jsonSchemaFileEClass, JSON_SCHEMA_FILE__ERRORS);
 		createEReference(jsonSchemaFileEClass, JSON_SCHEMA_FILE__MEASURES);
+		createEAttribute(jsonSchemaFileEClass, JSON_SCHEMA_FILE__GITHUB_REPO_FULLNAME);
+		createEAttribute(jsonSchemaFileEClass, JSON_SCHEMA_FILE__GITHUB_FILE_PATH);
 
 		jsonSchemaVersionEClass = createEClass(JSON_SCHEMA_VERSION);
 		createEAttribute(jsonSchemaVersionEClass, JSON_SCHEMA_VERSION__DRAFT_NAME);
@@ -573,6 +595,8 @@ public class jsonschemaPackageImpl extends EPackageImpl implements jsonschemaPac
 		initEReference(getJSONSchemaFile_Version(), this.getJSONSchemaVersion(), null, "version", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJSONSchemaFile_Errors(), this.getError(), null, "errors", null, 0, -1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getJSONSchemaFile_Measures(), this.getMeasure(), null, "measures", null, 0, -1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getJSONSchemaFile_GithubRepoFullname(), ecorePackage.getEString(), "githubRepoFullname", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getJSONSchemaFile_GithubFilePath(), ecorePackage.getEString(), "githubFilePath", null, 0, 1, JSONSchemaFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(jsonSchemaVersionEClass, JSONSchemaVersion.class, "JSONSchemaVersion", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getJSONSchemaVersion_DraftName(), ecorePackage.getEString(), "draftName", null, 0, 1, JSONSchemaVersion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

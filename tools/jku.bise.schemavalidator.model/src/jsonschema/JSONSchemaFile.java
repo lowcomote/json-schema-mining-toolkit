@@ -20,6 +20,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link jsonschema.JSONSchemaFile#getVersion <em>Version</em>}</li>
  *   <li>{@link jsonschema.JSONSchemaFile#getErrors <em>Errors</em>}</li>
  *   <li>{@link jsonschema.JSONSchemaFile#getMeasures <em>Measures</em>}</li>
+ *   <li>{@link jsonschema.JSONSchemaFile#getGithubRepoFullname <em>Github Repo Fullname</em>}</li>
+ *   <li>{@link jsonschema.JSONSchemaFile#getGithubFilePath <em>Github File Path</em>}</li>
  * </ul>
  *
  * @see jsonschema.jsonschemaPackage#getJSONSchemaFile()
@@ -106,5 +108,49 @@ public interface JSONSchemaFile extends EObject {
 	 * @generated
 	 */
 	EList<Measure> getMeasures();
+
+	/**
+	 * Returns the value of the '<em><b>Github Repo Fullname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Github Repo Fullname</em>' attribute.
+	 * @see #setGithubRepoFullname(String)
+	 * @see jsonschema.jsonschemaPackage#getJSONSchemaFile_GithubRepoFullname()
+	 * @model
+	 * @generated
+	 */
+	String getGithubRepoFullname();
+
+	/**
+	 * Sets the value of the '{@link jsonschema.JSONSchemaFile#getGithubRepoFullname <em>Github Repo Fullname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Github Repo Fullname</em>' attribute.
+	 * @see #getGithubRepoFullname()
+	 * @generated
+	 */
+	void setGithubRepoFullname(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Github File Path</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Github File Path</em>' attribute.
+	 * @see #setGithubFilePath(String)
+	 * @see jsonschema.jsonschemaPackage#getJSONSchemaFile_GithubFilePath()
+	 * @model
+	 * @generated
+	 */
+	String getGithubFilePath();
+
+	/**
+	 * Sets the value of the '{@link jsonschema.JSONSchemaFile#getGithubFilePath <em>Github File Path</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Github File Path</em>' attribute.
+	 * @see #getGithubFilePath()
+	 * @generated
+	 */
+	void setGithubFilePath(String value);
 
 } // JSONSchemaFile
