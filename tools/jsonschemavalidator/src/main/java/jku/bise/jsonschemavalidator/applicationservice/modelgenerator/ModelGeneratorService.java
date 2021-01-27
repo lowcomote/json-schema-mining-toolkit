@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -38,6 +39,7 @@ import jsonschema.Metric;
 import jsonschema.MetricType;
 import jsonschema.Model;
 import jsonschema.jsonschemaFactory;
+import jsonschema.jsonschemaPackage;
 
 @Service
 public class ModelGeneratorService {
@@ -179,7 +181,6 @@ public class ModelGeneratorService {
 				file.getErrors().add(basic);
 			}
 		}
-		model.getMetrics().forEach(z -> logger.info(z.getName()));
 		logger.info("Model has been instanciated");
 		return model;
 	}
@@ -228,7 +229,17 @@ public class ModelGeneratorService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	public Model load(String fileName) {
+		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+		Map<String, Object> m = reg.getExtensionToFactoryMap();
+		m.put("xmi", new XMIResourceFactoryImpl());
+		EPackage.Registry.INSTANCE.put(jsonschemaPackage.eNS_URI, jsonschemaPackage.eINSTANCE);
+		ResourceSet resSet = new ResourceSetImpl();
+		Resource resource = resSet.getResource(URI.createURI(fileName), true);
+		Model myWeb = (Model) resource.getContents().get(0);
+		return myWeb;
 	}
 
 }

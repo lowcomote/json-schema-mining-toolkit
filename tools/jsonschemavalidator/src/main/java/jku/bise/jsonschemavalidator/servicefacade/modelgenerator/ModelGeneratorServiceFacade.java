@@ -19,6 +19,11 @@ public class ModelGeneratorServiceFacade {
 		Model m = generateModel(inputFolder);
 		modelGeneratorService.serializeModel(m, path);
 		return m;
+//		return modelGeneratorService.load(path);
+		
+	}
+	public Model loadModel(String path) {
+		return modelGeneratorService.load(path);
 	}
 	
 	

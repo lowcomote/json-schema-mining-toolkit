@@ -30,6 +30,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 	private static final String DELETE_DUPLICATES = "Y";
 	private static final String ABORT ="A";
 	private static final String GENERATE_MODEL = "EMF";
+	private static final String LOAD_MODEL = "L";
 	
 	@Autowired
 	private SchemaValidatorServiceFacade schemaValidatorServiceFacade;
@@ -60,6 +61,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		String outputCSV = "";
 		String inputFolderPath = "";
 		String gramFolder = "";
+		String moodel = "";
 		boolean duplicates = false;
 		
 		Scanner console = new Scanner(System.in);
@@ -72,12 +74,14 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 		while (!VALIDATION_CHOICE.equalsIgnoreCase(choice) 
 				&& !METRICS_CHOICE.equalsIgnoreCase(choice)
 				&& !GRAMS_CHOICE.equalsIgnoreCase(choice)
-				&& !GENERATE_MODEL.equalsIgnoreCase(choice)) {
+				&& !GENERATE_MODEL.equalsIgnoreCase(choice)
+				&& !LOAD_MODEL.equalsIgnoreCase(choice)) {
 			System.out.println("Please choose an option");
 			System.out.println("["+VALIDATION_CHOICE+"] Validate a json file or a directory of json files");
 			System.out.println("["+METRICS_CHOICE+"] Calculate the metrics of a json file or a directory of json files");
 			System.out.println("["+GRAMS_CHOICE+"] Calculate unigrams and bigrams");
 			System.out.println("["+GENERATE_MODEL+"] Generate EMF model");
+			System.out.println("["+LOAD_MODEL+"] Load an EMF model");
 			choice = console.nextLine().trim();
 		}
 		while(!USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig) && ! NOT_USE_CONFIG_PROPERTIES.equalsIgnoreCase(useConfig)) {
@@ -90,6 +94,7 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			outputCSV = config.getString("output.csv.file");
 			gramFolder = config.getString("gram.output.folder");
 			duplicates = config.getBoolean("remove.dupicates");		
+			moodel = config.getString("model.file");
 
 		} else {
 			System.out.println("Please introcuce the path to the folder or file you want to analyze (e.g., json/)");
@@ -102,6 +107,11 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 				System.out.println("Please introcuce the gram output folder");
 				gramFolder=console.nextLine().trim();
 			}
+			if (choice.equals(GENERATE_MODEL)) {
+				System.out.println("Please introcuce the model file name");
+				moodel=console.nextLine().trim();
+			}
+			
 		}
 		
 		System.out.println("Choice: "+choice);
@@ -125,7 +135,9 @@ public class JsonSchemaAnalyzerRunner implements CommandLineRunner{
 			}else if(METRICS_CHOICE.equalsIgnoreCase(choice)) {
 				schemaMetricsServiceFacade.findSchemaMetricsInFileOrDirectory(inputFolderPath, outputCSV);
 			} else if (GENERATE_MODEL.equals(choice))
-				modelGeneratorServiceFacade.generateModelAndSerialize(inputFolderPath,"model.xmi");
+				modelGeneratorServiceFacade.generateModelAndSerialize(inputFolderPath,moodel);
+			 else if (LOAD_MODEL.equals(choice))
+				modelGeneratorServiceFacade.loadModel(moodel); 
 		}
 		
 		console.close();
