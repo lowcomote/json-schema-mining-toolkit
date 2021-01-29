@@ -73,6 +73,8 @@ In the column `VALIDATOR_OUTCOME` of `ValidationOutput.xlsx` the following value
 Note that the validator does not stop at the first violation, so an invalid file has as many rows as the number of errors found in it.    
 The valid JSON schema documents are copied in the folder `dataset/VALID_SCHEMA`, and it will be used to calculate the metrics, that are then exported in the `Metrics.csv` file.
 
-##Data extraction metamodel
+## Data extraction metamodel
 
 ![Data Extraction Metamodel](images/data-representation.png)
+
+A pre-computed model of the mined datatest is available at [https://univaq-my.sharepoint.com/:u:/g/personal/juri_dirocco_univaq_it/EaioXsgAMeZDiAQZjgBoJTAB6DwQGpRwtm1Tnt4msPmPwQ?e=fwUR2g](https://univaq-my.sharepoint.com/:u:/g/personal/juri_dirocco_univaq_it/EaioXsgAMeZDiAQZjgBoJTAB6DwQGpRwtm1Tnt4msPmPwQ?e=fwUR2g)
