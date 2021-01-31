@@ -176,7 +176,10 @@ public class SchemaMetricsApplicationService {
 	
 	
 	private void findMetrics(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO parentGraphMetricDTO) throws Exception {
-			String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
+		
+		jsonSchemaMetricsDTO.incrementNodesCount();
+		
+		String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
 			boolean isParentKeyProperty = CommonDraftsKeywords.PROPERTIES.equals(parentKey);
 			boolean isParentKeyPatternProperty = CommonDraftsKeywords.PATTERN_PROPERTIES.equals(parentKey);
 			
@@ -234,7 +237,7 @@ public class SchemaMetricsApplicationService {
 							localKeyGraphMetricDTO.setFanIn(1);
 						}
 					}
-					
+					jsonSchemaMetricsDTO.incrementEdgesCount();
 					findMetrics(child,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
 					updateDepthResolvedTree(parentGraphMetricDTO, localKeyGraphMetricDTO);
 					
@@ -252,6 +255,7 @@ public class SchemaMetricsApplicationService {
 								arrayElementGraphMetricDTO.appendToPointer(""+i);
 								//findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
 								updateReferencer(childArrayJSONObject,  jsonSchemaMetricsDTO, arrayElementGraphMetricDTO);
+								jsonSchemaMetricsDTO.incrementEdgesCount();
 								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, arrayElementGraphMetricDTO);
 								
 							}
@@ -350,7 +354,7 @@ public class SchemaMetricsApplicationService {
 				 * Iteration over all the referencers with the same $ref
 				 */
 				for (Iterator<GraphMetricDTO>  referencerGraphMetricDTOsIterator = referencerGraphMetricDTOs.iterator(); referencerGraphMetricDTOsIterator.hasNext();) {
-					
+					jsonSchemaMetricsDTO.incrementEdgesCount();
 					GraphMetricDTO referencerGraphMetricDTO = referencerGraphMetricDTOsIterator.next();
 					referredGraphMetricDTO.incrementFanIn();
 					/**

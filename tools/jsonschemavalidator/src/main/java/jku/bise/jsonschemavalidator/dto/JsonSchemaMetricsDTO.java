@@ -20,6 +20,10 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	
 	private String schema;
 	
+//	private int nodesCount = 0;
+//	
+//	private int edgesCount = 0;
+	
 	private Map<String,Integer> keywordsCount = new HashMap<String,Integer>();
 	
 	private Map<String,Integer> typesCount = new HashMap<String,Integer>();
@@ -82,6 +86,20 @@ public class JsonSchemaMetricsDTO implements Serializable {
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
+	
+	
+
+	
+	
+	public void incrementNodesCount() {
+		this.graphMetricDTO.incrementNodesCount();
+	}
+
+	
+	
+	public void incrementEdgesCount() {
+		this.graphMetricDTO.incrementEdgesCount();
+	}
 
 	public GraphMetricDTO getGraphMetricDTO() {
 		return graphMetricDTO;
@@ -101,6 +119,8 @@ public class JsonSchemaMetricsDTO implements Serializable {
 		}
 		referencer.get(key).add(graphMetricDTO);
 	}
+	
+	
 
 	
 	@Override
@@ -108,6 +128,7 @@ public class JsonSchemaMetricsDTO implements Serializable {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("name :" +this.name+"\n");
 		stringBuffer.append("schema :" +this.schema+"\n");
+		
 		stringBuffer.append("keywordsCount :" +this.keywordsCount.toString()+"\n");
 		stringBuffer.append("typesCount :" +this.typesCount.toString()+"\n");
 		stringBuffer.append("graphMetricDTO :" +this.graphMetricDTO.toString()+"\n");

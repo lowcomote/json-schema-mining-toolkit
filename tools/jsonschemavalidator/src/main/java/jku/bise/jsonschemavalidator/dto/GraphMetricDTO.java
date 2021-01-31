@@ -12,6 +12,9 @@ public class GraphMetricDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1073658294102415897L;
 	
+	
+	public static final String NODES_COUNT ="Nodes Count"; 
+	public static final String EDGES_COUNT ="Edges Count"; 
 	public static final String DEPTH_SCHEMA ="Depth Schema"; 
 	public static final String DEPTH_RESOLVED_TREE ="Depth Resolved Tree"; 
 	public static final String FAN_IN ="Fan In"; 
@@ -28,6 +31,10 @@ public class GraphMetricDTO implements Serializable{
 	 * keep track of the location element in the json that created it
 	 */
 	private String pointer="#";
+	
+	private int nodesCount = 0;
+	
+	private int edgesCount = 0;
 	
 	/**
 	 * Depth of the tree that emerges from loading the raw JSON Schema into an schema_graph .
@@ -80,6 +87,22 @@ public class GraphMetricDTO implements Serializable{
 	private int unsolvedRefs =0;
 	
 
+	public int getNodesCount() {
+		return nodesCount;
+	}
+	
+	public void incrementNodesCount() {
+		this.nodesCount++;
+	}
+
+	public int getEdgesCount() {
+		return edgesCount;
+	}
+	
+	public void incrementEdgesCount() {
+		this.edgesCount ++;
+	}
+	
 	public int getDepthSchema() {
 		return depthSchema;
 	}
@@ -174,6 +197,8 @@ public class GraphMetricDTO implements Serializable{
 	public void setUnsolvedRefs(int unsolvedRefs) {
 		this.unsolvedRefs = unsolvedRefs;
 	}
+	
+	
 
 	public void appendToPointer(String key) {
 		this.pointer += "/"+ key;
@@ -217,6 +242,8 @@ public class GraphMetricDTO implements Serializable{
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("pointer :" +this.pointer+"\n");
+		stringBuffer.append("nodesCount :" +this.nodesCount+"\n");
+		stringBuffer.append("edgesCount :" +this.edgesCount+"\n");
 		stringBuffer.append("depthSchema :" +this.depthSchema+"\n");
 		stringBuffer.append("depthResolvedTree :" +this.depthResolvedTree+"\n");
 		stringBuffer.append("fanIn :" +this.fanIn+"\n");
