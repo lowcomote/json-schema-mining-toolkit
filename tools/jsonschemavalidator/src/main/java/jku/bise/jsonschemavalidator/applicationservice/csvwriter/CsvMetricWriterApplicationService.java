@@ -110,6 +110,10 @@ public class CsvMetricWriterApplicationService {
 					DraftsUnionKeywords.TYPE_STRING,
 					DraftsUnionKeywords.ARRAY_OF_TYPES,
 					
+					
+					/**************** GRAPH METRICS *********************************************/
+					GraphMetricDTO.NODES_COUNT,
+					GraphMetricDTO.EDGES_COUNT,
 					GraphMetricDTO.DEPTH_SCHEMA,
 					GraphMetricDTO.DEPTH_RESOLVED_TREE,
 					GraphMetricDTO.FAN_IN,
@@ -210,6 +214,9 @@ public class CsvMetricWriterApplicationService {
 						jsonSchemaMetricsDTO.getTypesCount(DraftsUnionKeywords.TYPE_STRING),
 						jsonSchemaMetricsDTO.getTypesCount(DraftsUnionKeywords.ARRAY_OF_TYPES),
 						
+						/**************** GRAPH METRICS *********************************************/
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getNodesCount(),
+						jsonSchemaMetricsDTO.getGraphMetricDTO().getEdgesCount(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getDepthSchema(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getDepthResolvedTree(),
 						jsonSchemaMetricsDTO.getGraphMetricDTO().getFanIn(),
