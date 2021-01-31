@@ -178,6 +178,7 @@ public class SchemaMetricsApplicationService {
 	private void findMetrics(JSONObject jsonObject, List<String> keywords, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO parentGraphMetricDTO) throws Exception {
 			String parentKey = Utils.digestSlashAndDot(parentGraphMetricDTO.getPointer());
 			boolean isParentKeyProperty = CommonDraftsKeywords.PROPERTIES.equals(parentKey);
+			boolean isParentKeyPatternProperty = CommonDraftsKeywords.PATTERN_PROPERTIES.equals(parentKey);
 			
 			Set<String> keys =jsonObject.keySet();
 			for(String key :keys) {
@@ -195,11 +196,13 @@ public class SchemaMetricsApplicationService {
 				JSONObject child = jsonObject.optJSONObject(key);
 				if(child!=null) {
 					isLeaf=false;
-
-					String innerRef = child.optString(CommonDraftsKeywords.REF);
-					if(innerRef!=null && !innerRef.isEmpty()) {
-						jsonSchemaMetricsDTO.putReferencer(innerRef, localKeyGraphMetricDTO);
-					}
+					/*****/
+					updateReferencer(child,  jsonSchemaMetricsDTO,  localKeyGraphMetricDTO);
+//					String innerRef = child.optString(CommonDraftsKeywords.REF);
+//					if(innerRef!=null && !innerRef.isEmpty()) {
+//						jsonSchemaMetricsDTO.putReferencer(innerRef, localKeyGraphMetricDTO);
+//					}
+					/**********/
 //					if(child.has(CommonDraftsKeywords.REF)) {
 //						String ref = child.getString(CommonDraftsKeywords.REF);
 //						
@@ -226,7 +229,8 @@ public class SchemaMetricsApplicationService {
 						/**
 						 * FAN IN: if its parent is "property" it is already reference by its father.
 						 */
-						if(isParentKeyProperty) {
+						//if(isParentKeyProperty) {
+						if(isParentKeyProperty || isParentKeyPatternProperty) {
 							localKeyGraphMetricDTO.setFanIn(1);
 						}
 					}
@@ -244,7 +248,12 @@ public class SchemaMetricsApplicationService {
 							JSONObject childArrayJSONObject = childArray.optJSONObject(i);
 							if(childArrayJSONObject !=null) {
 								isLeaf=false;
-								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
+								GraphMetricDTO arrayElementGraphMetricDTO = localKeyGraphMetricDTO.clone();
+								arrayElementGraphMetricDTO.appendToPointer(""+i);
+								//findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, localKeyGraphMetricDTO);
+								updateReferencer(childArrayJSONObject,  jsonSchemaMetricsDTO, arrayElementGraphMetricDTO);
+								findMetrics(childArrayJSONObject,  keywords,   jsonSchemaMetricsDTO, arrayElementGraphMetricDTO);
+								
 							}
 						}
 					}
@@ -260,7 +269,12 @@ public class SchemaMetricsApplicationService {
 
 	}
 	
-	
+	private void updateReferencer(JSONObject withPotentialRefJSONObject, JsonSchemaMetricsDTO jsonSchemaMetricsDTO, GraphMetricDTO localKeyGraphMetricDTO) {
+		String innerRef = withPotentialRefJSONObject.optString(CommonDraftsKeywords.REF);
+		if(innerRef!=null && !innerRef.isEmpty()) {
+			jsonSchemaMetricsDTO.putReferencer(innerRef, localKeyGraphMetricDTO);
+		}
+	}
 	
 	private void updateDepthResolvedTree(GraphMetricDTO parentGraphMetricDTO,  GraphMetricDTO localKeyGraphMetricDTO) {
 		if(parentGraphMetricDTO.getDepthResolvedTree()<=localKeyGraphMetricDTO.getDepthResolvedTree()) {
@@ -322,6 +336,9 @@ public class SchemaMetricsApplicationService {
 		Map<String, List<GraphMetricDTO>> referencers = jsonSchemaMetricsDTO.getReferencer();
 		Map<String, GraphMetricDTO> referables = jsonSchemaMetricsDTO.getReferable();
 		
+		/**
+		 * Iteration over all the referencers 
+		 */
 		for(Iterator<Entry<String, List<GraphMetricDTO>>> referencersIterator = referencers.entrySet().iterator(); referencersIterator.hasNext();) {
 			Entry<String, List<GraphMetricDTO>> referencersEntry = referencersIterator.next(); 
 			String ref = referencersEntry.getKey();
@@ -329,6 +346,9 @@ public class SchemaMetricsApplicationService {
 			GraphMetricDTO referredGraphMetricDTO = referables.get(ref);
 			
 			if(referredGraphMetricDTO!=null) {
+				/**
+				 * Iteration over all the referencers with the same $ref
+				 */
 				for (Iterator<GraphMetricDTO>  referencerGraphMetricDTOsIterator = referencerGraphMetricDTOs.iterator(); referencerGraphMetricDTOsIterator.hasNext();) {
 					
 					GraphMetricDTO referencerGraphMetricDTO = referencerGraphMetricDTOsIterator.next();
@@ -374,6 +394,12 @@ public class SchemaMetricsApplicationService {
 		 * UNSOLVED_REFS: elements not removed from referencers does not reach any referable.
 		 */
 		mainGraphMetricDTO.setUnsolvedRefs(referencers.size());
+		if(logger.isDebugEnabled()) {
+			for(Iterator<String> referencersIterator = referencers.keySet().iterator(); referencersIterator.hasNext();) {
+				String ref= referencersIterator.next();
+				logger.debug("unsolved $ref {}", ref);
+			}
+		}
 		
 		/**
 		 * Find distinct referables elements. There can be duplicated in case of id present in the referable GraphMetricDTO
@@ -387,11 +413,17 @@ public class SchemaMetricsApplicationService {
 		maxFanInGraphMetricDTO.ifPresent( max-> {mainGraphMetricDTO.setFanIn(max.getFanIn());});
 		
 		/**
-		 * UNREACHABLES:  referable elements with fanIn == 0 have not ben reached
+		 * UNREACHABLES:  referable elements with fanIn == 0 have not been reached
 		 */
-		int unreachables = (int) distinctReferables.stream().filter(referable -> referable.getFanIn()==0).count();
-		mainGraphMetricDTO.setUnreachables(unreachables);
 		
+		int unreachablesCount = (int) distinctReferables.stream().filter(referable -> referable.getFanIn()==0).count();
+		mainGraphMetricDTO.setUnreachables(unreachablesCount);
+		if(logger.isDebugEnabled()) {
+			//List<GraphMetricDTO> unreacheableGraphMetricDTOs = distinctReferables.stream().filter(referable -> referable.getFanIn()==0).collect(Collectors.toList());
+			distinctReferables.stream().filter(referable -> referable.getFanIn()==0).forEach(unreachable->{
+					logger.debug("unreachable element: {}",unreachable.getPointer());
+				});
+			}
 	}
 	
 	

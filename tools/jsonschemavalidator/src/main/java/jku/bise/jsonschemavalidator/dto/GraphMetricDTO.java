@@ -216,7 +216,7 @@ public class GraphMetricDTO implements Serializable{
 	@Override
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
-		//stringBuffer.append("pointer :" +this.pointer+"\n");
+		stringBuffer.append("pointer :" +this.pointer+"\n");
 		stringBuffer.append("depthSchema :" +this.depthSchema+"\n");
 		stringBuffer.append("depthResolvedTree :" +this.depthResolvedTree+"\n");
 		stringBuffer.append("fanIn :" +this.fanIn+"\n");
