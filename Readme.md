@@ -4,7 +4,7 @@ JSON schema mining toolkit is a set of tools dedicated to the analysis of [JSON 
 The toolkit has been implemented in Java and it can be used twofold: in a stand-alone mode or as a library to manage and analyze JSON schema.  
 
 ## Services
-**json-schema-toolkit**  provides  many  useful  services  to  deal with  JSON  schema  artifacts.  In  particular,  it  simplifies  the developer  life  by  abstracting  the  managing  operations  (e.g.,validation  and  analysis)  from  the  specific  draft  version.
+**json-schema-mining-toolkit**  provides  many  useful  services  to  deal with  JSON  schema  artifacts.  In  particular,  it  simplifies  the developer  life  by  abstracting  the  managing  operations  (e.g.,validation  and  analysis)  from  the  specific  draft  version.
 In particular the following services has been provided for JSONschema  artifacts  conform  to  any  proposed  draft  (i.e.,  Drafts03, 04, 06, 07, and 2019-09 are supported).  
 
 * *Validation Service* validates a JSON schema and returns a list of validation errors if they occur.
