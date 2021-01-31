@@ -1,6 +1,6 @@
-# Json Schema Toolkit
+# Json Schema Mining Toolkit
 
-JSON schema toolkit is a set of tools dedicated to the analysis of [JSON Schema documents](https://json-schema.org/).  
+JSON schema mining toolkit is a set of tools dedicated to the analysis of [JSON Schema documents](https://json-schema.org/).  
 The toolkit has been implemented in Java and it can be used twofold: in a stand-alone mode or as a library to manage and analyze JSON schema.  
 
 ## Services
