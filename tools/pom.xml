@@ -3,7 +3,7 @@
   <parent>
     <groupId>jku.bise</groupId>
     <artifactId>json-schema-mining-toolkit</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>json-schema-mining-toolkit.tools</artifactId>
   <packaging>pom</packaging>

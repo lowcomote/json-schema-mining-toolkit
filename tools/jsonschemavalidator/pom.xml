@@ -5,7 +5,7 @@
 	<parent>
 	    <groupId>jku.bise</groupId>
 	    <artifactId>json-schema-mining-toolkit.tools</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
+	    <version>1.0.1</version>
 	</parent>
 <!-- 	<groupId>jku.bise</groupId> -->
 	<artifactId>jsonschemavalidator</artifactId>
